@@ -156,8 +156,8 @@ main {
 }
 
 p {
-  font-size: 24px; /* Tamaño base del texto */
-  line-height: 1.5; /* Espaciado entre líneas */
+  font-size: 35px; /* Tamaño base del texto */
+  line-height: 0.5; /* Espaciado entre líneas */
   font-family:system-ui;
   margin-bottom: 20px; /* Espacio inferior */
 }
