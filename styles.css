@@ -159,7 +159,7 @@ p {
   font-size: 35px; /* Tamaño base del texto */
   line-height: 0.5; /* Espaciado entre líneas */
   font-family:system-ui;
-  margin-bottom: 20px; /* Espacio inferior */
+  margin-top: revert;
 }
 
 @media screen and (max-width: 768px) {
