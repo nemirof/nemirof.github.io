@@ -45,7 +45,7 @@ main {
 }
 
 .carta {
-  width: 200px;
+  width: 220px;
   height: 300px;
   cursor: pointer;
   position: relative;
@@ -163,7 +163,7 @@ p {
 }
 
 @media screen and (max-width: 768px) {
-  h2 {
-    margin-top: 30px; /* Más espacio superior para dispositivos más pequeños */
+  #profesiones {
+    max-width: 90%; /* Reducir el ancho máximo */
+    padding: 10px; /* Reducir el padding */
   }
-}

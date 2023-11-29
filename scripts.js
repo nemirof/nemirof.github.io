@@ -2,14 +2,19 @@ function mostrarProfesion(carta) {
   const frontal = carta.querySelector('.frontal');
   const trasera = carta.querySelector('.trasera');
   const sound = trasera.querySelector('.sound');
-  
+
+  // Ajustar la velocidad de la animación
+  frontal.style.transition = 'transform 0.3s';
+  trasera.style.transition = 'transform 0.3s';
+
   if (frontal.style.transform === 'rotateY(-180deg)') {
     frontal.style.transform = 'rotateY(0deg)';
     trasera.style.transform = 'rotateY(180deg)';
+    sound.play(); // Reproducir sonido inmediatamente al inicio de la animación
   } else {
     frontal.style.transform = 'rotateY(-180deg)';
     trasera.style.transform = 'rotateY(0deg)';
-	sound.play();
+    setTimeout(() => sound.play(), 300); // Reproducir sonido después de 300ms (ajustable)
   }
 }
 
@@ -27,23 +32,6 @@ function moverImagen() {
 }
 
 
-
-function traducirTexto(texto, callback) {
-  const API_KEY = 'AIzaSyDXfSZXSEvSsnTwkJ37ZVmpp_J9Ku3UWSM'; // Reemplaza con tu propia clave de API
-  const textoTraducido = '';
-
-  fetch(
-    `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}&q=${texto}&target=en`
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      const textoTraducido = data.data.translations[0].translatedText;
-      callback(textoTraducido); // Llamamos a la función de callback con el texto traducido
-    })
-    .catch((error) => {
-      console.error('Error al traducir:', error);
-    });
-}
 
 function reproducirSonido(boton) {
   const carta = boton.parentElement;
