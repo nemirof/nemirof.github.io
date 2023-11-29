@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Las profesiones de mis amigos</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos para la imagen conductora */
+    .imagen-conductora {
+      width: 500px; /* Ajusta el tamaño según sea necesario */
+      cursor: pointer;
+      transition: transform 1s ease-in-out; /* Ajusta la duración de la transición */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Las profesiones de mis amigos</h1>
+    <img class="icono-profesion" src="images/doctor.png" alt="Doctor">
+    <img class="icono-profesion" src="images/poli.png" alt="Poli">
+	<img class="icono-profesion" src="images/bomberoicon.png" alt="Bomber">
+    <!-- Agrega más imágenes de profesiones -->
+  </header>
+  <main>
+    <section id="home" class="home-section">
+      <h2>¡Descubre las profesiones!</h2>
+      <p>Bienvenidos al mundo de las profesiones de los amigos de mi cole. Haz clic en la imagen para comenzar.</p>
+      <div class="centrar-imagen">
+        <img class="imagen-conductora" src="images/conductora.png" alt="Conductora" onclick="moverImagen()">
+        <audio id="audio-arranque" src="audio/arranque.mp3"></audio> <!-- Audio para reproducir -->
+      </div>
+    </section>
+  </main>
+  <script src="scripts.js"></script>
+</body>
+</html>

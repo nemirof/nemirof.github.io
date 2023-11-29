@@ -1,0 +1,161 @@
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f4d5; /* Color de fondo */
+}
+
+header {
+  background-color: #abb4ed;
+  color: white;
+  padding: 5px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2em;
+  color: navy;
+  font-family:system-ui;
+}
+
+h2 {
+	margin: 0px;
+	font-family:system-ui;
+}	
+
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+}
+
+/* Estilos para la sección de profesiones */
+#profesiones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.carta {
+  width: 200px;
+  height: 300px;
+  cursor: pointer;
+  position: relative;
+  perspective: 1000px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.frontal, .trasera {
+  width: 83%;
+  height: 92%;
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.frontal img, .trasera img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: auto;
+}
+
+.frontal {
+  background-color: #f3d8ff;
+  transform: rotateY(0deg);
+  z-index: 2;
+}
+
+.trasera {
+  background-color: #ffd8d8;
+  transform: rotateY(180deg);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos para el enlace de regreso */
+.volver {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.volver a {
+  text-decoration: none;
+  color: #3949ab;
+  border: 2px solid #3949ab;
+  padding: 8px 16px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.volver a:hover {
+  background-color: #3949ab;
+  color: white;
+}
+
+.centrar-imagen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.memory-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 150px;
+  height: 150px;
+  margin: 10px;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.card img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.icono-profesion {
+  width: 80px; /* Ajusta el tamaño según sea necesario */
+  margin: 10px; /* Espacio entre las imágenes */
+}
+
+p {
+  font-size: 24px; /* Tamaño base del texto */
+  line-height: 1.5; /* Espaciado entre líneas */
+  font-family:system-ui;
+}
