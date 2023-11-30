@@ -1,20 +1,23 @@
+
 function mostrarProfesion(carta) {
   const frontal = carta.querySelector('.frontal');
   const trasera = carta.querySelector('.trasera');
   const sound = trasera.querySelector('.sound');
 
-  // Ajustar la velocidad de la animación
-  frontal.style.transition = 'transform 0.3s';
-  trasera.style.transition = 'transform 0.3s';
-
   if (frontal.style.transform === 'rotateY(-180deg)') {
     frontal.style.transform = 'rotateY(0deg)';
     trasera.style.transform = 'rotateY(180deg)';
-    sound.play(); // Reproducir sonido inmediatamente al inicio de la animación
   } else {
     frontal.style.transform = 'rotateY(-180deg)';
     trasera.style.transform = 'rotateY(0deg)';
-    setTimeout(() => sound.play(), 300); // Reproducir sonido después de 300ms (ajustable)
+	
+    // Verificar si el atributo 'data-src' existe antes de cargar el audio
+    if (sound.hasAttribute('data-src')) {
+      const audioSrc = sound.getAttribute('data-src');
+      sound.setAttribute('src', audioSrc);
+      sound.removeAttribute('data-src');
+    }
+    sound.play();
   }
 }
 
@@ -33,19 +36,4 @@ function moverImagen() {
 
 
 
-function reproducirSonido(boton) {
-  const carta = boton.parentElement;
-  const textoProfesion = carta.querySelector('p').textContent;
-
-  traducirTexto(textoProfesion, function (textoTraducido) {
-    const synthesis = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance();
-
-    // Configurar el objeto de sintetizador de voz
-    utterance.text = textoTraducido;
-    utterance.lang = 'en-US'; // Establecer el idioma a inglés
-
-    synthesis.speak(utterance); // Reproducir audio de la traducción
-  });
-}
 
