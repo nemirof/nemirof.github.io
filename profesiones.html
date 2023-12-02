@@ -10,7 +10,20 @@
   <header>
     <h1 id="titulo">Descubre las Profesiones</h1>
     <button id="alternarBtn" onclick="alternarCartas()">Mostrar Profesiones</button>
+    <button id="preguntaBtn" onclick="hacerPregunta()">Pregunta!</button>
+
   </header>
+  
+  <div id="mensajeProfesion" class="mensaje" style="display: block;">"¡Vamos a jugar!"</div>
+  <img id="imagenProfesion" alt="imagen pregunta" src="images/icono.png" style="display: block;width: 81px;height: 72px;">
+  <div id="mensajeAcierto" class="mensaje" style="display: none;"></div>
+  <div id="mensajeFallo" class="mensaje" style="display: block;"></div>
+  <audio id="audioExito" src="audio/ok.mp3"></audio>
+  <div class="fuegos-artificiales">
+	  <div class="fuego"></div>
+	  <div class="fuego"></div>
+	  <div class="fuego"></div>
+  </div>
   <main>
     <section id="profesiones">
       <!-- Carta 1-->

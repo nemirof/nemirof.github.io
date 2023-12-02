@@ -158,27 +158,69 @@ header {
 
 #titulo {
   position: absolute; /* Fija el título a la izquierda */
-  left: 45px; /* Ajusta el valor según sea necesario */
+  left: 13px; /* Ajusta el valor según sea necesario */
   margin: 0;
   text-align: center;
 }
 
 #alternarBtn {
-  margin-left: calc(100% - 100px); /* Ajusta el margen izquierdo */
-  padding: 10px 20px;
-  background-color: #3949ab;
-  color: white;
+  margin-left: auto; /* Empujar el botón hacia la derecha */
+  margin-right: 10px; /* Espacio entre los botones */
+  padding: 10px 16px; /* Ajustar el padding de los botones si es necesario */
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.1s; /* Transición de la transformación al hacer clic */
+  background-color: #3949ab;
+  color: white;
+  transition: transform 0.1s;
+}
+
+#alternarBtn:hover {
+  background-color: #293478;
 }
 
 #alternarBtn:active {
   transform: scale(0.95); /* Reducción de la escala al hacer clic */
 }
+
+#preguntaBtn {
+  margin-right: 10px; /* Espacio entre los botones */
+  padding: 10px 16px; /* Ajustar el padding de los botones si es necesario */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #3949ab;
+  color: white;
+  transition: transform 0.1s;
+}
+
+#preguntaBtn:hover {
+  background-color: #293478;
+}
+
+#preguntaBtn:active {
+  transform: scale(0.95); /* Reducción de la escala al hacer clic */
+}
+
+.mensaje {
+  width: 238px; /* Ancho del contenedor */
+  height: 20px; /* Altura del contenedor */
+  margin: 20px auto; /* Centrar horizontalmente y agregar margen superior e inferior */
+  padding: 5px; /* Espaciado interno */
+  border: 2px solid #ccc; /* Borde sólido */
+  border-radius: 8px; /* Borde redondeado */
+  text-align: center; /* Centrar texto */
+  font-family: system-ui; /* Fuente */
+}
+
+#imagenProfesion {
+  display: block;
+  margin: 20px auto; /* Centrar horizontalmente */
+  border: 4px solid #ccc; /* Borde más grueso */
+  border-radius: 50%; /* Borde circular */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
 
 p {
   font-size: 35px; /* Tamaño base del texto */
@@ -198,4 +240,42 @@ h1 {
   font-size: 2em;
   color: navy;
   font-family:system-ui;
+}
+
+.fuegos-artificiales {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  display: none; /* Inicialmente oculto */
+}
+
+.fuego {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ffeb3b;
+  animation: fuegoAnim 1s ease-in-out infinite;
+}
+
+@keyframes fuegoAnim {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-50px) scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) scale(2);
+  }
+}
+
+.mostrar-fuegos {
+  display: block; /* Mostrar los fuegos artificiales */
 }

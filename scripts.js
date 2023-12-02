@@ -1,7 +1,125 @@
+let profesionMostrada = false;
+let mostrandoReversos = false;
+sessionStorage.setItem('profesionAleatoria', null);
+
+const profesiones = [
+  "Policía", "Bibliotecaria", "Deportista", "Informático", "Maestra", "Científica",
+  "Veterinaria", "Médico", "Frutera", "Piloto", "Música", "Payaso", "Periodista",
+  "Bombero", "Entrenador Personal", "Cocinera", "Peluquero", "Pintora", "Astronauta",
+  "Bailarina"
+];
+
+const imagenes = [
+  "images/policia.jpg",
+  "images/bibliotecaria.jpg",
+  "images/deportista.jpg",
+  "images/informatico.avif",
+  "images/maestra.jpg",
+  "images/cientifica.jpg",
+  "images/veterinaria.avif",
+  "images/medico.jpg",
+  "images/frutera.jpg",
+  "images/piloto.jpg",
+  "images/musica.jpg",
+  "images/payaso.avif",
+  "images/periodista.avif",
+  "images/bombero.avif",
+  "images/entrenador.jpg",
+  "images/cocinera.jpg",
+  "images/peluquero.jpg",
+  "images/pintora.avif",
+  "images/astronauta.avif",
+  "images/bailarina.png"
+];
+
+function hacerPregunta() {
+  // Generar un índice aleatorio basado en la longitud del array de profesiones
+  const indiceAleatorio = Math.floor(Math.random() * profesiones.length);
+  sessionStorage.setItem('profesionAleatoria', profesiones[indiceAleatorio]);
+  sessionStorage.setItem('imagenAleatoria', imagenes[indiceAleatorio]);
+  const mensaje = `Busca un(a) ${profesiones[indiceAleatorio]}.`;
+  //document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
+  document.getElementById('mensajeAcierto').style.display = 'none'; // Oculta el mensaje de fallo
+
+  mostrarPregunta('mensajeProfesion', mensaje);
+  mostrarImagen(imagenes[indiceAleatorio]);
+  profesionMostrada = true; // Se muestra la profesión
+}
+
+function ocultarMensajes() {
+  const mensajes = document.querySelectorAll('.mensaje');
+  mensajes.forEach(mensaje => {
+    mensaje.style.display = 'none'; // Oculta todos los mensajes
+  });
+  profesionMostrada = false; // Reinicia el estado de la profesión mostrada
+}
+
+function mostrarImagen(imagenSrc) {
+  const imagenProfesion = document.getElementById("imagenProfesion");
+  imagenProfesion.src = imagenSrc;
+  imagenProfesion.style.display = 'block';
+}
+
+function mostrarPregunta(elementoId, mensaje) {
+  const mensajeElemento = document.getElementById(elementoId);
+  mensajeElemento.innerHTML = mensaje;
+  mensajeElemento.style.display = 'block';
+}
+
+function mostrarMensaje(elementoId, mensaje) {
+  const mensajeElemento = document.getElementById(elementoId);
+  mensajeElemento.innerHTML = mensaje;
+  mensajeElemento.style.display = 'block';
+}
+
+
+function mostrarMensajeAcierto() {
+if (sessionStorage.getItem('profesionAleatoria') != 'null'){
+	  mostrarMensaje('mensajeAcierto', '¡Has acertado!');
+	  document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
+	  const audioExito = document.getElementById('audioExito');
+	  const fuegosArtificiales = document.querySelector('.fuegos-artificiales');
+
+	  audioExito.play();
+	  fuegosArtificiales.classList.add('mostrar-fuegos');
+
+	  setTimeout(() => {
+		fuegosArtificiales.classList.remove('mostrar-fuegos');
+	  }, 3000);
+   }
+}
+
+function mostrarMensajeFallo() {
+  if (sessionStorage.getItem('profesionAleatoria') != 'null'){
+	  mostrarMensaje('mensajeFallo', 'Oh no, inténtalo otra vez');
+	  document.getElementById('mensajeAcierto').style.display = 'none'; // Oculta el mensaje de fallo
+  }
+}
+
+// Función para manejar la interacción del usuario al hacer clic en una carta
+function verificarProfesionCarta(profesionCarta) {
+  const profesionAleatoria = sessionStorage.getItem('profesionAleatoria');
+
+  if (profesionCarta === profesionAleatoria) {
+    mostrarMensajeAcierto();
+  } else {
+    mostrarMensajeFallo();
+  }
+}
+
+document.getElementById('botonPregunta').addEventListener('click', function() {
+  if (!profesionMostrada) {
+    hacerPregunta();
+  } else {
+    ocultarMensajes();
+  }
+});
 
 function mostrarProfesion(carta) {
   const frontal = carta.querySelector('.frontal');
   const trasera = carta.querySelector('.trasera');
+  const profesionCarta = trasera.querySelector('p').textContent;
+  verificarProfesionCarta(profesionCarta);
   const sound = trasera.querySelector('.sound');
 
   if (frontal.style.transform === 'rotateY(-180deg)') {
@@ -20,8 +138,6 @@ function mostrarProfesion(carta) {
     sound.play();
   }
 }
-
-let mostrandoReversos = false;
 
 function alternarCartas() {
   const cartas = document.querySelectorAll('.carta');
@@ -66,6 +182,9 @@ function moverImagen() {
   }, 2000); // Ajusta el tiempo según la duración de la transición en CSS o la duración del audio
 }
 
-
+window.addEventListener('load', () => {
+  // Eliminar la profesión almacenada al cargar la página
+  sessionStorage.removeItem('profesionAleatoria');
+});
 
 
