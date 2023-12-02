@@ -13,13 +13,6 @@ header {
   text-align: center;
 }
 
-h1 {
-  margin: 0;
-  font-size: 2em;
-  color: navy;
-  font-family:system-ui;
-}
-
 h2 {
 	margin: 0px;
 	font-family:system-ui;
@@ -155,6 +148,38 @@ main {
   margin: 10px; /* Espacio entre las imágenes */
 }
 
+header {
+  position: relative; /* Agrega posición relativa al header */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Para permitir que los elementos se envuelvan en pantallas pequeñas */
+}
+
+#titulo {
+  position: absolute; /* Fija el título a la izquierda */
+  left: 45px; /* Ajusta el valor según sea necesario */
+  margin: 0;
+  text-align: center;
+}
+
+#alternarBtn {
+  margin-left: calc(100% - 100px); /* Ajusta el margen izquierdo */
+  padding: 10px 20px;
+  background-color: #3949ab;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.1s; /* Transición de la transformación al hacer clic */
+}
+
+#alternarBtn:active {
+  transform: scale(0.95); /* Reducción de la escala al hacer clic */
+}
+
 p {
   font-size: 35px; /* Tamaño base del texto */
   line-height: 0.5; /* Espaciado entre líneas */
@@ -167,3 +192,10 @@ p {
     max-width: 90%; /* Reducir el ancho máximo */
     padding: 10px; /* Reducir el padding */
   }
+  
+h1 {
+  margin: 0;
+  font-size: 2em;
+  color: navy;
+  font-family:system-ui;
+}
