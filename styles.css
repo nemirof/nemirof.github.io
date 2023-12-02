@@ -173,6 +173,7 @@ header {
   background-color: #3949ab;
   color: white;
   transition: transform 0.1s;
+  font-family: system-ui;
 }
 
 #alternarBtn:hover {
@@ -189,13 +190,15 @@ header {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #3949ab;
+  background-color: #FF7F50;
   color: white;
   transition: transform 0.1s;
+  font-size: 17px;
+  font-family: system-ui;
 }
 
 #preguntaBtn:hover {
-  background-color: #293478;
+  background-color: #b25838;
 }
 
 #preguntaBtn:active {
