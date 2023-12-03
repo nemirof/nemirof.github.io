@@ -38,7 +38,7 @@ function hacerPregunta() {
   sessionStorage.setItem('profesionAleatoria', profesiones[indiceAleatorio]);
   sessionStorage.setItem('imagenAleatoria', imagenes[indiceAleatorio]);
   const mensaje = `Busca un(a) ${profesiones[indiceAleatorio]}.`;
-  //document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
+  document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
   document.getElementById('mensajeAcierto').style.display = 'none'; // Oculta el mensaje de fallo
 
   mostrarPregunta('mensajeProfesion', mensaje);
@@ -78,14 +78,8 @@ if (sessionStorage.getItem('profesionAleatoria') != 'null'){
 	  mostrarMensaje('mensajeAcierto', '¡Has acertado!');
 	  document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
 	  const audioExito = document.getElementById('audioExito');
-	  const fuegosArtificiales = document.querySelector('.fuegos-artificiales');
 
 	  audioExito.play();
-	  fuegosArtificiales.classList.add('mostrar-fuegos');
-
-	  setTimeout(() => {
-		fuegosArtificiales.classList.remove('mostrar-fuegos');
-	  }, 3000);
    }
 }
 
