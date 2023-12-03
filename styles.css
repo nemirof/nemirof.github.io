@@ -218,6 +218,7 @@ header {
 }
 
 #imagenProfesion {
+  cursor: pointer;
   display: block;
   margin: 20px auto; /* Centrar horizontalmente */
   border: 4px solid #ccc; /* Borde más grueso */
@@ -225,6 +226,10 @@ header {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
 }
 
+#imagenProfesion:active {
+  transform: scale(0.95); /* Reducción de la escala al hacer clic */
+  transition: transform 0.1s; /* Agrega una transición suave al cambio */
+}
 
 p {
   font-size: 35px; /* Tamaño base del texto */
