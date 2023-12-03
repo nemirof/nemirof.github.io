@@ -166,13 +166,14 @@ header {
 #alternarBtn {
   margin-left: auto; /* Empujar el botón hacia la derecha */
   margin-right: 10px; /* Espacio entre los botones */
-  padding: 10px 16px; /* Ajustar el padding de los botones si es necesario */
+  padding: 19px 30px; /* Ajustar el padding de los botones si es necesario */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: #3949ab;
   color: white;
   transition: transform 0.1s;
+  font-size: 17px;
   font-family: system-ui;
 }
 
@@ -186,14 +187,14 @@ header {
 
 #preguntaBtn {
   margin-right: 10px; /* Espacio entre los botones */
-  padding: 10px 16px; /* Ajustar el padding de los botones si es necesario */
+  padding: 19px 30px; /* Ajustar el padding de los botones si es necesario */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: #FF7F50;
   color: white;
   transition: transform 0.1s;
-  font-size: 17px;
+  font-size: 20px;
   font-family: system-ui;
 }
 
@@ -206,7 +207,7 @@ header {
 }
 
 .mensaje {
-  width: 238px; /* Ancho del contenedor */
+  width: 270px; /* Ancho del contenedor */
   height: 20px; /* Altura del contenedor */
   margin: 20px auto; /* Centrar horizontalmente y agregar margen superior e inferior */
   padding: 5px; /* Espaciado interno */
@@ -238,47 +239,16 @@ p {
     padding: 10px; /* Reducir el padding */
   }
   
+  #alternarBtn,
+  #preguntaBtn {
+    padding: 25px 35px; /* Aumenta el padding para hacer los botones más grandes */
+    font-size: 16px; /* Tamaño de fuente mayor */
+  }
+}
+  
 h1 {
   margin: 0;
   font-size: 2em;
   color: navy;
   font-family:system-ui;
-}
-
-.fuegos-artificiales {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 200px;
-  display: none; /* Inicialmente oculto */
-}
-
-.fuego {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #ffeb3b;
-  animation: fuegoAnim 1s ease-in-out infinite;
-}
-
-@keyframes fuegoAnim {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: translateY(-50px) scale(1.5);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-100px) scale(2);
-  }
-}
-
-.mostrar-fuegos {
-  display: block; /* Mostrar los fuegos artificiales */
 }
