@@ -34,6 +34,7 @@ const imagenes = [
 
 function hacerPregunta() {
   // Generar un índice aleatorio basado en la longitud del array de profesiones
+  mostrarAmigos();
   const indiceAleatorio = Math.floor(Math.random() * profesiones.length);
   sessionStorage.setItem('profesionAleatoria', profesiones[indiceAleatorio]);
   sessionStorage.setItem('imagenAleatoria', imagenes[indiceAleatorio]);
@@ -131,6 +132,16 @@ function mostrarProfesion(carta) {
     }
     sound.play();
   }
+}
+
+function mostrarAmigos(){
+	const cartas = document.querySelectorAll('.carta');
+	cartas.forEach(carta => {
+      const frontal = carta.querySelector('.frontal');
+      const trasera = carta.querySelector('.trasera');
+      frontal.style.transform = 'rotateY(0deg)';
+      trasera.style.transform = 'rotateY(180deg)';
+	});
 }
 
 function alternarCartas() {
