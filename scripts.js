@@ -39,8 +39,11 @@ function hacerPregunta() {
   sessionStorage.setItem('profesionAleatoria', profesiones[indiceAleatorio]);
   sessionStorage.setItem('imagenAleatoria', imagenes[indiceAleatorio]);
   const mensaje = `Busca un(a) ${profesiones[indiceAleatorio]}.`;
-  document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
-  document.getElementById('mensajeAcierto').style.display = 'none'; // Oculta el mensaje de fallo
+  document.getElementById('mensajeAcierto').style.background = "none";
+  document.getElementById('mensajeFallo').innerText = "";
+  document.getElementById('mensajeAcierto').innerText = "";
+  //document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
+  //document.getElementById('mensajeAcierto').style.display = 'none'; // Oculta el mensaje de fallo
 
   mostrarPregunta('mensajeProfesion', mensaje);
   mostrarImagen(imagenes[indiceAleatorio]);
@@ -77,6 +80,7 @@ function mostrarMensaje(elementoId, mensaje) {
 function mostrarMensajeAcierto() {
 if (sessionStorage.getItem('profesionAleatoria') != 'null'){
 	  mostrarMensaje('mensajeAcierto', '¡Has acertado!');
+	  document.getElementById('mensajeAcierto').style.background = "darkseagreen";
 	  document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
 	  const audioExito = document.getElementById('audioExito');
 
