@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Profesiones</title>
+  <link rel="icon" href="images/icono.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1 id="titulo">Descubre las Profesiones</h1>
+    <button id="alternarBtn" onclick="alternarCartas()">Mostrar Profesiones</button>
+    <button id="preguntaBtn" onclick="hacerPregunta()">¡Juega!</button>
+
+  </header>
+  
+  <div id="mensajeProfesion" class="mensaje" style="display: block;">¡Vamos a jugar!</div>
+  <img id="imagenProfesion" alt="imagen pregunta" src="images/icono.png" style="display: block;width: 120px;height: 120px;" onclick="hacerPregunta()">
+  <div id="mensajeAcierto" class="mensaje" style="display: none;"></div>
+  <div id="mensajeFallo" class="mensaje" style="display: block;">Pulsa en el pirata para empezar</div>
+  <audio id="audioExito" src="audio/ok.mp3"></audio>
+  <main>
+    <section id="profesiones">
+      <!-- Carta 1-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/jimena.png" alt="Avatar 1">
+          <p>Jimena</p>
+        </div>
+        <div class="trasera">
+          <img src="images/policia.jpg" alt="Avatar Policía">
+          <p>Policía</p>
+		  <audio class="sound" data-src="audio/policia.mp3"></audio>
+        </div>
+      </div>
+
+      <!-- Carta 2 - Julia Bibliotecaria -->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/david.png" alt="Avatar 2">
+          <p>David</p>
+        </div>
+        <div class="trasera">
+          <img src="images/bibliotecaria.jpg" alt="Avatar Bibliotecaria">
+          <p>Bibliotecario</p>
+		  <audio class="sound" data-src="audio/bibliotecario.mp3"></audio>
+        </div>
+      </div>
+	  
+	        <!-- Carta 3 -->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/stefania.png" alt="Avatar 2">
+          <p>Stefania</p>
+        </div>
+        <div class="trasera">
+          <img src="images/agricultora.png" alt="Avatar Bibliotecaria">
+          <p>Agricultora</p>
+		  <audio class="sound" data-src="audio/agricultora.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 4-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/mateo.png" alt="Avatar 2">
+          <p>Mateo</p>
+        </div>
+        <div class="trasera">
+          <img src="images/portero.png" alt="Avatar Informático">
+          <p>Portero</p>
+		  <audio class="sound" data-src="audio/portero.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 5-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/ines.png" alt="Avatar 2">
+          <p>Inés</p>
+        </div>
+        <div class="trasera">
+          <img src="images/mecanica.png" alt="Avatar Informático">
+          <p>Mecánica</p>
+		  <audio class="sound" data-src="audio/mecanica.mp3"></audio>
+        </div>
+      </div>
+	  
+	  	  <!-- Carta 6-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/luna.png" alt="Avatar 2">
+          <p>Luna</p>
+        </div>
+        <div class="trasera">
+          <img src="images/cientifica.jpg" alt="Avatar Informático">
+          <p>Científica</p>
+		  <audio class="sound" data-src="audio/cientifica.mp3"></audio>
+        </div>
+      </div>
+	  
+	  	  	  <!-- Carta 7-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/kadidia.png" alt="Avatar 2">
+          <p>Kadidia</p>
+        </div>
+        <div class="trasera">
+          <img src="images/veterinaria.avif" alt="Avatar Veterinario">
+          <p>Veterinaria</p>
+		  <audio class="sound" data-src="audio/veterinaria.mp3"></audio>
+        </div>
+      </div>
+	  
+	  	  	  	  <!-- Carta 8-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/triana.png" alt="Avatar 2">
+          <p>Triana</p>
+        </div>
+        <div class="trasera">
+          <img src="images/medico.jpg" alt="Avatar Veterinario">
+          <p>Médico</p>
+		  <audio class="sound" data-src="audio/medico.mp3"></audio>
+        </div>
+      </div>
+	  
+	  	  	  	  	  <!-- Carta 9-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/aslan.png" alt="Avatar Isa">
+          <p>Aslan</p>
+        </div>
+        <div class="trasera">
+          <img src="images/frutero.png" alt="Avatar Veterinario">
+          <p>Frutero</p>
+		  <audio class="sound" data-src="audio/frutero.mp3"></audio>
+        </div>
+      </div>
+
+	  	  	  	  	  <!-- Carta 10-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/amalia.png" alt="Avatar 2">
+          <p>Amalia</p>
+        </div>
+        <div class="trasera">
+          <img src="images/piloto.jpg" alt="Avatar Veterinario">
+          <p>Piloto</p>
+		  <audio class="sound" data-src="audio/piloto.mp3"></audio>
+        </div>
+      </div>
+	  
+	  	  	  	  	  	  <!-- Carta 11-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/almab.png" alt="Avatar 2">
+          <p>Alma</p>
+        </div>
+        <div class="trasera">
+          <img src="images/arqueologa.png" alt="Avatar Musica">
+          <p>Arqueóloga</p>
+		  <audio class="sound" data-src="audio/arqueologa.mp3"></audio>
+        </div>
+      </div>
+	  
+	  	  	  	  	  	  	  <!-- Carta 12-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/alisson.png" alt="Avatar 2">
+          <p>Alisson</p>
+        </div>
+        <div class="trasera">
+          <img src="images/payaso.avif" alt="Avatar Veterinario">
+          <p>Payaso</p>
+		  <audio class="sound" data-src="audio/payaso.mp3"></audio>
+        </div>
+      </div>
+	  
+	   <!-- Carta 13-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/markel.png" alt="Avatar 2">
+          <p>Markel</p>
+        </div>
+        <div class="trasera">
+          <img src="images/periodista2.png" alt="Avatar Periodista">
+          <p>Periodista</p>
+		  <audio class="sound" data-src="audio/periodista.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 14-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/aitana.png" alt="Avatar 2">
+          <p>Aitana</p>
+        </div>
+        <div class="trasera">
+          <img src="images/bombero.avif" alt="Avatar Bombero">
+          <p>Bombero</p>
+		  <audio class="sound" data-src="audio/bombero.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 15-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/ruben.png" alt="Avatar 2">
+          <p>Rubén</p>
+        </div>
+        <div class="trasera">
+          <img src="images/conductor.png" alt="Avatar conductor" style="margin-top: 15px">
+          <p>Conductor</p>
+		  <audio class="sound" data-src="audio/conductor.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 16-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/gabriel.png" alt="Avatar 2">
+          <p>Gabriel</p>
+        </div>
+        <div class="trasera">
+          <img src="images/cocinero.png" alt="Avatar cocinero">
+          <p>Cocinero</p>
+		  <audio class="sound" data-src="audio/cocinero.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 17-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/victoria.png" alt="Avatar 2">
+          <p>Victoria</p>
+        </div>
+        <div class="trasera">
+          <img src="images/peluquero.jpg" alt="Avatar Peluquero">
+          <p>Peluquera</p>
+		  <audio class="sound" data-src="audio/peluquera.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 18-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/nicolas.png" alt="Avatar 2">
+          <p>Nicolás</p>
+        </div>
+        <div class="trasera">
+          <img src="images/pintor.png" alt="Avatar Pintora">
+          <p>Pintor</p>
+		  <audio class="sound" data-src="audio/pintor.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 19-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/sebastian.png" alt="Avatar 2">
+          <p>Sebastian</p>
+        </div>
+        <div class="trasera">
+          <img src="images/astronauta.avif" alt="Avatar Pintora">
+          <p>Astronauta</p>
+		  <audio class="sound" data-src="audio/astronauta.mp3"></audio>
+        </div>
+      </div>
+	  
+	  <!-- Carta 20-->
+      <div class="carta" onclick="mostrarProfesion(this)">
+        <div class="frontal">
+          <img src="images/micaela.png" alt="Avatar 2">
+          <p>Micaela</p>
+        </div>
+        <div class="trasera">
+          <img src="images/arquitecta.png" alt="Avatar Bailarina">
+          <p>Arquitecta</p>
+		  <audio class="sound" data-src="audio/arquitecta.mp3"></audio>
+        </div>
+      </div>
+	  
+      <!-- Repite estas secciones para los avatares restantes -->
+    </section>
+  </main>
+  <script src="scriptsB.js"></script>
+</body>
+</html>
