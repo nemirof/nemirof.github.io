@@ -660,15 +660,18 @@ p {
   }
 
   #profesiones {
-    max-width: 95%;
-    padding: 15px 10px;
-    gap: 15px;
+    max-width: 100%;
+    padding: 10px 5px;
+    gap: 8px;
+    justify-content: center;
   }
   
-  /* Mejorar cartas para touch */
+  /* Mejorar cartas para touch - ajustadas para que siempre quepan 2 por fila */
   .carta {
-    width: 180px;
-    height: 240px;
+    width: calc(50% - 12px);
+    max-width: 160px;
+    min-width: 140px;
+    height: 200px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -789,6 +792,44 @@ p {
     height: 80px !important;
     display: block !important;
     margin: var(--spacing-md) auto !important;
+  }
+  
+  /* Ajustar imágenes dentro de las cartas para móvil */
+  .frontal img, .trasera img {
+    width: 75%;
+    height: 65%;
+  }
+  
+  /* Ajustar texto en las cartas */
+  .frontal p, .trasera p {
+    font-size: var(--font-size-sm);
+    margin: var(--spacing-xs) 0;
+    padding: 0 var(--spacing-xs);
+  }
+}
+
+/* Media query adicional para pantallas muy pequeñas (Samsung Galaxy A54 y similares) */
+@media screen and (max-width: 480px) {
+  #profesiones {
+    padding: 8px 3px;
+    gap: 6px;
+  }
+  
+  .carta {
+    width: calc(50% - 9px);
+    max-width: 155px;
+    min-width: 135px;
+    height: 190px;
+  }
+  
+  .frontal img, .trasera img {
+    width: 70%;
+    height: 60%;
+  }
+  
+  .frontal p, .trasera p {
+    font-size: var(--font-size-xs);
+    margin: var(--spacing-xs) 0;
   }
 }
 
