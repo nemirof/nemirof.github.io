@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="U      @media screen and (max-width: 768px) {
+      .contenedor-equipos {
+        flex-direction: column;
+        gap: var(--spacing-xl);
+      }
+      
+      .imagen-equipo {
+        width: 250px;
+        height: 250px;
+      }
+    }<title>Las profesiones de mis amigos</title>
+  <link rel="icon" href="images/icono.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos para las imágenes de equipos */
+    .imagen-equipo {
+      width: 300px;
+      height: 300px;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+      border-radius: var(--border-radius-xl);
+      box-shadow: var(--shadow-md);
+      border: 3px solid var(--secondary-color);
+      object-fit: cover;
+      object-position: center;
+    }
+    
+    .imagen-equipo:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .imagen-equipo:active {
+      transform: scale(0.98);
+    }
+    
+    .contenedor-equipos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-2xl);
+      margin-top: var(--spacing-2xl);
+      flex-wrap: wrap;
+    }
+    
+    .equipo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .nombre-equipo {
+      margin-top: var(--spacing-lg);
+      font-family: var(--font-playful);
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--primary-color);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      transition: color 0.3s ease;
+    }
+    
+    .equipo:hover .nombre-equipo {
+      color: var(--secondary-color);
+    }
+    
+    @media screen and (max-width: 768px) {
+      .contenedor-equipos {
+        flex-direction: column;
+        gap: var(--spacing-xl);
+      }
+      
+      .imagen-equipo {
+        width: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="boton-mute" onclick="toggleMute()" title="Activar/Desactivar sonido">
+      <span id="icono-mute">🔊</span>
+    </button>
+    <h1>Las profesiones de mis amigos</h1>
+    <div class="iconos-profesiones">
+      <img class="icono-profesion" src="images/enfermera.png" alt="Doctor">
+      <img class="icono-profesion" src="images/poli.png" alt="Poli">
+      <img class="icono-profesion" src="images/bomberoicon.png" alt="Bomber">
+    </div>
+    <!-- Agrega más imágenes de profesiones -->
+  </header>
+  <main>
+    <section id="home" style="margin-block-end: auto;">
+      <h2>¡Descubre las profesiones!</h2>
+      <p style="text-align: center; padding: var(--spacing-md);">
+        Elige tu equipo para comenzar a jugar.<br>
+        <b>Pollitos</b> o <b>Leones</b>, ¡la diversión te espera!
+      </p>
+      
+      <div class="contenedor-equipos">
+        <!-- Pollitos - Izquierda -->
+        <a href="profesiones4a.html" class="equipo">
+          <img class="imagen-equipo" src="images/pollito.png" alt="Pollitos">
+          <div class="nombre-equipo">Pollitos</div>
+        </a>
+        
+        <!-- Leones - Derecha -->
+        <a href="profesiones4b.html" class="equipo">
+          <img class="imagen-equipo" src="images/leon.png" alt="Leones">
+          <div class="nombre-equipo">Leones</div>
+        </a>
+      </div>
+    </section>
+  </main>
+  <script src="scripts.js"></script>
+</body>
+</html>

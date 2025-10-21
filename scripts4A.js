@@ -4,33 +4,33 @@ let isMuted = false;
 sessionStorage.setItem('profesionAleatoria', null);
 
 const profesiones = [
-  "Policía", "Bibliotecaria", "Deportista", "Informático", "Maestra", "Científica",
-  "Veterinaria", "Médico", "Frutera", "Piloto", "Música", "Payaso", "Periodista",
-  "Bombero", "Entrenador Personal", "Cocinera", "Peluquero", "Pintora", "Astronauta",
-  "Bailarina"
+  "Frutero", "Panadera", "Carnicera", "Pescadero", "Cocinera", 
+  "Camarera", "Policía", "Bombero", "Obrero", "Fontanero", 
+  "Veterinaria", "Veterinaria", "Peluquero", "Peluquera", "Música", 
+  "Cantante", "Actor", "Actor", "Cartera", "Cartera"
 ];
 
 const imagenes = [
-  "images/policia.jpg",
-  "images/bibliotecaria.jpg",
-  "images/deportista.jpg",
-  "images/informatico.avif",
-  "images/maestra.jpg",
-  "images/cientifica.jpg",
-  "images/veterinaria.avif",
-  "images/medico.jpg",
-  "images/frutera.jpg",
-  "images/piloto.jpg",
-  "images/musica.jpg",
-  "images/payaso.avif",
-  "images/periodista.avif",
-  "images/bombero.avif",
-  "images/entrenador.jpg",
+  "images/frutero.jpg",
+  "images/panadera.jpg",
+  "images/carnicera.jpg",
+  "images/pescadero.jpg",
   "images/cocinera.jpg",
+  "images/camarera.jpg",
+  "images/policia.jpg",
+  "images/bombero.jpg",
+  "images/obrero.jpg",
+  "images/fontanero.jpg",
+  "images/veterinaria.jpg",
+  "images/veterinaria.jpg",
   "images/peluquero.jpg",
-  "images/pintora.avif",
-  "images/astronauta.avif",
-  "images/bailarina.png"
+  "images/peluquera.jpg",
+  "images/musico.jpg",
+  "images/cantante.jpg",
+  "images/actor.jpg",
+  "images/actor.jpg",
+  "images/cartera.jpg",
+  "images/cartera.jpg"
 ];
 
 function hacerPregunta() {
@@ -86,6 +86,9 @@ if (sessionStorage.getItem('profesionAleatoria') != 'null'){
 	  const audioExito = document.getElementById('audioExito');
 
 	  audioExito.play();
+	  
+	  // Lanzar confeti cuando acierta
+	  crearConfeti();
    }
 }
 
@@ -231,3 +234,39 @@ window.addEventListener('DOMContentLoaded', () => {
     toggleMute(); // Aplicar el estado guardado
   }
 });
+
+// Función para crear efecto de confeti
+function crearConfeti() {
+  const colores = ['var(--secondary-color)', 'var(--accent-color)', 'var(--success-color)', 'var(--primary-color)', 'var(--warning-color)'];
+  const velocidades = ['rapido', 'lento', 'muy-lento', ''];
+  
+  // Crear 50 piezas de confeti
+  for (let i = 0; i < 50; i++) {
+    const confeti = document.createElement('div');
+    confeti.className = 'confeti';
+    
+    // Posición aleatoria en el ancho de la pantalla
+    confeti.style.left = Math.random() * window.innerWidth + 'px';
+    
+    // Velocidad aleatoria
+    const velocidadAleatoria = velocidades[Math.floor(Math.random() * velocidades.length)];
+    if (velocidadAleatoria) {
+      confeti.classList.add(velocidadAleatoria);
+    }
+    
+    // Delay aleatorio para que no caigan todos a la vez
+    confeti.style.animationDelay = Math.random() * 2 + 's';
+    
+    // Añadir al DOM
+    document.body.appendChild(confeti);
+    
+    // Eliminar después de la animación
+    setTimeout(() => {
+      if (confeti.parentNode) {
+        confeti.parentNode.removeChild(confeti);
+      }
+    }, 6000);
+  }
+}
+
+
