@@ -695,6 +695,24 @@ p {
     -webkit-tap-highlight-color: transparent;
   }
   
+  /* Desactivar animaciones del mandito en mobile */
+  #preguntaBtn::before {
+    display: none;
+  }
+  
+  /* Desactivar hover effects en mobile para todos los botones */
+  #preguntaBtn:hover,
+  #alternarBtn:hover,
+  #volverBtn:hover {
+    transform: none;
+    background: var(--secondary-color);
+    box-shadow: var(--shadow-md);
+  }
+  
+  #preguntaBtn:hover::before {
+    display: none;
+  }
+  
   /* Ajustar header para mobile */
   header {
     padding: 8px;
