@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Las profesiones de mis amigos</title>
+  <link rel="icon" href="images/icono.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos para la imagen conductora */
+    .imagen-conductora {
+      width: 500px; /* Ajusta el tamaño según sea necesario */
+      cursor: pointer;
+      transition: transform 1s ease-in-out; /* Ajusta la duración de la transición */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Las profesiones de mis amigos</h1>
+    <img class="icono-profesion" src="images/enfermera.png" alt="Doctor">
+    <img class="icono-profesion" src="images/poli.png" alt="Poli">
+	<img class="icono-profesion" src="images/bomberoicon.png" alt="Bomber">
+    <!-- Agrega más imágenes de profesiones -->
+  </header>
+  <main>
+    <section id="home" style="margin-block-end: auto;">
+      <h2 style="font-size: 39px;line-height:1;text-align: center;"">¡Descubre las profesiones!</h2>
+      <p style="line-height:1;text-align: center;padding: 5px;line-height: normal;">Vamos a descubrir las profesiones del cole.<br> Haz clic en el autobús de <b>Nuria</b> o en la clase de Anaís para comenzar.</p>
+      <div class="centrar-imagen">
+        <img class="imagen-conductora" src="images/conductora.png" alt="Conductora" onclick="moverImagen()">
+        <audio id="audio-arranque" src="audio/arranque.mp3"></audio> <!-- Audio para reproducir -->
+      </div>
+	  <div class="centrar-imagen">
+	  <a href="profesionesB.html"><img class="imagen-conductora" src="images/anais_.png" alt="Anais"></a>
+	  </div>
+    </section>
+  </main>
+  <script src="scripts.js"></script>
+</body>
+</html>
