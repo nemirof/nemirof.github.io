@@ -119,6 +119,13 @@ document.getElementById('botonPregunta').addEventListener('click', function() {
 });
 
 function mostrarProfesion(carta) {
+  // Prevenir múltiples clicks rápidos
+  if (carta.dataset.flipping === 'true') {
+    return;
+  }
+  
+  carta.dataset.flipping = 'true';
+  
   const frontal = carta.querySelector('.frontal');
   const trasera = carta.querySelector('.trasera');
   const profesionCarta = trasera.querySelector('p').textContent;
@@ -138,8 +145,15 @@ function mostrarProfesion(carta) {
       sound.setAttribute('src', audioSrc);
       sound.removeAttribute('data-src');
     }
-    sound.play();
+    if (!isMuted) {
+      sound.play().catch(e => console.log('Audio play failed:', e));
+    }
   }
+  
+  // Permitir nuevo click después de la animación
+  setTimeout(() => {
+    carta.dataset.flipping = 'false';
+  }, 800);
 }
 
 function mostrarAmigos(){
@@ -268,4 +282,35 @@ function crearConfeti() {
     }, 6000);
   }
 }
+
+// Mejoras para dispositivos touch
+document.addEventListener('DOMContentLoaded', function() {
+  // Prevenir comportamiento por defecto en touch
+  document.addEventListener('touchstart', function(e) {
+    if (e.target.closest('.carta')) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+  
+  // Mejorar los clicks en las cartas
+  const cartas = document.querySelectorAll('.carta');
+  cartas.forEach(carta => {
+    // Remover el onclick del HTML y usar addEventListener
+    carta.removeAttribute('onclick');
+    
+    // Añadir event listener optimizado para touch
+    carta.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      mostrarProfesion(this);
+    }, { passive: false });
+    
+    // Mantener compatibilidad con mouse
+    carta.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      mostrarProfesion(this);
+    });
+  });
+});
 
