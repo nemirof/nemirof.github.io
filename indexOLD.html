@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Las profesiones de mis amigos</title>
   <link rel="icon" href="images/icono.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
@@ -11,6 +12,168 @@
       width: 500px; /* Ajusta el tamaño según sea necesario */
       cursor: pointer;
       transition: transform 1s ease-in-out; /* Ajusta la duración de la transición */
+    }
+    
+    /* Estilos para el modal de seguridad */
+    .modal-seguridad {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-contenido {
+      background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+      border-radius: var(--border-radius-xl);
+      padding: var(--spacing-xl);
+      max-width: 400px;
+      width: 90%;
+      box-shadow: var(--shadow-xl);
+      border: 3px solid var(--primary-color);
+      text-align: center;
+      animation: modalEntrada 0.3s ease-out;
+    }
+    
+    @keyframes modalEntrada {
+      from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    .modal-header h3 {
+      color: var(--primary-color);
+      margin: 0 0 var(--spacing-md) 0;
+      font-family: var(--font-playful);
+      font-size: var(--font-size-xl);
+    }
+    
+    .modal-header p {
+      color: var(--text-primary);
+      margin: var(--spacing-sm) 0;
+      font-size: var(--font-size-base);
+      line-height: 1.4;
+    }
+    
+    .modal-body {
+      margin: var(--spacing-lg) 0;
+    }
+    
+    #password-input-old {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: 2px solid var(--primary-color);
+      border-radius: var(--border-radius-lg);
+      font-size: var(--font-size-lg);
+      text-align: center;
+      margin-bottom: var(--spacing-lg);
+      box-sizing: border-box;
+      font-family: var(--font-primary);
+    }
+    
+    #password-input-old:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: center;
+    }
+    
+    .btn-acceder, .btn-cancelar {
+      padding: var(--spacing-md) var(--spacing-lg);
+      border: none;
+      border-radius: var(--border-radius-lg);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .btn-acceder {
+      background: linear-gradient(135deg, var(--success-color) 0%, #27AE60 100%);
+      color: white;
+    }
+    
+    .btn-acceder:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-cancelar {
+      background: linear-gradient(135deg, var(--accent-color) 0%, #C0392B 100%);
+      color: white;
+    }
+    
+    .btn-cancelar:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .modal-footer {
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--primary-color);
+      opacity: 0.7;
+    }
+    
+    .modal-footer small {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    
+    .mensaje-acceso {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: var(--spacing-md) var(--spacing-xl);
+      border-radius: var(--border-radius-lg);
+      font-weight: 600;
+      z-index: 1001;
+      animation: mensajeEntrada 0.3s ease-out;
+    }
+    
+    .mensaje-acceso.exito {
+      background: linear-gradient(135deg, var(--success-color) 0%, #27AE60 100%);
+      color: white;
+    }
+    
+    .mensaje-acceso.error {
+      background: linear-gradient(135deg, var(--accent-color) 0%, #C0392B 100%);
+      color: white;
+    }
+    
+    @keyframes mensajeEntrada {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    
+    @media screen and (max-width: 768px) {
+      .imagen-conductora {
+        width: 300px;
+      }
     }
   </style>
 </head>
@@ -27,11 +190,11 @@
       <h2 style="font-size: 39px;line-height:1;text-align: center;"">¡Descubre las profesiones!</h2>
       <p style="line-height:1;text-align: center;padding: 5px;line-height: normal;">Vamos a descubrir las profesiones del cole.<br> Haz clic en el autobús de <b>Nuria</b> o en la clase de Anaís para comenzar.</p>
       <div class="centrar-imagen">
-        <img class="imagen-conductora" src="images/conductora.png" alt="Conductora" onclick="moverImagen()">
+        <img class="imagen-conductora" src="images/conductora.png" alt="Conductora" onclick="solicitarAccesoOLD('profesiones.html', true)">
         <audio id="audio-arranque" src="audio/arranque.mp3"></audio> <!-- Audio para reproducir -->
       </div>
 	  <div class="centrar-imagen">
-	  <a href="profesionesB.html"><img class="imagen-conductora" src="images/anais_.png" alt="Anais"></a>
+	  <a href="#" onclick="solicitarAccesoOLD('profesionesB.html', false)"><img class="imagen-conductora" src="images/anais_.png" alt="Anais"></a>
 	  </div>
     </section>
   </main>

@@ -2,9 +2,38 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Profesiones</title>
   <link rel="icon" href="images/icono.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    // Sistema de seguridad - Verificar acceso autorizado desde indexOLD
+    (function() {
+      const accesoAutorizado = sessionStorage.getItem('accesoAutorizadoOLD');
+      const tiempoAcceso = sessionStorage.getItem('tiempoAccesoOLD');
+      const tiempoActual = Date.now();
+      const tiempoLimite = 3600000; // 1 hora en milisegundos
+      
+      // Verificar si tiene acceso autorizado y no ha expirado
+      if (!accesoAutorizado || 
+          accesoAutorizado !== 'true' || 
+          !tiempoAcceso || 
+          (tiempoActual - parseInt(tiempoAcceso)) > tiempoLimite) {
+        
+        // Limpiar cualquier acceso expirado
+        sessionStorage.removeItem('accesoAutorizadoOLD');
+        sessionStorage.removeItem('tiempoAccesoOLD');
+        
+        // Redirigir al indexOLD con mensaje de error
+        alert('🔒 Acceso restringido\n\nEsta página requiere autorización.\nSerás redirigido a la página principal.');
+        window.location.href = 'indexOLD.html';
+      } else {
+        // Renovar el tiempo de acceso para mantener la sesión activa
+        sessionStorage.setItem('tiempoAccesoOLD', tiempoActual.toString());
+      }
+    })();
+  </script>
 </head>
 <body>
   <header>

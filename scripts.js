@@ -327,11 +327,14 @@ function solicitarAcceso(pagina) {
   });
 }
 
-function verificarPassword(pagina) {
+async function verificarPassword(pagina) {
   const password = document.getElementById('password-input').value.toLowerCase().trim();
-  const passwordCorrecta = 'pirata';
+  const hashedPassword = await hashPassword(password);
   
-  if (password === passwordCorrecta) {
+  // Hash SHA-256 de la contraseña correcta (sin revelar la contraseña original)
+  const passwordCorrecta = '0cd6207782bd0ac56b14d31c78614d2968bf04ff8a087e999bba56a515383844';
+  
+  if (hashedPassword === passwordCorrecta) {
     // Contraseña correcta - guardar en sessionStorage para esta sesión
     sessionStorage.setItem('accesoAutorizado', 'true');
     sessionStorage.setItem('tiempoAcceso', Date.now().toString());
@@ -402,3 +405,143 @@ function mostrarEstadoAcceso() {
 
 // Ejecutar al cargar la página
 document.addEventListener('DOMContentLoaded', mostrarEstadoAcceso);
+
+// Sistema de seguridad para indexOLD.html (profesiones.html y profesionesB.html)
+function solicitarAccesoOLD(pagina, conAnimacion) {
+  // Verificar si ya tiene acceso autorizado válido
+  const accesoAutorizadoOLD = sessionStorage.getItem('accesoAutorizadoOLD');
+  const tiempoAccesoOLD = sessionStorage.getItem('tiempoAccesoOLD');
+  const tiempoActual = Date.now();
+  const tiempoLimite = 3600000; // 1 hora
+  
+  if (accesoAutorizadoOLD === 'true' && 
+      tiempoAccesoOLD && 
+      (tiempoActual - parseInt(tiempoAccesoOLD)) <= tiempoLimite) {
+    
+    // Ya tiene acceso válido, redirigir directamente
+    sessionStorage.setItem('tiempoAccesoOLD', tiempoActual.toString()); // Renovar tiempo
+    
+    if (conAnimacion && pagina === 'profesiones.html') {
+      // Ejecutar animación de la conductora
+      moverImagenConAcceso(pagina);
+    } else {
+      window.location.href = pagina;
+    }
+    return;
+  }
+  
+  // Crear un modal personalizado para la contraseña
+  const modal = document.createElement('div');
+  modal.className = 'modal-seguridad';
+  modal.innerHTML = `
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>🔒 Acceso Restringido</h3>
+        <p>Esta sección contiene contenido educativo con imágenes de menores.</p>
+        <p>Por favor, introduce la contraseña para continuar:</p>
+      </div>
+      <div class="modal-body">
+        <input type="password" id="password-input-old" placeholder="Contraseña..." maxlength="20">
+        <div class="modal-buttons">
+          <button onclick="verificarPasswordOLD('${pagina}', ${conAnimacion})" class="btn-acceder">🔓 Acceder</button>
+          <button onclick="cerrarModalOLD()" class="btn-cancelar">❌ Cancelar</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p><small>Contenido protegido para uso educativo autorizado</small></p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Enfocar el input de contraseña
+  setTimeout(() => {
+    document.getElementById('password-input-old').focus();
+  }, 100);
+  
+  // Permitir Enter para enviar
+  document.getElementById('password-input-old').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      verificarPasswordOLD(pagina, conAnimacion);
+    }
+  });
+}
+
+async function verificarPasswordOLD(pagina, conAnimacion) {
+  const password = document.getElementById('password-input-old').value.toLowerCase().trim();
+  const hashedPassword = await hashPassword(password);
+  
+  // Hash SHA-256 de la contraseña correcta (sin revelar la contraseña original)
+  const passwordCorrecta = 'f55121c29d0ca6ef7af7d7b03bc4670d559fd04325ede332f152619b57899c95';
+  
+  if (hashedPassword === passwordCorrecta) {
+    // Contraseña correcta - guardar en sessionStorage para esta sesión
+    sessionStorage.setItem('accesoAutorizadoOLD', 'true');
+    sessionStorage.setItem('tiempoAccesoOLD', Date.now().toString());
+    
+    cerrarModalOLD();
+    
+    // Mostrar mensaje de éxito antes de redirigir
+    mostrarMensajeAccesoOLD('✅ Acceso autorizado. Redirigiendo...', true);
+    setTimeout(() => {
+      if (conAnimacion && pagina === 'profesiones.html') {
+        // Ejecutar animación de la conductora
+        moverImagenConAcceso(pagina);
+      } else {
+        window.location.href = pagina;
+      }
+    }, 1500);
+    
+  } else {
+    // Contraseña incorrecta
+    mostrarMensajeAccesoOLD('❌ Contraseña incorrecta. Inténtalo de nuevo.', false);
+    document.getElementById('password-input-old').value = '';
+    document.getElementById('password-input-old').focus();
+  }
+}
+
+function mostrarMensajeAccesoOLD(mensaje, exito) {
+  const mensajeDiv = document.createElement('div');
+  mensajeDiv.className = `mensaje-acceso ${exito ? 'exito' : 'error'}`;
+  mensajeDiv.textContent = mensaje;
+  document.body.appendChild(mensajeDiv);
+  
+  setTimeout(() => {
+    if (mensajeDiv.parentNode) {
+      mensajeDiv.parentNode.removeChild(mensajeDiv);
+    }
+  }, 3000);
+}
+
+function cerrarModalOLD() {
+  const modal = document.querySelector('.modal-seguridad');
+  if (modal) {
+    modal.parentNode.removeChild(modal);
+  }
+}
+
+// Función modificada para mover imagen con acceso autorizado
+function moverImagenConAcceso(pagina) {
+  const imagen = document.querySelector('.imagen-conductora');
+  const audioArranque = document.getElementById('audio-arranque');
+
+  imagen.style.transform = 'translateX(-200%)'; // Ajusta el porcentaje según sea necesario
+  if (!isMuted) {
+    audioArranque.play().catch(e => console.log('Audio play failed:', e)); // Reproduce el audio
+  }
+
+  setTimeout(function() {
+    window.location.href = pagina; // Redirige al usuario después de la animación
+  }, 2000); // Ajusta el tiempo según la duración de la transición en CSS o la duración del audio
+}
+
+// Función para generar hash SHA-256 de una contraseña
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
