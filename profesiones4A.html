@@ -6,6 +6,34 @@
   <title>Profesiones</title>
   <link rel="icon" href="images/icono.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    // Sistema de seguridad - Verificar acceso autorizado
+    (function() {
+      const accesoAutorizado = sessionStorage.getItem('accesoAutorizado');
+      const tiempoAcceso = sessionStorage.getItem('tiempoAcceso');
+      const tiempoActual = Date.now();
+      const tiempoLimite = 3600000; // 1 hora en milisegundos
+      
+      // Verificar si tiene acceso autorizado y no ha expirado
+      if (!accesoAutorizado || 
+          accesoAutorizado !== 'true' || 
+          !tiempoAcceso || 
+          (tiempoActual - parseInt(tiempoAcceso)) > tiempoLimite) {
+        
+        // Limpiar cualquier acceso expirado
+        sessionStorage.removeItem('accesoAutorizado');
+        sessionStorage.removeItem('tiempoAcceso');
+        
+        // Redirigir al index con mensaje de error
+        alert('🔒 Acceso restringido\n\nEsta página requiere autorización.\nSerás redirigido a la página principal.');
+        window.location.href = 'index.html';
+      } else {
+        // Renovar el tiempo de acceso para mantener la sesión activa
+        sessionStorage.setItem('tiempoAcceso', tiempoActual.toString());
+      }
+    })();
+  </script>
 </head>
 
 <body>

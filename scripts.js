@@ -270,3 +270,135 @@ function crearConfeti() {
     }, 6000);
   }
 }
+
+// Sistema de seguridad para acceso a páginas con contenido de menores
+function solicitarAcceso(pagina) {
+  // Verificar si ya tiene acceso autorizado válido
+  const accesoAutorizado = sessionStorage.getItem('accesoAutorizado');
+  const tiempoAcceso = sessionStorage.getItem('tiempoAcceso');
+  const tiempoActual = Date.now();
+  const tiempoLimite = 3600000; // 1 hora
+  
+  if (accesoAutorizado === 'true' && 
+      tiempoAcceso && 
+      (tiempoActual - parseInt(tiempoAcceso)) <= tiempoLimite) {
+    
+    // Ya tiene acceso válido, redirigir directamente
+    sessionStorage.setItem('tiempoAcceso', tiempoActual.toString()); // Renovar tiempo
+    window.location.href = pagina;
+    return;
+  }
+  
+  // Crear un modal personalizado para la contraseña
+  const modal = document.createElement('div');
+  modal.className = 'modal-seguridad';
+  modal.innerHTML = `
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>🔒 Acceso Restringido</h3>
+        <p>Esta sección contiene contenido educativo con imágenes de menores.</p>
+        <p>Por favor, introduce la contraseña para continuar:</p>
+      </div>
+      <div class="modal-body">
+        <input type="password" id="password-input" placeholder="Contraseña..." maxlength="20">
+        <div class="modal-buttons">
+          <button onclick="verificarPassword('${pagina}')" class="btn-acceder">🔓 Acceder</button>
+          <button onclick="cerrarModal()" class="btn-cancelar">❌ Cancelar</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p><small>Contenido protegido para uso educativo autorizado</small></p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Enfocar el input de contraseña
+  setTimeout(() => {
+    document.getElementById('password-input').focus();
+  }, 100);
+  
+  // Permitir Enter para enviar
+  document.getElementById('password-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      verificarPassword(pagina);
+    }
+  });
+}
+
+function verificarPassword(pagina) {
+  const password = document.getElementById('password-input').value.toLowerCase().trim();
+  const passwordCorrecta = 'pirata';
+  
+  if (password === passwordCorrecta) {
+    // Contraseña correcta - guardar en sessionStorage para esta sesión
+    sessionStorage.setItem('accesoAutorizado', 'true');
+    sessionStorage.setItem('tiempoAcceso', Date.now().toString());
+    
+    cerrarModal();
+    
+    // Mostrar mensaje de éxito antes de redirigir
+    mostrarMensajeAcceso('✅ Acceso autorizado. Redirigiendo...', true);
+    setTimeout(() => {
+      window.location.href = pagina;
+    }, 1500);
+    
+  } else {
+    // Contraseña incorrecta
+    mostrarMensajeAcceso('❌ Contraseña incorrecta. Inténtalo de nuevo.', false);
+    document.getElementById('password-input').value = '';
+    document.getElementById('password-input').focus();
+  }
+}
+
+function mostrarMensajeAcceso(mensaje, exito) {
+  const mensajeDiv = document.createElement('div');
+  mensajeDiv.className = `mensaje-acceso ${exito ? 'exito' : 'error'}`;
+  mensajeDiv.textContent = mensaje;
+  document.body.appendChild(mensajeDiv);
+  
+  setTimeout(() => {
+    if (mensajeDiv.parentNode) {
+      mensajeDiv.parentNode.removeChild(mensajeDiv);
+    }
+  }, 3000);
+}
+
+function cerrarModal() {
+  const modal = document.querySelector('.modal-seguridad');
+  if (modal) {
+    modal.parentNode.removeChild(modal);
+  }
+}
+
+// Mostrar estado de la sesión de acceso
+function mostrarEstadoAcceso() {
+  const accesoAutorizado = sessionStorage.getItem('accesoAutorizado');
+  const tiempoAcceso = sessionStorage.getItem('tiempoAcceso');
+  const tiempoActual = Date.now();
+  const tiempoLimite = 3600000; // 1 hora
+  
+  if (accesoAutorizado === 'true' && 
+      tiempoAcceso && 
+      (tiempoActual - parseInt(tiempoAcceso)) <= tiempoLimite) {
+    
+    const tiempoRestante = tiempoLimite - (tiempoActual - parseInt(tiempoAcceso));
+    const minutosRestantes = Math.floor(tiempoRestante / 60000);
+    
+    // Crear indicador de sesión activa
+    const indicador = document.createElement('div');
+    indicador.className = 'indicador-sesion';
+    indicador.innerHTML = `
+      <div class="sesion-activa">
+        🔓 <span>Sesión activa</span>
+        <small>Acceso autorizado (${minutosRestantes}min restantes)</small>
+      </div>
+    `;
+    
+    document.body.appendChild(indicador);
+  }
+}
+
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', mostrarEstadoAcceso);
