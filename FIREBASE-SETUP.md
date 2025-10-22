@@ -95,12 +95,14 @@ service cloud.firestore {
 
 ### Method 1: Using the Game Interface (Recommended)
 1. Open the game and go to the leaderboard
-2. Click the red "🗑️ Reset Leaderboard" button
+2. Click the red "🗑️ Reset Leaderboard" button (only visible to "nemiroff" user)
 3. Enter the teacher password: **Simeone2**
 4. Click "Reset Leaderboard"
-5. All scores (local and Firebase) will be cleared
+5. All scores (Firebase and local on all devices) will be cleared
 
 **Teacher Password:** `Simeone2` (case-sensitive)
+
+**Important:** When Firebase is cleared, all devices will automatically show empty leaderboards, even if they have local scores. This ensures consistency across all devices.
 
 ### Method 2: Firebase Console
 1. Go to Firebase Console → Firestore Database

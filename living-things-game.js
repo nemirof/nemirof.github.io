@@ -452,9 +452,13 @@ async function showLeaderboard() {
   
   let scores = [];
   
+  let firebaseAvailable = false;
+  let firebaseHasScores = false;
+  
   try {
     // Try to get scores from Firebase first
     if (window.firebaseDB) {
+      firebaseAvailable = true;
       const q = window.firebaseQuery(
         window.firebaseCollection(window.firebaseDB, 'livingThingsScores'),
         window.firebaseOrderBy('score', 'desc'),
@@ -462,16 +466,24 @@ async function showLeaderboard() {
       );
       const querySnapshot = await window.firebaseGetDocs(q);
       scores = querySnapshot.docs.map(doc => doc.data());
+      firebaseHasScores = scores.length > 0;
       console.log('Loaded scores from Firebase:', scores.length);
     }
   } catch (error) {
     console.log('Firebase not available, using local scores:', error.message);
+    firebaseAvailable = false;
   }
   
-  // Fallback to local scores if Firebase fails or has no scores
-  if (scores.length === 0) {
+  // Only use local scores if Firebase is not available at all
+  // If Firebase is available but empty, show empty leaderboard (don't use local)
+  if (!firebaseAvailable && scores.length === 0) {
     scores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
-    console.log('Using local scores:', scores.length);
+    console.log('Using local scores (Firebase unavailable):', scores.length);
+  } else if (firebaseAvailable && !firebaseHasScores) {
+    // Firebase is available but empty - clear local scores too for consistency
+    localStorage.removeItem('livingThingsScores');
+    scores = [];
+    console.log('Firebase is empty - cleared local scores for consistency');
   }
   
   if (scores.length === 0) {
@@ -485,9 +497,13 @@ async function showLeaderboard() {
     sourceInfo.style.fontSize = '0.8rem';
     sourceInfo.style.color = '#888';
     sourceInfo.style.marginBottom = '1rem';
-    sourceInfo.innerHTML = window.firebaseDB && scores.length > 0 ? 
-      '☁️ Global Leaderboard (All Players)' : 
-      '💾 Local Scores (This Device Only)';
+    
+    if (firebaseAvailable) {
+      sourceInfo.innerHTML = '☁️ Global Leaderboard (All Players)';
+    } else {
+      sourceInfo.innerHTML = '💾 Local Scores (This Device Only)';
+    }
+    
     leaderboardList.appendChild(sourceInfo);
     
     scores.forEach((score, index) => {
