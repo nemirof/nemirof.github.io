@@ -60,6 +60,64 @@
       color: var(--secondary-color);
     }
     
+    /* Estilos del footer */
+    .footer-principal {
+      background: var(--bg-primary);
+      color: var(--text-white);
+      padding: var(--spacing-xl) var(--spacing-lg);
+      text-align: center;
+      margin-top: var(--spacing-2xl);
+      box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    
+    .footer-principal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      pointer-events: none;
+    }
+    
+    .footer-contenido {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-md);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .footer-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--border-radius-full);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .footer-logo:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .footer-texto {
+      font-family: var(--font-playful);
+      font-size: var(--font-size-lg);
+      margin: 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .footer-nombre {
+      font-weight: 700;
+      color: var(--secondary-color);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
     @media screen and (max-width: 768px) {
       .contenedor-equipos {
         flex-direction: column;
@@ -68,6 +126,21 @@
       
       .imagen-equipo {
         width: 250px;
+      }
+      
+      .footer-principal {
+        padding: var(--spacing-lg) var(--spacing-md);
+        margin-top: var(--spacing-xl);
+      }
+      
+      .footer-logo {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .footer-texto {
+        font-size: var(--font-size-base);
+        text-align: center;
       }
     }
   </style>
@@ -108,6 +181,14 @@
       </div>
     </section>
   </main>
+  
+  <footer class="footer-principal">
+    <div class="footer-contenido">
+      <img src="images/logo11.png" alt="Logo nemiroff" class="footer-logo">
+      <p class="footer-texto">Creado por <span class="footer-nombre">nemiroff</span></p>
+    </div>
+  </footer>
+  
   <script src="scripts.js"></script>
 </body>
 </html>
