@@ -14,6 +14,9 @@ let gameState = {
   soundEnabled: true
 };
 
+// Firebase real-time listener
+let leaderboardListener = null;
+
 // Class roster - Add students from your class here
 const classRoster = [
   { name: 'abiel', photo: 'abiel.jpg' },
@@ -130,6 +133,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // hideAdminButtonFromStudents();
 });
 
+// Clean up Firebase listener when page is closed
+window.addEventListener('beforeunload', function() {
+  if (leaderboardListener) {
+    leaderboardListener();
+    leaderboardListener = null;
+  }
+});
+
 function toggleAdminButton() {
   const adminBtn = document.querySelector('.admin-btn');
   const currentUser = gameState.currentPlayer?.name?.toLowerCase();
@@ -155,6 +166,59 @@ function initializeGame() {
       checkStudent();
     }
   });
+  
+  // Set up Firebase real-time listener for leaderboard changes
+  setupFirebaseListener();
+}
+
+function setupFirebaseListener() {
+  // Clean up existing listener
+  if (leaderboardListener) {
+    leaderboardListener();
+    leaderboardListener = null;
+  }
+  
+  // Set up new listener if Firebase is available
+  if (window.firebaseDB && window.firebaseOnSnapshot) {
+    try {
+      const q = window.firebaseQuery(
+        window.firebaseCollection(window.firebaseDB, 'livingThingsScores'),
+        window.firebaseOrderBy('score', 'desc'),
+        window.firebaseLimit(20)
+      );
+      
+      leaderboardListener = window.firebaseOnSnapshot(q, (snapshot) => {
+        console.log('Firebase leaderboard changed:', snapshot.docs.length, 'scores');
+        
+        // If we're currently viewing the leaderboard, refresh it
+        const leaderboardSection = document.getElementById('leaderboard-section');
+        if (!leaderboardSection.classList.contains('hidden')) {
+          console.log('Auto-refreshing leaderboard due to Firebase changes');
+          showLeaderboard();
+        }
+        
+        // If Firebase is empty, clear local storage on all devices
+        if (snapshot.docs.length === 0) {
+          const localScores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
+          if (localScores.length > 0) {
+            console.log('Firebase is empty - clearing local scores for consistency');
+            localStorage.removeItem('livingThingsScores');
+            
+            // Show notification if leaderboard is visible
+            if (!leaderboardSection.classList.contains('hidden')) {
+              showLeaderboardResetNotification();
+            }
+          }
+        }
+      }, (error) => {
+        console.log('Firebase listener error:', error);
+      });
+      
+      console.log('Firebase real-time listener established');
+    } catch (error) {
+      console.log('Could not set up Firebase listener:', error);
+    }
+  }
 }
 
 function checkStudent() {
@@ -480,10 +544,9 @@ async function showLeaderboard() {
     scores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
     console.log('Using local scores (Firebase unavailable):', scores.length);
   } else if (firebaseAvailable && !firebaseHasScores) {
-    // Firebase is available but empty - clear local scores too for consistency
-    localStorage.removeItem('livingThingsScores');
+    // Firebase is available but empty - show empty leaderboard
     scores = [];
-    console.log('Firebase is empty - cleared local scores for consistency');
+    console.log('Firebase is empty - showing empty leaderboard');
   }
   
   if (scores.length === 0) {
@@ -801,6 +864,52 @@ function showMessage(element, message, type) {
 
 function capitalizeFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function showLeaderboardResetNotification() {
+  // Create a temporary notification
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FF6B6B;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-weight: bold;
+    text-align: center;
+    animation: slideDown 0.3s ease-out;
+  `;
+  notification.innerHTML = '🔄 Leaderboard has been reset by teacher';
+  
+  // Add animation keyframes if not already added
+  if (!document.querySelector('#reset-notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'reset-notification-styles';
+    style.textContent = `
+      @keyframes slideDown {
+        from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notification);
+  
+  // Remove notification after 3 seconds
+  setTimeout(() => {
+    notification.style.animation = 'slideDown 0.3s ease-out reverse';
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 300);
+  }, 3000);
 }
 
 function shuffleArray(array) {

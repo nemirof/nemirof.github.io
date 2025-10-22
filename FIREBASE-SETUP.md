@@ -102,7 +102,7 @@ service cloud.firestore {
 
 **Teacher Password:** `Simeone2` (case-sensitive)
 
-**Important:** When Firebase is cleared, all devices will automatically show empty leaderboards, even if they have local scores. This ensures consistency across all devices.
+**Important:** When Firebase is cleared, all devices will **automatically and immediately** show empty leaderboards in real-time, even if they have local scores. Students will see a notification that the leaderboard has been reset. This ensures instant consistency across all devices without requiring page refresh.
 
 ### Method 2: Firebase Console
 1. Go to Firebase Console → Firestore Database
