@@ -49,6 +49,7 @@ const classRoster = [
   { name: 'gabriel', photo: 'gabriel.png' },
   { name: 'guadalupe', photo: 'guadalupe.png' },
   { name: 'ian', photo: 'ian.png' },
+  { name: 'nemiroff', photo: 'logo11.png' },
   { name: 'ines', photo: 'ines.png' },
   { name: 'isabella', photo: 'isabella.png' },
   { name: 'jaime', photo: 'jaime.png' },
@@ -65,6 +66,7 @@ const classRoster = [
   { name: 'marcos', photo: 'marcos.jpg' },
   { name: 'mariam', photo: 'mariam.png' },
   { name: 'markel', photo: 'markel.png' },
+  { name: 'raquel', photo: 'raquelB.jpg' },
   { name: 'mateo', photo: 'mateo.png' }
 ];
 
@@ -123,7 +125,25 @@ const livingThings = [
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
   initializeGame();
+  
+  // Hide admin button from students (optional - uncomment to enable)
+  // hideAdminButtonFromStudents();
 });
+
+function toggleAdminButton() {
+  const adminBtn = document.querySelector('.admin-btn');
+  const currentUser = gameState.currentPlayer?.name?.toLowerCase();
+  
+  if (adminBtn) {
+    if (currentUser === 'nemiroff') {
+      // Show reset button only for nemiroff
+      adminBtn.style.display = 'inline-block';
+    } else {
+      // Hide reset button for all other users
+      adminBtn.style.display = 'none';
+    }
+  }
+}
 
 function initializeGame() {
   // Show login section
@@ -184,6 +204,9 @@ function setupPlayerInfo() {
   
   // Show player info now that user is logged in
   playerInfo.classList.add('logged-in');
+  
+  // Show/hide admin button based on user
+  toggleAdminButton();
 }
 
 function startNewGame() {
@@ -488,6 +511,9 @@ async function showLeaderboard() {
     });
   }
   
+  // Control admin button visibility when showing leaderboard
+  toggleAdminButton();
+  
   showSection('leaderboard-section');
 }
 
@@ -646,6 +672,99 @@ function hideModal() {
   document.getElementById('success-modal').classList.add('hidden');
   // Also hide fact display if it's open
   document.getElementById('fact-display').classList.add('hidden');
+}
+
+function showResetModal() {
+  const modal = document.getElementById('reset-modal');
+  const passwordInput = document.getElementById('reset-password');
+  const errorDiv = document.getElementById('password-error');
+  
+  modal.classList.remove('hidden');
+  passwordInput.value = '';
+  errorDiv.style.display = 'none';
+  
+  // Focus on password input and add enter key listener
+  setTimeout(() => {
+    passwordInput.focus();
+  }, 100);
+  
+  // Allow Enter key to submit
+  passwordInput.onkeypress = function(e) {
+    if (e.key === 'Enter') {
+      checkPasswordAndReset();
+    }
+  };
+}
+
+function hideResetModal() {
+  document.getElementById('reset-modal').classList.add('hidden');
+  document.getElementById('reset-password').value = '';
+  document.getElementById('password-error').style.display = 'none';
+}
+
+function checkPasswordAndReset() {
+  const passwordInput = document.getElementById('reset-password');
+  const errorDiv = document.getElementById('password-error');
+  const enteredPassword = passwordInput.value;
+  const correctPassword = 'Simeone2';
+  
+  if (enteredPassword === correctPassword) {
+    // Password correct, proceed with reset
+    errorDiv.style.display = 'none';
+    confirmResetLeaderboard();
+  } else {
+    // Wrong password
+    errorDiv.style.display = 'block';
+    passwordInput.value = '';
+    passwordInput.focus();
+    
+    // Shake effect for wrong password
+    passwordInput.style.animation = 'shake 0.5s ease-in-out';
+    setTimeout(() => {
+      passwordInput.style.animation = '';
+    }, 500);
+  }
+}
+
+async function confirmResetLeaderboard() {
+  
+  try {
+    // Clear local storage
+    localStorage.removeItem('livingThingsScores');
+    console.log('Local scores cleared');
+    
+    // Clear Firebase if available
+    if (window.firebaseDB) {
+      // Note: This requires getting all documents and deleting them
+      // Firebase doesn't have a "clear collection" method
+      const q = window.firebaseQuery(
+        window.firebaseCollection(window.firebaseDB, 'livingThingsScores')
+      );
+      const querySnapshot = await window.firebaseGetDocs(q);
+      
+      // Delete each document
+      const deletePromises = [];
+      querySnapshot.forEach((doc) => {
+        deletePromises.push(window.firebaseDeleteDoc(doc.ref));
+      });
+      
+      if (deletePromises.length > 0) {
+        await Promise.all(deletePromises);
+        console.log(`Deleted ${deletePromises.length} scores from Firebase`);
+      }
+    }
+    
+    // Hide modal and refresh leaderboard
+    hideResetModal();
+    alert('✅ Leaderboard has been reset successfully!');
+    
+    // Refresh leaderboard display
+    showLeaderboard();
+    
+  } catch (error) {
+    console.error('Error resetting leaderboard:', error);
+    alert('❌ Error resetting leaderboard. Check console for details.');
+  }
 }
 
 function showSection(sectionId) {

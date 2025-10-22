@@ -91,9 +91,55 @@ service cloud.firestore {
 - **No scores showing**: Check Firestore rules
 - **Local scores only**: Firebase config might be incorrect
 
+## Resetting the Leaderboard:
+
+### Method 1: Using the Game Interface (Recommended)
+1. Open the game and go to the leaderboard
+2. Click the red "🗑️ Reset Leaderboard" button
+3. Enter the teacher password: **Simeone2**
+4. Click "Reset Leaderboard"
+5. All scores (local and Firebase) will be cleared
+
+**Teacher Password:** `Simeone2` (case-sensitive)
+
+### Method 2: Firebase Console
+1. Go to Firebase Console → Firestore Database
+2. Find the "livingThingsScores" collection
+3. Delete individual documents or the entire collection
+4. Students' local scores will remain until they play again
+
+### Method 3: Browser Console (Local only)
+1. Open the game page
+2. Press F12 → Console tab
+3. Type: `localStorage.removeItem('livingThingsScores')`
+4. Press Enter (only clears local scores)
+
+### Method 4: Private/Incognito Mode
+- Open the game in incognito mode for a clean slate
+- No scores will be saved in this mode
+
 ## Security Note:
 
 The current setup allows anyone to read/write scores. For a production classroom environment, consider implementing Firebase Authentication to restrict access to your students only.
+
+✅ **Security**: The reset button only appears when user "nemiroff" is logged in. It's also protected with a password (`Simeone2`) for double security.
+
+**Access Control:**
+- Only visible to: `nemiroff` user
+- Password protected: `Simeone2`
+- Other students: Cannot see or access the button
+
+**To change the authorized user:**
+1. Open `living-things-game.js`
+2. Find the line: `if (currentUser === 'nemiroff') {`
+3. Change `'nemiroff'` to your desired username
+4. Save the file
+
+**To change the password:**
+1. Open `living-things-game.js`
+2. Find the line: `const correctPassword = 'Simeone2';`
+3. Change `'Simeone2'` to your desired password
+4. Save the file
 
 ---
 

@@ -75,7 +75,10 @@
         <div id="leaderboard-list" class="leaderboard-list">
           <!-- Leaderboard will be populated by JavaScript -->
         </div>
-        <button onclick="backToGame()" class="control-btn">🎮 Back to Game</button>
+        <div class="leaderboard-controls">
+          <button onclick="backToGame()" class="control-btn">🎮 Back to Game</button>
+          <button onclick="showResetModal()" class="control-btn admin-btn" style="background: #FF6B6B;" title="Teacher only: Reset all scores">🗑️ Reset Leaderboard</button>
+        </div>
       </div>
     </section>
 
@@ -87,6 +90,26 @@
         <div class="modal-buttons">
           <button onclick="startNewGame()" class="modal-btn">🔄 Play Again</button>
           <button onclick="showLeaderboard()" class="modal-btn">🏆 View Leaderboard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="reset-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>🔐 Teacher Password Required</h2>
+        <p style="margin: 1rem 0; color: #666;">Enter the teacher password to reset the leaderboard.</p>
+        <div style="margin: 1.5rem 0;">
+          <input type="password" id="reset-password" placeholder="Enter teacher password..." 
+                 style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;"
+                 maxlength="20" autocomplete="off">
+          <div id="password-error" style="color: #FF6B6B; font-size: 0.9rem; margin-top: 0.5rem; display: none;">
+            ❌ Incorrect password. Please try again.
+          </div>
+        </div>
+        <div class="modal-buttons">
+          <button onclick="hideResetModal()" class="modal-btn" style="background: #666;">❌ Cancel</button>
+          <button onclick="checkPasswordAndReset()" class="modal-btn" style="background: #FF6B6B;">🗑️ Reset Leaderboard</button>
         </div>
       </div>
     </div>
@@ -103,7 +126,7 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
     // TODO: Replace with your Firebase config
     const firebaseConfig = {
@@ -129,6 +152,7 @@
     window.firebaseQuery = query;
     window.firebaseOrderBy = orderBy;
     window.firebaseLimit = limit;
+    window.firebaseDeleteDoc = deleteDoc;
   </script>
   <script src="living-things-game.js"></script>
 </body>
