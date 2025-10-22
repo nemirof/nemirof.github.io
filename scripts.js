@@ -85,7 +85,12 @@ if (sessionStorage.getItem('profesionAleatoria') != 'null'){
 	  document.getElementById('mensajeFallo').style.display = 'none'; // Oculta el mensaje de fallo
 	  const audioExito = document.getElementById('audioExito');
 
-	  audioExito.play();
+	  if (!isMuted) {
+	    audioExito.play().catch(e => console.log('Audio play failed:', e));
+	  }
+	  
+	  // Lanzar confeti cuando acierta
+	  crearConfeti();
    }
 }
 
@@ -231,3 +236,37 @@ window.addEventListener('DOMContentLoaded', () => {
     toggleMute(); // Aplicar el estado guardado
   }
 });
+
+// Función para crear efecto de confeti
+function crearConfeti() {
+  const colores = ['var(--secondary-color)', 'var(--accent-color)', 'var(--success-color)', 'var(--primary-color)', 'var(--warning-color)'];
+  const velocidades = ['rapido', 'lento', 'muy-lento', ''];
+  
+  // Crear 50 piezas de confeti
+  for (let i = 0; i < 50; i++) {
+    const confeti = document.createElement('div');
+    confeti.className = 'confeti';
+    
+    // Posición aleatoria en el ancho de la pantalla
+    confeti.style.left = Math.random() * window.innerWidth + 'px';
+    
+    // Velocidad aleatoria
+    const velocidadAleatoria = velocidades[Math.floor(Math.random() * velocidades.length)];
+    if (velocidadAleatoria) {
+      confeti.classList.add(velocidadAleatoria);
+    }
+    
+    // Delay aleatorio para que no caigan todos a la vez
+    confeti.style.animationDelay = Math.random() * 2 + 's';
+    
+    // Añadir al DOM
+    document.body.appendChild(confeti);
+    
+    // Eliminar después de la animación
+    setTimeout(() => {
+      if (confeti.parentNode) {
+        confeti.parentNode.removeChild(confeti);
+      }
+    }, 6000);
+  }
+}

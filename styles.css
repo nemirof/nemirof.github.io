@@ -794,17 +794,23 @@ p {
     margin: var(--spacing-md) auto !important;
   }
   
+  /* Ajustar contenedores frontal y trasera para mejor aprovechamiento en móvil */
+  .frontal, .trasera {
+    padding: var(--spacing-sm);
+  }
+  
   /* Ajustar imágenes dentro de las cartas para móvil */
   .frontal img, .trasera img {
-    width: 75%;
-    height: 65%;
+    width: 85%;
+    height: 75%;
   }
   
   /* Ajustar texto en las cartas */
   .frontal p, .trasera p {
     font-size: var(--font-size-sm);
     margin: var(--spacing-xs) 0;
-    padding: 0 var(--spacing-xs);
+    padding: 0;
+    font-weight: 600;
   }
 }
 
@@ -822,14 +828,20 @@ p {
     height: 190px;
   }
   
+  /* Máximo aprovechamiento en pantallas muy pequeñas */
+  .frontal, .trasera {
+    padding: var(--spacing-xs);
+  }
+  
   .frontal img, .trasera img {
-    width: 70%;
-    height: 60%;
+    width: 90%;
+    height: 80%;
   }
   
   .frontal p, .trasera p {
     font-size: var(--font-size-xs);
     margin: var(--spacing-xs) 0;
+    font-weight: 600;
   }
 }
 
