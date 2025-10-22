@@ -389,38 +389,83 @@ function completeGame() {
   createConfetti();
 }
 
-function saveScore() {
-  const scores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
-  
+async function saveScore() {
   const newScore = {
     name: gameState.currentPlayer.displayName,
     photo: gameState.currentPlayer.photo,
     score: gameState.score,
     time: gameState.timer,
     moves: gameState.moves,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    timestamp: Date.now()
   };
   
-  scores.push(newScore);
+  try {
+    // Save to Firebase if available
+    if (window.firebaseDB) {
+      await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'livingThingsScores'), newScore);
+      console.log('Score saved to Firebase successfully!');
+    }
+  } catch (error) {
+    console.log('Firebase not available, saving locally:', error.message);
+  }
   
-  // Keep only top 20 scores
-  scores.sort((a, b) => b.score - a.score);
-  scores.splice(20);
-  
-  localStorage.setItem('livingThingsScores', JSON.stringify(scores));
+  // Always save locally as backup
+  const localScores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
+  localScores.push(newScore);
+  localScores.sort((a, b) => b.score - a.score);
+  localScores.splice(20);
+  localStorage.setItem('livingThingsScores', JSON.stringify(localScores));
 }
 
-function showLeaderboard() {
+async function showLeaderboard() {
   // Close any open modal first
   hideModal();
   
-  const scores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
   const leaderboardList = document.getElementById('leaderboard-list');
+  
+  // Show loading message
+  leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">🔄 Loading leaderboard...</div>';
+  
+  let scores = [];
+  
+  try {
+    // Try to get scores from Firebase first
+    if (window.firebaseDB) {
+      const q = window.firebaseQuery(
+        window.firebaseCollection(window.firebaseDB, 'livingThingsScores'),
+        window.firebaseOrderBy('score', 'desc'),
+        window.firebaseLimit(20)
+      );
+      const querySnapshot = await window.firebaseGetDocs(q);
+      scores = querySnapshot.docs.map(doc => doc.data());
+      console.log('Loaded scores from Firebase:', scores.length);
+    }
+  } catch (error) {
+    console.log('Firebase not available, using local scores:', error.message);
+  }
+  
+  // Fallback to local scores if Firebase fails or has no scores
+  if (scores.length === 0) {
+    scores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
+    console.log('Using local scores:', scores.length);
+  }
   
   if (scores.length === 0) {
     leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">No scores yet! Be the first to play! 🌟</div>';
   } else {
     leaderboardList.innerHTML = '';
+    
+    // Add header to show if data is from cloud or local
+    const sourceInfo = document.createElement('div');
+    sourceInfo.style.textAlign = 'center';
+    sourceInfo.style.fontSize = '0.8rem';
+    sourceInfo.style.color = '#888';
+    sourceInfo.style.marginBottom = '1rem';
+    sourceInfo.innerHTML = window.firebaseDB && scores.length > 0 ? 
+      '☁️ Global Leaderboard (All Players)' : 
+      '💾 Local Scores (This Device Only)';
+    leaderboardList.appendChild(sourceInfo);
     
     scores.forEach((score, index) => {
       const item = document.createElement('div');
