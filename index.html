@@ -142,6 +142,40 @@
         font-size: var(--font-size-base);
         text-align: center;
       }
+      
+      /* Mostrar iconos pequeños en responsive */
+      .iconos-profesiones {
+        display: flex !important;
+        gap: var(--spacing-sm);
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+      }
+      
+      .icono-profesion {
+        width: 24px;
+        height: 24px;
+        border-radius: var(--border-radius-full);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        box-shadow: var(--shadow-md);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .icono-profesion:hover {
+        transform: scale(1.1);
+        box-shadow: var(--shadow-lg);
+      }
+      
+      /* Ajustar header para dar espacio a los iconos */
+      header {
+        padding-top: 35px;
+      }
+      
+      h1 {
+        margin-top: var(--spacing-sm);
+      }
     }
   </style>
 </head>
