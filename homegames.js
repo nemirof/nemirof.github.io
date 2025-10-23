@@ -11,8 +11,7 @@ let gameState = {
   timer: 0,
   timerInterval: null,
   gameStarted: false,
-  soundEnabled: true,
-  currentLanguage: 'en' // Default language is English
+  soundEnabled: true
 };
 
 // Firebase real-time listener
@@ -80,73 +79,49 @@ const livingThings = [
     name: 'Cat',
     image: 'cat.jpg',
     category: 'animal',
-    fact: {
-      en: 'Cats can make over 100 different sounds! They purr when happy and can see in the dark much better than humans.',
-      es: 'Los gatos pueden hacer más de 100 sonidos diferentes! Ronronean cuando están felices y pueden ver en la oscuridad mucho mejor que los humanos.'
-    }
+    fact: 'Cats can make over 100 different sounds! They purr when happy and can see in the dark much better than humans.'
   },
   {
     name: 'Dog',
     image: 'dog.jpg',
     category: 'animal',
-    fact: {
-      en: 'Dogs have an amazing sense of smell - about 40 times better than humans! They can be trained to help people in many ways.',
-      es: 'Los perros tienen un increíble sentido del olfato, ¡unas 40 veces mejor que los humanos! Pueden ser entrenados para ayudar a las personas de muchas maneras.'
-    }
+    fact: 'Dogs have an amazing sense of smell - about 40 times better than humans! They can be trained to help people in many ways.'
   },
   {
     name: 'Butterfly',
     image: 'butterfly.jpg',
     category: 'animal',
-    fact: {
-      en: 'Butterflies start as caterpillars and transform completely! They taste with their feet and can only see red, green, and yellow colors.',
-      es: 'Las mariposas comienzan como orugas y se transforman completamente! Prueban con sus patas y solo pueden ver colores rojos, verdes y amarillos.'
-    }
+    fact: 'Butterflies start as caterpillars and transform completely! They taste with their feet and can only see red, green, and yellow colors.'
   },
   {
     name: 'Fish',
     image: 'fish.jpg',
     category: 'animal',
-    fact: {
-      en: 'Fish breathe underwater using gills! Some fish can live for over 100 years, and they never stop growing throughout their lives.',
-      es: 'Los peces respiran bajo el agua usando branquias! Algunos peces pueden vivir más de 100 años, y nunca dejan de crecer durante sus vidas.'
-    }
+    fact: 'Fish breathe underwater using gills! Some fish can live in both fresh water and salt water.'
   },
   {
     name: 'Bird',
     image: 'bird.jpg',
     category: 'animal',
-    fact: {
-      en: 'Birds are the only animals with feathers! They can fly because their bones are hollow, making them very light.',
-      es: 'Las aves son los únicos animales con plumas! Pueden volar porque sus huesos son huecos, haciéndolos muy ligeros.'
-    }
+    fact: 'Birds are the only animals with feathers! They can fly because their bones are hollow and light.'
   },
   {
     name: 'Tree',
     image: 'tree.jpg',
     category: 'plant',
-    fact: {
-      en: 'Trees can live for thousands of years! They make oxygen that we breathe and are home to many animals.',
-      es: 'Los árboles pueden vivir miles de años! Hacen el oxígeno que respiramos y son hogar de muchos animales.'
-    }
+    fact: 'Trees make oxygen for us to breathe! They can live for hundreds or even thousands of years.'
   },
   {
     name: 'Flower',
     image: 'flower.jpg',
     category: 'plant',
-    fact: {
-      en: 'Flowers are colorful to attract bees and butterflies! They help plants make seeds to grow new plants.',
-      es: 'Las flores son coloridas para atraer abejas y mariposas! Ayudan a las plantas a hacer semillas para hacer crecer nuevas plantas.'
-    }
+    fact: 'Flowers make seeds to grow new plants! Bees and butterflies help flowers by carrying pollen.'
   },
   {
-    name: 'Mushroom',
-    image: 'mushroom.jpg',
-    category: 'fungi',
-    fact: {
-      en: 'Mushrooms are not plants - they are fungi! They help decompose dead things and recycle nutrients in nature.',
-      es: 'Los hongos no son plantas, ¡son hongos! Ayudan a descomponer cosas muertas y reciclar nutrientes en la naturaleza.'
-    }
+    name: 'Grass',
+    image: 'grass.jpg',
+    category: 'plant',
+    fact: 'Grass grows from the bottom, not the top! That\'s why we can cut it and it keeps growing.'
   }
 ];
 
@@ -182,17 +157,15 @@ function toggleAdminButton() {
 }
 
 function initializeGame() {
-  // Get player info from sessionStorage (set by game center)
-  const storedPlayer = sessionStorage.getItem('gameCenter_currentPlayer');
+  // Show login section
+  showSection('login-section');
   
-  if (storedPlayer) {
-    gameState.currentPlayer = JSON.parse(storedPlayer);
-    setupPlayerInfo();
-    startNewGame();
-  } else {
-    // If no player info, redirect to game center
-    window.location.href = 'homegames.html';
-  }
+  // Add enter key listener for name input
+  document.getElementById('name-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      checkStudent();
+    }
+  });
   
   // Set up Firebase real-time listener for leaderboard changes
   setupFirebaseListener();
@@ -324,9 +297,6 @@ function startNewGame() {
   
   // Hide success modal
   hideModal();
-  
-  // Show game section
-  showSection('game-section');
 }
 
 function createCards() {
@@ -467,30 +437,10 @@ function showFact(card) {
   const factTitle = document.getElementById('fact-title');
   const factText = document.getElementById('fact-text');
   
-  // Set the title based on current language
-  const funFactText = gameState.currentLanguage === 'en' ? 'Fun Fact!' : '¡Dato Curioso!';
-  factTitle.innerHTML = `
-    ${card.name} ${funFactText} 🦋
-    <button onclick="toggleLanguage('${card.name}')" class="language-btn" title="Change language">
-      <img src="icon/${gameState.currentLanguage === 'en' ? 'iconES.png' : 'iconEN.png'}" alt="${gameState.currentLanguage === 'en' ? 'ES' : 'EN'}" style="width: 24px; height: 24px;">
-    </button>
-  `;
-  
-  // Set the fact text based on current language
-  factText.textContent = card.fact[gameState.currentLanguage];
+  factTitle.textContent = `Amazing ${card.name} Fact! 🌟`;
+  factText.textContent = card.fact;
   
   factDisplay.classList.remove('hidden');
-}
-
-function toggleLanguage(cardName) {
-  // Toggle between English and Spanish
-  gameState.currentLanguage = gameState.currentLanguage === 'en' ? 'es' : 'en';
-  
-  // Find the card and refresh the fact display
-  const card = livingThings.find(c => c.name === cardName);
-  if (card) {
-    showFact(card);
-  }
 }
 
 function closeFact() {
@@ -569,21 +519,6 @@ async function showLeaderboard() {
 
 function backToGameSelection() {
   showSection('game-selection-section');
-}
-
-function backToHome() {
-  window.location.href = 'game-selection.html';
-}
-
-function logout() {
-  // Confirm logout
-  if (confirm('¿Estás seguro de que quieres cerrar sesión? Otro usuario podrá iniciar sesión.')) {
-    // Clear session storage
-    sessionStorage.removeItem('gameCenter_currentPlayer');
-    
-    // Redirect to login page
-    window.location.href = 'homegames.html';
-  }
 }
 
 function playGame(gameType) {

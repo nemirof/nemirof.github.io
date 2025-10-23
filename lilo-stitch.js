@@ -1,4 +1,4 @@
-// Living Things Memory Game JavaScript
+// Lilo & Stitch Memory Game JavaScript
 
 // Game state
 let gameState = {
@@ -18,134 +18,78 @@ let gameState = {
 // Firebase real-time listener
 let leaderboardListener = null;
 
-// Class roster - Add students from your class here
-const classRoster = [
-  { name: 'abiel', photo: 'abiel.jpg' },
-  { name: 'adrian', photo: 'adrian.jpg' },
-  { name: 'aitana', photo: 'aitana.png' },
-  { name: 'aizan', photo: 'aizan.jpg' },
-  { name: 'alan', photo: 'alan.jpg' },
-  { name: 'alba', photo: 'alba.jpg' },
-  { name: 'alejandro', photo: 'alejandro.jpg' },
-  { name: 'alex', photo: 'alex.jpg' },
-  { name: 'alexandra', photo: 'alexandra.png' },
-  { name: 'alicia', photo: 'alicia.jpg' },
-  { name: 'alisson', photo: 'alisson.png' },
-  { name: 'alma', photo: 'alma.png' },
-  { name: 'amalia', photo: 'amalia.png' },
-  { name: 'anais', photo: 'anais.jpg' },
-  { name: 'antonio', photo: 'antonio.png' },
-  { name: 'arabia', photo: 'arabia.jpg' },
-  { name: 'ariadna', photo: 'ariadna.png' },
-  { name: 'ashley', photo: 'ashley.jpg' },
-  { name: 'aslan', photo: 'aslan.png' },
-  { name: 'benjamin', photo: 'benjamin.jpg' },
-  { name: 'carlos', photo: 'carlos.jpg' },
-  { name: 'carolina', photo: 'carolina.png' },
-  { name: 'cathaleya', photo: 'cathaleya.jpg' },
-  { name: 'chloe', photo: 'chloe.jpg' },
-  { name: 'dani', photo: 'dani.jpg' },
-  { name: 'daniel', photo: 'danielB.jpg' },
-  { name: 'danna', photo: 'danna.jpg' },
-  { name: 'david', photo: 'david.png' },
-  { name: 'elisa', photo: 'elisa.jpg' },
-  { name: 'eva', photo: 'eva.jpg' },
-  { name: 'gabriel', photo: 'gabriel.png' },
-  { name: 'guadalupe', photo: 'guadalupe.png' },
-  { name: 'ian', photo: 'ian.png' },
-  { name: 'nemiroff', photo: 'logo11.png' },
-  { name: 'ines', photo: 'ines.png' },
-  { name: 'isabella', photo: 'isabella.png' },
-  { name: 'jaime', photo: 'jaime.png' },
-  { name: 'jimena', photo: 'jimena.png' },
-  { name: 'jon', photo: 'jon.jpg' },
-  { name: 'julia', photo: 'julia.png' },
-  { name: 'junior', photo: 'junior.png' },
-  { name: 'kadidia', photo: 'kadidia.png' },
-  { name: 'laura', photo: 'laura.jpg' },
-  { name: 'leo', photo: 'leo.jpg' },
-  { name: 'luca', photo: 'luca.jpg' },
-  { name: 'luna', photo: 'luna.png' },
-  { name: 'marco', photo: 'marco.png' },
-  { name: 'marcos', photo: 'marcos.jpg' },
-  { name: 'mariam', photo: 'mariam.png' },
-  { name: 'markel', photo: 'markel.png' },
-  { name: 'raquel', photo: 'raquelB.jpg' },
-  { name: 'mateo', photo: 'mateo.png' }
-];
-
-// Living things data with fun facts
-const livingThings = [
+// Lilo & Stitch characters data with fun facts
+const liloStitchCharacters = [
   {
-    name: 'Cat',
-    image: 'cat.jpg',
-    category: 'animal',
+    name: 'Stitch',
+    image: 'stitch.jpg',
+    category: 'character',
     fact: {
-      en: 'Cats can make over 100 different sounds! They purr when happy and can see in the dark much better than humans.',
-      es: 'Los gatos pueden hacer más de 100 sonidos diferentes! Ronronean cuando están felices y pueden ver en la oscuridad mucho mejor que los humanos.'
+      en: 'Stitch is Experiment 626! He\'s super strong, can lift objects 3,000 times his weight, and loves Elvis Presley music!',
+      es: 'Stitch es el Experimento 626! Es súper fuerte, puede levantar objetos 3,000 veces su peso, ¡y le encanta la música de Elvis Presley!'
     }
   },
   {
-    name: 'Dog',
-    image: 'dog.jpg',
-    category: 'animal',
+    name: 'Lilo',
+    image: 'lilo.jpg',
+    category: 'character',
     fact: {
-      en: 'Dogs have an amazing sense of smell - about 40 times better than humans! They can be trained to help people in many ways.',
-      es: 'Los perros tienen un increíble sentido del olfato, ¡unas 40 veces mejor que los humanos! Pueden ser entrenados para ayudar a las personas de muchas maneras.'
+      en: 'Lilo loves hula dancing and taking care of endangered animals! She teaches Stitch about ohana - family.',
+      es: 'A Lilo le encanta bailar hula y cuidar animales en peligro de extinción! Le enseña a Stitch sobre ohana - familia.'
     }
   },
   {
-    name: 'Butterfly',
-    image: 'butterfly.jpg',
-    category: 'animal',
+    name: 'Angel',
+    image: 'angel.jpg',
+    category: 'character',
     fact: {
-      en: 'Butterflies start as caterpillars and transform completely! They taste with their feet and can only see red, green, and yellow colors.',
-      es: 'Las mariposas comienzan como orugas y se transforman completamente! Prueban con sus patas y solo pueden ver colores rojos, verdes y amarillos.'
+      en: 'Angel is Experiment 624! She can turn good experiments bad with her beautiful singing voice.',
+      es: 'Angel es el Experimento 624! Puede volver malvados a los experimentos buenos con su hermosa voz cantante.'
     }
   },
   {
-    name: 'Fish',
-    image: 'fish.jpg',
-    category: 'animal',
+    name: 'Jumba',
+    image: 'jumba.jpg',
+    category: 'character',
     fact: {
-      en: 'Fish breathe underwater using gills! Some fish can live for over 100 years, and they never stop growing throughout their lives.',
-      es: 'Los peces respiran bajo el agua usando branquias! Algunos peces pueden vivir más de 100 años, y nunca dejan de crecer durante sus vidas.'
+      en: 'Dr. Jumba created Stitch and 628 other experiments! He\'s a genius scientist from outer space.',
+      es: 'El Dr. Jumba creó a Stitch y otros 628 experimentos! Es un científico genio del espacio exterior.'
     }
   },
   {
-    name: 'Bird',
-    image: 'bird.jpg',
-    category: 'animal',
+    name: 'Pleakley',
+    image: 'pleakley.jpg',
+    category: 'character',
     fact: {
-      en: 'Birds are the only animals with feathers! They can fly because their bones are hollow, making them very light.',
-      es: 'Las aves son los únicos animales con plumas! Pueden volar porque sus huesos son huecos, haciéndolos muy ligeros.'
+      en: 'Pleakley is a one-eyed alien who loves Earth culture, especially mosquitoes and Earth fashion!',
+      es: 'Pleakley es un alienígena de un ojo que ama la cultura terrestre, ¡especialmente los mosquitos y la moda terrestre!'
     }
   },
   {
-    name: 'Tree',
-    image: 'tree.jpg',
-    category: 'plant',
+    name: 'Nani',
+    image: 'nani.jpg',
+    category: 'character',
     fact: {
-      en: 'Trees can live for thousands of years! They make oxygen that we breathe and are home to many animals.',
-      es: 'Los árboles pueden vivir miles de años! Hacen el oxígeno que respiramos y son hogar de muchos animales.'
+      en: 'Nani is Lilo\'s big sister who works hard to take care of her family. She\'s brave and loves surfing!',
+      es: 'Nani es la hermana mayor de Lilo que trabaja duro para cuidar de su familia. ¡Es valiente y le encanta surfear!'
     }
   },
   {
-    name: 'Flower',
-    image: 'flower.jpg',
-    category: 'plant',
+    name: 'David',
+    image: 'david.jpg',
+    category: 'character',
     fact: {
-      en: 'Flowers are colorful to attract bees and butterflies! They help plants make seeds to grow new plants.',
-      es: 'Las flores son coloridas para atraer abejas y mariposas! Ayudan a las plantas a hacer semillas para hacer crecer nuevas plantas.'
+      en: 'David is Nani\'s boyfriend and a great surfer! He\'s always there to help the ohana when they need him.',
+      es: 'David es el novio de Nani y un gran surfista! Siempre está ahí para ayudar a la ohana cuando lo necesitan.'
     }
   },
   {
-    name: 'Mushroom',
-    image: 'mushroom.jpg',
-    category: 'fungi',
+    name: 'Cobra',
+    image: 'cobra.jpg',
+    category: 'character',
     fact: {
-      en: 'Mushrooms are not plants - they are fungi! They help decompose dead things and recycle nutrients in nature.',
-      es: 'Los hongos no son plantas, ¡son hongos! Ayudan a descomponer cosas muertas y reciclar nutrientes en la naturaleza.'
+      en: 'Cobra is a social worker who helps keep families together. He has a mysterious past as a secret agent!',
+      es: 'Cobra es un trabajador social que ayuda a mantener unidas a las familias. ¡Tiene un pasado misterioso como agente secreto!'
     }
   }
 ];
@@ -153,9 +97,6 @@ const livingThings = [
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
   initializeGame();
-  
-  // Hide admin button from students (optional - uncomment to enable)
-  // hideAdminButtonFromStudents();
 });
 
 // Clean up Firebase listener when page is closed
@@ -165,21 +106,6 @@ window.addEventListener('beforeunload', function() {
     leaderboardListener = null;
   }
 });
-
-function toggleAdminButton() {
-  const adminBtn = document.querySelector('.admin-btn');
-  const currentUser = gameState.currentPlayer?.name?.toLowerCase();
-  
-  if (adminBtn) {
-    if (currentUser === 'nemiroff') {
-      // Show reset button only for nemiroff
-      adminBtn.style.display = 'inline-block';
-    } else {
-      // Hide reset button for all other users
-      adminBtn.style.display = 'none';
-    }
-  }
-}
 
 function initializeGame() {
   // Get player info from sessionStorage (set by game center)
@@ -209,27 +135,27 @@ function setupFirebaseListener() {
   if (window.firebaseDB && window.firebaseOnSnapshot) {
     try {
       const q = window.firebaseQuery(
-        window.firebaseCollection(window.firebaseDB, 'livingThingsScores'),
+        window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'),
         window.firebaseOrderBy('score', 'desc'),
         window.firebaseLimit(20)
       );
       
       leaderboardListener = window.firebaseOnSnapshot(q, (snapshot) => {
-        console.log('Firebase leaderboard changed:', snapshot.docs.length, 'scores');
+        console.log('Firebase Lilo & Stitch leaderboard changed:', snapshot.docs.length, 'scores');
         
         // If we're currently viewing the leaderboard, refresh it
         const leaderboardSection = document.getElementById('leaderboard-section');
         if (!leaderboardSection.classList.contains('hidden')) {
-          console.log('Auto-refreshing leaderboard due to Firebase changes');
+          console.log('Auto-refreshing Lilo & Stitch leaderboard due to Firebase changes');
           showLeaderboard();
         }
         
         // If Firebase is empty, clear local storage on all devices
         if (snapshot.docs.length === 0) {
-          const localScores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
+          const localScores = JSON.parse(localStorage.getItem('lilo-stitchScores') || '[]');
           if (localScores.length > 0) {
-            console.log('Firebase is empty - clearing local scores for consistency');
-            localStorage.removeItem('livingThingsScores');
+            console.log('Firebase Lilo & Stitch scores empty - clearing local scores for consistency');
+            localStorage.removeItem('lilo-stitchScores');
             
             // Show notification if leaderboard is visible
             if (!leaderboardSection.classList.contains('hidden')) {
@@ -241,46 +167,10 @@ function setupFirebaseListener() {
         console.log('Firebase listener error:', error);
       });
       
-      console.log('Firebase real-time listener established');
+      console.log('Firebase Lilo & Stitch real-time listener established');
     } catch (error) {
       console.log('Could not set up Firebase listener:', error);
     }
-  }
-}
-
-function checkStudent() {
-  const nameInput = document.getElementById('name-input');
-  const name = nameInput.value.trim().toLowerCase();
-  const messageDiv = document.getElementById('login-message');
-  
-  if (!name) {
-    showMessage(messageDiv, 'Please enter your name! 📝', 'error');
-    return;
-  }
-  
-  // Find student in roster
-  const student = classRoster.find(s => s.name.toLowerCase() === name);
-  
-  if (student) {
-    // Student found - set up player
-    gameState.currentPlayer = {
-      name: student.name,
-      photo: student.photo,
-      displayName: capitalizeFirst(student.name)
-    };
-    
-    showWelcomeMessage(messageDiv, gameState.currentPlayer);
-    
-    setTimeout(() => {
-      // Store player data and redirect to game selection
-      sessionStorage.setItem('gameCenter_currentPlayer', JSON.stringify(gameState.currentPlayer));
-      window.location.href = 'game-selection.html';
-    }, 1500);
-    
-  } else {
-    showMessage(messageDiv, 'Hmm, I don\'t see that name in our class. Please check your spelling! 🤔', 'error');
-    nameInput.value = '';
-    nameInput.focus();
   }
 }
 
@@ -293,11 +183,24 @@ function setupPlayerInfo() {
   playerAvatar.alt = gameState.currentPlayer.displayName;
   playerName.textContent = gameState.currentPlayer.displayName;
   
-  // Show player info now that user is logged in
+  // Show player info
   playerInfo.classList.add('logged-in');
   
   // Show/hide admin button based on user
   toggleAdminButton();
+}
+
+function toggleAdminButton() {
+  const adminBtn = document.querySelector('.admin-btn');
+  const currentUser = gameState.currentPlayer?.name?.toLowerCase();
+  
+  if (adminBtn) {
+    if (currentUser === 'nemiroff') {
+      adminBtn.style.display = 'inline-block';
+    } else {
+      adminBtn.style.display = 'none';
+    }
+  }
 }
 
 function startNewGame() {
@@ -333,11 +236,11 @@ function createCards() {
   const grid = document.getElementById('memory-grid');
   grid.innerHTML = '';
   
-  // Use all 8 living things for 16 cards (8 pairs)
-  const selectedThings = [...livingThings];
+  // Use all 8 Lilo & Stitch characters for 16 cards (8 pairs)
+  const selectedItems = [...liloStitchCharacters];
   
   // Create pairs
-  const cardData = [...selectedThings, ...selectedThings];
+  const cardData = [...selectedItems, ...selectedItems];
   gameState.cards = shuffleArray(cardData.map((item, index) => ({
     id: index,
     ...item,
@@ -359,10 +262,10 @@ function createCardElement(card, index) {
   cardDiv.innerHTML = `
     <div class="card-inner">
       <div class="card-front">
-        🌿
+        🌺
       </div>
       <div class="card-back">
-        <img src="images/living-things/${card.image}" alt="${card.name}" class="card-image" onerror="this.src='images/icono.png'">
+        <img src="images/lilo-stitch/${card.image}" alt="${card.name}" class="card-image" onerror="this.src='images/icono.png'">
         <div class="card-name">${card.name}</div>
       </div>
     </div>
@@ -470,7 +373,7 @@ function showFact(card) {
   // Set the title based on current language
   const funFactText = gameState.currentLanguage === 'en' ? 'Fun Fact!' : '¡Dato Curioso!';
   factTitle.innerHTML = `
-    ${card.name} ${funFactText} 🦋
+    ${card.name} ${funFactText} 🌺
     <button onclick="toggleLanguage('${card.name}')" class="language-btn" title="Change language">
       <img src="icon/${gameState.currentLanguage === 'en' ? 'iconES.png' : 'iconEN.png'}" alt="${gameState.currentLanguage === 'en' ? 'ES' : 'EN'}" style="width: 24px; height: 24px;">
     </button>
@@ -487,7 +390,7 @@ function toggleLanguage(cardName) {
   gameState.currentLanguage = gameState.currentLanguage === 'en' ? 'es' : 'en';
   
   // Find the card and refresh the fact display
-  const card = livingThings.find(c => c.name === cardName);
+  const card = liloStitchCharacters.find(c => c.name === cardName);
   if (card) {
     showFact(card);
   }
@@ -510,8 +413,9 @@ function completeGame() {
   const finalStats = document.getElementById('final-stats');
   finalStats.innerHTML = `
     <div style="font-size: 1.2rem; margin-bottom: 1rem;">
-      🎉 Congratulations ${gameState.currentPlayer.displayName}! 🎉
+      🎉 Aloha, ${gameState.currentPlayer.displayName}! 🎉
     </div>
+    <div style="margin-bottom: 0.5rem;">You've brought all the ohana together! 🌺🌊</div>
     <div><strong>Final Score:</strong> ${gameState.score} points</div>
     <div><strong>Time:</strong> ${formatTime(gameState.timer)}</div>
     <div><strong>Moves:</strong> ${gameState.moves}</div>
@@ -540,68 +444,128 @@ async function saveScore() {
   try {
     // Save to Firebase if available
     if (window.firebaseDB) {
-      await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'livingThingsScores'), newScore);
-      console.log('Score saved to Firebase successfully!');
+      await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'), newScore);
+      console.log('Lilo & Stitch score saved to Firebase successfully!');
     }
   } catch (error) {
     console.log('Firebase not available, saving locally:', error.message);
   }
   
   // Always save locally as backup
-  const localScores = JSON.parse(localStorage.getItem('livingThingsScores') || '[]');
+  const localScores = JSON.parse(localStorage.getItem('lilo-stitchScores') || '[]');
   localScores.push(newScore);
   localScores.sort((a, b) => b.score - a.score);
   localScores.splice(20);
-  localStorage.setItem('livingThingsScores', JSON.stringify(localScores));
+  localStorage.setItem('lilo-stitchScores', JSON.stringify(localScores));
 }
 
 async function showLeaderboard() {
   // Close any open modal first
   hideModal();
   
+  const leaderboardList = document.getElementById('leaderboard-list');
+  
+  // Show loading message
+  leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">🔄 Loading leaderboard...</div>';
+  
+  let scores = [];
+  let firebaseAvailable = false;
+  let firebaseHasScores = false;
+  
+  try {
+    // Try to get scores from Firebase first
+    if (window.firebaseDB) {
+      firebaseAvailable = true;
+      const q = window.firebaseQuery(
+        window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'),
+        window.firebaseOrderBy('score', 'desc'),
+        window.firebaseLimit(20)
+      );
+      const querySnapshot = await window.firebaseGetDocs(q);
+      scores = querySnapshot.docs.map(doc => doc.data());
+      firebaseHasScores = scores.length > 0;
+      console.log('Loaded Lilo & Stitch scores from Firebase:', scores.length);
+    }
+  } catch (error) {
+    console.log('Firebase not available, using local scores:', error.message);
+    firebaseAvailable = false;
+  }
+  
+  // Only use local scores if Firebase is not available at all
+  if (!firebaseAvailable && scores.length === 0) {
+    scores = JSON.parse(localStorage.getItem('lilo-stitchScores') || '[]');
+    console.log('Using local Lilo & Stitch scores (Firebase unavailable):', scores.length);
+  } else if (firebaseAvailable && !firebaseHasScores) {
+    scores = [];
+    console.log('Firebase Lilo & Stitch scores empty - showing empty leaderboard');
+  }
+  
+  // Remove duplicate users - keep only highest score per user
+  const uniqueScores = [];
+  const seenUsers = new Set();
+  
+  scores.forEach(score => {
+    if (!seenUsers.has(score.name.toLowerCase())) {
+      seenUsers.add(score.name.toLowerCase());
+      uniqueScores.push(score);
+    }
+  });
+  
+  scores = uniqueScores;
+  
+  if (scores.length === 0) {
+    leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">No ohana adventures yet! Be the first to explore! 🌺</div>';
+  } else {
+    leaderboardList.innerHTML = '';
+    
+    // Add header to show if data is from cloud or local
+    const sourceInfo = document.createElement('div');
+    sourceInfo.style.textAlign = 'center';
+    sourceInfo.style.fontSize = '0.8rem';
+    sourceInfo.style.color = '#888';
+    sourceInfo.style.marginBottom = '1rem';
+    
+    if (firebaseAvailable) {
+      sourceInfo.innerHTML = '☁️ Global Ohana Leaderboard';
+    } else {
+      sourceInfo.innerHTML = '💾 Local Ohana (This Device Only)';
+    }
+    
+    leaderboardList.appendChild(sourceInfo);
+    
+    scores.forEach((score, index) => {
+      const item = document.createElement('div');
+      item.className = 'leaderboard-item';
+      
+      const rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : '';
+      const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+      
+      item.innerHTML = `
+        <div class="leaderboard-rank ${rankClass}">${rankEmoji}</div>
+        <img src="images/${score.photo}" alt="${score.name}" class="leaderboard-avatar" onerror="this.src='images/icono.png'">
+        <div class="leaderboard-info">
+          <div class="leaderboard-name">${score.name}</div>
+          <div class="leaderboard-stats">${formatTime(score.time)} • ${score.moves} moves</div>
+        </div>
+        <div class="leaderboard-score">${score.score}</div>
+      `;
+      
+      leaderboardList.appendChild(item);
+    });
+  }
+  
   // Control admin button visibility when showing leaderboard
   toggleAdminButton();
   
-  // Show leaderboard section and load current game's leaderboard
   showSection('leaderboard-section');
-  loadGameLeaderboard(currentLeaderboardGame);
 }
 
-function backToGameSelection() {
-  showSection('game-selection-section');
+function backToGame() {
+  showSection('game-section');
 }
 
 function backToHome() {
   window.location.href = 'game-selection.html';
-}
-
-function logout() {
-  // Confirm logout
-  if (confirm('¿Estás seguro de que quieres cerrar sesión? Otro usuario podrá iniciar sesión.')) {
-    // Clear session storage
-    sessionStorage.removeItem('gameCenter_currentPlayer');
-    
-    // Redirect to login page
-    window.location.href = 'homegames.html';
-  }
-}
-
-function playGame(gameType) {
-  // Store current player in sessionStorage for the individual game
-  sessionStorage.setItem('gameCenter_currentPlayer', JSON.stringify(gameState.currentPlayer));
-  
-  // Navigate to the specific game
-  switch(gameType) {
-    case 'living-things':
-      window.location.href = 'living-things.html';
-      break;
-    case 'kpop-demon-hunters':
-      window.location.href = 'kpop-demon-hunters.html';
-      break;
-    case 'lilo-stitch':
-      window.location.href = 'lilo-stitch.html';
-      break;
-  }
 }
 
 function startTimer() {
@@ -633,6 +597,17 @@ function toggleMute() {
   gameState.soundEnabled = !gameState.soundEnabled;
   const soundIcon = document.getElementById('sound-icon');
   soundIcon.textContent = gameState.soundEnabled ? '🔊' : '🔇';
+}
+
+function logout() {
+  // Confirm logout
+  if (confirm('¿Estás seguro de que quieres cerrar sesión? Otro usuario podrá iniciar sesión.')) {
+    // Clear session storage
+    sessionStorage.removeItem('gameCenter_currentPlayer');
+    
+    // Redirect to login page
+    window.location.href = 'homegames.html';
+  }
 }
 
 function playSound(type) {
@@ -680,7 +655,7 @@ function playTone(audioContext, frequency, duration) {
 }
 
 function createMatchConfetti() {
-  const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+  const colors = ['#00BCD4', '#4FC3F7', '#81C784', '#FFB74D', '#F8BBD9', '#CE93D8'];
   
   // Smaller confetti burst for each match
   for (let i = 0; i < 15; i++) {
@@ -716,7 +691,7 @@ function createMatchConfetti() {
 }
 
 function createConfetti() {
-  const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+  const colors = ['#00BCD4', '#4FC3F7', '#81C784', '#FFB74D', '#F8BBD9', '#CE93D8'];
   
   // Big celebration confetti for game completion
   for (let i = 0; i < 50; i++) {
@@ -753,7 +728,6 @@ function createConfetti() {
 
 function hideModal() {
   document.getElementById('success-modal').classList.add('hidden');
-  // Also hide fact display if it's open
   document.getElementById('fact-display').classList.add('hidden');
 }
 
@@ -813,15 +787,13 @@ async function confirmResetLeaderboard() {
   
   try {
     // Clear local storage
-    localStorage.removeItem('livingThingsScores');
-    console.log('Local scores cleared');
+    localStorage.removeItem('lilo-stitchScores');
+    console.log('Local Lilo & Stitch scores cleared');
     
     // Clear Firebase if available
     if (window.firebaseDB) {
-      // Note: This requires getting all documents and deleting them
-      // Firebase doesn't have a "clear collection" method
       const q = window.firebaseQuery(
-        window.firebaseCollection(window.firebaseDB, 'livingThingsScores')
+        window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores')
       );
       const querySnapshot = await window.firebaseGetDocs(q);
       
@@ -833,171 +805,32 @@ async function confirmResetLeaderboard() {
       
       if (deletePromises.length > 0) {
         await Promise.all(deletePromises);
-        console.log(`Deleted ${deletePromises.length} scores from Firebase`);
+        console.log(`Deleted ${deletePromises.length} Lilo & Stitch scores from Firebase`);
       }
     }
     
     // Hide modal and refresh leaderboard
     hideResetModal();
-    alert('✅ Leaderboard has been reset successfully!');
+    alert('✅ Lilo & Stitch leaderboard has been reset successfully!');
     
     // Refresh leaderboard display
     showLeaderboard();
     
   } catch (error) {
-    console.error('Error resetting leaderboard:', error);
+    console.error('Error resetting Lilo & Stitch leaderboard:', error);
     alert('❌ Error resetting leaderboard. Check console for details.');
   }
 }
 
 function showSection(sectionId) {
   // Hide all sections
-  const sections = ['login-section', 'game-selection-section', 'leaderboard-section'];
+  const sections = ['game-section', 'leaderboard-section'];
   sections.forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
   
   // Show target section
   document.getElementById(sectionId).classList.remove('hidden');
-}
-
-// Current active leaderboard game
-let currentLeaderboardGame = 'living-things';
-
-function showGameLeaderboard(gameType) {
-  currentLeaderboardGame = gameType;
-  
-  // Update tab appearance
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  // Load leaderboard for specific game
-  loadGameLeaderboard(gameType);
-}
-
-async function loadGameLeaderboard(gameType) {
-  const leaderboardList = document.getElementById('leaderboard-list');
-  
-  // Show loading message
-  leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">🔄 Loading leaderboard...</div>';
-  
-  let scores = [];
-  let firebaseAvailable = false;
-  let firebaseHasScores = false;
-  
-  try {
-    // Try to get scores from Firebase first
-    if (window.firebaseDB) {
-      firebaseAvailable = true;
-      const collectionName = `${gameType}Scores`;
-      const q = window.firebaseQuery(
-        window.firebaseCollection(window.firebaseDB, collectionName),
-        window.firebaseOrderBy('score', 'desc'),
-        window.firebaseLimit(20)
-      );
-      const querySnapshot = await window.firebaseGetDocs(q);
-      scores = querySnapshot.docs.map(doc => doc.data());
-      firebaseHasScores = scores.length > 0;
-      console.log(`Loaded ${gameType} scores from Firebase:`, scores.length);
-    }
-  } catch (error) {
-    console.log('Firebase not available, using local scores:', error.message);
-    firebaseAvailable = false;
-  }
-  
-  // Only use local scores if Firebase is not available at all
-  if (!firebaseAvailable && scores.length === 0) {
-    const localKey = `${gameType}Scores`;
-    scores = JSON.parse(localStorage.getItem(localKey) || '[]');
-    console.log(`Using local ${gameType} scores (Firebase unavailable):`, scores.length);
-  } else if (firebaseAvailable && !firebaseHasScores) {
-    // Firebase is available but empty - show empty leaderboard
-    scores = [];
-    console.log(`Firebase ${gameType} is empty - showing empty leaderboard`);
-  }
-  
-  // Remove duplicate users - keep only highest score per user
-  const uniqueScores = [];
-  const seenUsers = new Set();
-  
-  scores.forEach(score => {
-    if (!seenUsers.has(score.name.toLowerCase())) {
-      seenUsers.add(score.name.toLowerCase());
-      uniqueScores.push(score);
-    }
-  });
-  
-  scores = uniqueScores;
-  
-  if (scores.length === 0) {
-    leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">No scores yet! Be the first to play! 🌟</div>';
-  } else {
-    leaderboardList.innerHTML = '';
-    
-    // Add header to show game and data source
-    const sourceInfo = document.createElement('div');
-    sourceInfo.style.textAlign = 'center';
-    sourceInfo.style.fontSize = '0.8rem';
-    sourceInfo.style.color = '#888';
-    sourceInfo.style.marginBottom = '1rem';
-    
-    const gameNames = {
-      'living-things': '🌿 Living Things',
-      'kpop-demon-hunters': '🎵 K-pop Demon Hunters',
-      'lilo-stitch': '🌺 Lilo & Stitch'
-    };
-    
-    if (firebaseAvailable) {
-      sourceInfo.innerHTML = `${gameNames[gameType]} - ☁️ Global Leaderboard`;
-    } else {
-      sourceInfo.innerHTML = `${gameNames[gameType]} - 💾 Local Scores`;
-    }
-    
-    leaderboardList.appendChild(sourceInfo);
-    
-    scores.forEach((score, index) => {
-      const item = document.createElement('div');
-      item.className = 'leaderboard-item';
-      
-      const rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : '';
-      const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
-      
-      item.innerHTML = `
-        <div class="leaderboard-rank ${rankClass}">${rankEmoji}</div>
-        <img src="images/${score.photo}" alt="${score.name}" class="leaderboard-avatar" onerror="this.src='images/icono.png'">
-        <div class="leaderboard-info">
-          <div class="leaderboard-name">${score.name}</div>
-          <div class="leaderboard-stats">${formatTime(score.time)} • ${score.moves} moves</div>
-        </div>
-        <div class="leaderboard-score">${score.score}</div>
-      `;
-      
-      leaderboardList.appendChild(item);
-    });
-  }
-}
-
-function showMessage(element, message, type) {
-  element.textContent = message;
-  element.className = `login-message ${type}`;
-}
-
-function showWelcomeMessage(element, player) {
-  element.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 0.5rem 0;">
-      <img src="images/${player.photo}" alt="${player.displayName}" 
-           style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 3px solid #4ECDC4;"
-           onerror="this.src='images/icono.png'">
-      <span style="font-size: 1.2rem; font-weight: bold; color: #4ECDC4;">
-        Welcome ${player.displayName}! 🌟
-      </span>
-    </div>
-  `;
-  element.className = 'login-message success';
-}
-
-function capitalizeFirst(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function showLeaderboardResetNotification() {
@@ -1018,7 +851,7 @@ function showLeaderboardResetNotification() {
     text-align: center;
     animation: slideDown 0.3s ease-out;
   `;
-  notification.innerHTML = '🔄 Leaderboard has been reset by teacher';
+  notification.innerHTML = '🔄 Lilo & Stitch leaderboard has been reset by teacher';
   
   // Add animation keyframes if not already added
   if (!document.querySelector('#reset-notification-styles')) {

@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Living Things Memory Game</title>
+  <title>Lilo & Stitch - Memory Game</title>
   <link rel="icon" href="images/icono.png" type="image/png">
-  <link rel="stylesheet" href="living-things-styles.css">
+  <link rel="stylesheet" href="lilo-stitch-styles.css">
 </head>
 <body>
   <header class="game-header">
     <button class="mute-btn" onclick="toggleMute()" title="Sound on/off">
       <span id="sound-icon">🔊</span>
     </button>
-    <h1>☘️ Living Things Memory 🦋</h1>
+    <h1>🌺 Lilo & Stitch Adventure 🌊</h1>
     <div class="player-info logged-in">
       <img id="player-avatar" src="" alt="Player" class="player-avatar">
       <span id="player-name" class="player-name"></span>
@@ -54,7 +54,7 @@
         <div class="fact-content">
           <h3 id="fact-title"></h3>
           <p id="fact-text"></p>
-          <button onclick="closeFact()" class="fact-close">Got it! 👍</button>
+          <button onclick="closeFact()" class="fact-close">Ohana! 🌺</button>
         </div>
       </div>
     </section>
@@ -62,7 +62,7 @@
     <!-- Leaderboard Section -->
     <section id="leaderboard-section" class="leaderboard-section hidden">
       <div class="leaderboard-card">
-        <h2>🏆 Living Things Leaderboard 🏆</h2>
+        <h2>🏆 Lilo & Stitch Leaderboard 🏆</h2>
         <div id="leaderboard-list" class="leaderboard-list">
           <!-- Leaderboard will be populated by JavaScript -->
         </div>
@@ -77,10 +77,10 @@
     <!-- Success Modal -->
     <div id="success-modal" class="modal hidden">
       <div class="modal-content">
-        <h2>🎉 Congratulations! 🎉</h2>
+        <h2>🎉 Ohana Adventure Complete! 🎉</h2>
         <div id="final-stats"></div>
         <div class="modal-buttons">
-          <button onclick="startNewGame()" class="modal-btn">🔄 Play Again</button>
+          <button onclick="startNewGame()" class="modal-btn">🔄 New Adventure</button>
           <button onclick="showLeaderboard()" class="modal-btn">🏆 View Leaderboard</button>
           <button onclick="backToHome()" class="modal-btn">🏠 Game Center</button>
         </div>
@@ -148,6 +148,6 @@
     window.firebaseDeleteDoc = deleteDoc;
     window.firebaseOnSnapshot = onSnapshot;
   </script>
-  <script src="living-things-game.js"></script>
+  <script src="lilo-stitch.js"></script>
 </body>
 </html>
