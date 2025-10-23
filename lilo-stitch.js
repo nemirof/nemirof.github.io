@@ -168,27 +168,27 @@ async function migrateLocalScoresToFirebase() {
 }
 
 async function checkFirebaseStatus() {
-  console.log('🔍 Checking Lilo & Stitch Firebase connection...');
+  console.log('🔍 Checking Lilo & Stitch Smart Cloud Storage connection...');
   
   try {
     if (window.firebaseDB) {
-      // Try to read from Firebase to test connection
+      // Try to read from Smart Cloud Storage to test connection
       const testQuery = window.firebaseQuery(
         window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'),
         window.firebaseLimit(1)
       );
       
       const snapshot = await window.firebaseGetDocs(testQuery);
-      console.log('✅ Lilo & Stitch Firebase connection successful!');
-      console.log(`📊 Current Lilo & Stitch scores in Firebase: ${snapshot.docs.length > 0 ? 'Found data' : 'Empty collection'}`);
+      console.log('✅ Lilo & Stitch Smart Cloud Storage connection successful!');
+      console.log(`📊 Current Lilo & Stitch scores in cloud: ${snapshot.docs.length > 0 ? 'Found data' : 'Empty collection'}`);
       
       return true;
     } else {
-      console.log('❌ Firebase not initialized for Lilo & Stitch game');
+      console.log('❌ Smart Cloud Storage not initialized for Lilo & Stitch game');
       return false;
     }
   } catch (error) {
-    console.log('❌ Lilo & Stitch Firebase connection failed:', error.message);
+    console.log('❌ Lilo & Stitch Smart Cloud Storage connection failed:', error.message);
     return false;
   }
 }
@@ -210,12 +210,12 @@ function setupFirebaseListener() {
       );
       
       leaderboardListener = window.firebaseOnSnapshot(q, (snapshot) => {
-        console.log('Firebase Lilo & Stitch leaderboard changed:', snapshot.docs.length, 'scores');
+        console.log('Smart Cloud Storage Lilo & Stitch leaderboard changed:', snapshot.docs.length, 'scores');
         
         // If we're currently viewing the leaderboard, refresh it
         const leaderboardSection = document.getElementById('leaderboard-section');
         if (!leaderboardSection.classList.contains('hidden')) {
-          console.log('Auto-refreshing Lilo & Stitch leaderboard due to Firebase changes');
+          console.log('Auto-refreshing Lilo & Stitch leaderboard due to cloud changes');
           showLeaderboard();
         }
         
@@ -507,31 +507,33 @@ async function saveScore() {
     time: gameState.timer,
     moves: gameState.moves,
     date: new Date().toISOString(),
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    game: 'lilo-stitch',
+    device: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop'
   };
   
-  let firebaseSaved = false;
+  let cloudSaved = false;
   
   try {
-    // Save to Firebase first (priority)
+    // Save to Smart Cloud Storage first (priority)
     if (window.firebaseDB) {
       await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'), newScore);
-      console.log('✅ Lilo & Stitch score saved to Firebase successfully!');
-      firebaseSaved = true;
+      console.log('✅ Lilo & Stitch score saved to Smart Cloud Storage successfully!');
+      cloudSaved = true;
       
-      // Clear local scores if Firebase save was successful to prevent duplicates
+      // Clear old local scores to prevent duplicates
       localStorage.removeItem('lilo-stitchScores');
-      console.log('Local scores cleared after successful Firebase save');
+      console.log('Old local scores cleared after successful cloud save');
     } else {
-      console.log('⚠️ Firebase not initialized');
+      console.log('⚠️ Smart Cloud Storage not initialized');
     }
   } catch (error) {
-    console.log('❌ Firebase save failed:', error.message);
-    firebaseSaved = false;
+    console.log('❌ Smart Cloud Storage save failed:', error.message);
+    cloudSaved = false;
   }
   
-  // Only save locally if Firebase failed
-  if (!firebaseSaved) {
+  // Only save locally if cloud failed
+  if (!cloudSaved) {
     console.log('💾 Saving score locally as fallback');
     const localScores = JSON.parse(localStorage.getItem('lilo-stitchScores') || '[]');
     localScores.push(newScore);
@@ -556,9 +558,9 @@ async function showLeaderboard() {
   let dataSource = '';
   
   try {
-    // Always try Firebase first (global scores)
+    // Always try Smart Cloud Storage first (global scores)
     if (window.firebaseDB) {
-      console.log('🔥 Attempting to load Lilo & Stitch scores from Firebase...');
+      console.log('🌐 Attempting to load Lilo & Stitch scores from Smart Cloud Storage...');
       firebaseAvailable = true;
       
       const q = window.firebaseQuery(
@@ -571,22 +573,22 @@ async function showLeaderboard() {
       scores = querySnapshot.docs.map(doc => doc.data());
       firebaseHasScores = scores.length > 0;
       
-      console.log(`✅ Successfully loaded ${scores.length} Lilo & Stitch scores from Firebase`);
+      console.log(`✅ Successfully loaded ${scores.length} Lilo & Stitch scores from Smart Cloud Storage`);
       
       if (firebaseHasScores) {
-        dataSource = 'firebase';
-        // Clear local scores when we get Firebase data to avoid confusion
+        dataSource = 'cloud';
+        // Clear old local scores when we get cloud data to avoid confusion
         const localScores = JSON.parse(localStorage.getItem('lilo-stitchScores') || '[]');
         if (localScores.length > 0) {
-          console.log('🧹 Clearing local Lilo & Stitch scores - using Firebase data');
+          console.log('🧹 Clearing old local Lilo & Stitch scores - using cloud data');
           localStorage.removeItem('lilo-stitchScores');
         }
       }
     } else {
-      console.log('⚠️ Firebase not initialized');
+      console.log('⚠️ Smart Cloud Storage not initialized');
     }
   } catch (error) {
-    console.log('❌ Firebase error:', error.message);
+    console.log('❌ Smart Cloud Storage error:', error.message);
     firebaseAvailable = false;
   }
   
@@ -629,11 +631,11 @@ async function showLeaderboard() {
     sourceInfo.style.color = '#888';
     sourceInfo.style.marginBottom = '1rem';
     
-    if (dataSource === 'firebase') {
+    if (dataSource === 'cloud') {
       sourceInfo.innerHTML = '☁️ Global Lilo & Stitch Ohana Leaderboard (Synced across all devices)';
       sourceInfo.style.color = '#4ECDC4';
     } else if (dataSource === 'local') {
-      sourceInfo.innerHTML = '💾 Local Lilo & Stitch Scores (This Device Only - Firebase connection failed)';
+      sourceInfo.innerHTML = '💾 Local Lilo & Stitch Scores (This Device Only - Cloud sync failed)';
       sourceInfo.style.color = '#FF6B6B';
     }
     

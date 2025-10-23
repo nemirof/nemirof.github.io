@@ -121,37 +121,169 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
-    // Simple Cloud Storage Simulation using localStorage with cross-device sync
-    class CloudStorage {
+    // Smart Cross-Device Storage with Local + Cloud Hybrid
+    class SmartCloudStorage {
       constructor() {
-        this.storageKey = 'nemiroff-game-center-cloud';
+        this.cloudUrl = 'https://nemirof.github.io/scores.json';
+        this.localKey = 'nemiroff-game-center-v2';
         this.listeners = new Map();
+        this.cloudCache = null;
+        this.lastSync = 0;
         
-        // Simulate cloud by checking for updates every 2 seconds
-        setInterval(() => this.checkForUpdates(), 2000);
+        // Load local data immediately
+        this.loadLocalData();
+        
+        // Sync with cloud periodically
+        setInterval(() => this.syncWithCloud(), 15000);
+        
+        // Initial cloud sync
+        setTimeout(() => this.syncWithCloud(), 1000);
+      }
+      
+      loadLocalData() {
+        try {
+          const localData = localStorage.getItem(this.localKey);
+          if (localData) {
+            this.cloudCache = JSON.parse(localData);
+            console.log('📱 Loaded local data:', Object.keys(this.cloudCache || {}).length, 'collections');
+          } else {
+            this.cloudCache = {
+              "livingThingsScores": [],
+              "kpop-demon-huntersScores": [],
+              "lilo-stitchScores": []
+            };
+          }
+        } catch {
+          this.cloudCache = {
+            "livingThingsScores": [],
+            "kpop-demon-huntersScores": [],
+            "lilo-stitchScores": []
+          };
+        }
+      }
+      
+      async syncWithCloud() {
+        try {
+          const now = Date.now();
+          if (now - this.lastSync < 10000) return; // Rate limiting
+          this.lastSync = now;
+          
+          console.log('🔄 Attempting cloud sync...');
+          
+          const response = await fetch(`${this.cloudUrl}?t=${now}`, {
+            cache: 'no-cache',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate'
+            }
+          });
+          
+          if (response.ok) {
+            const cloudData = await response.json();
+            
+            // Merge cloud data with local data (local takes precedence for newer scores)
+            const mergedData = this.mergeData(this.cloudCache, cloudData);
+            
+            if (JSON.stringify(mergedData) !== JSON.stringify(this.cloudCache)) {
+              this.cloudCache = mergedData;
+              this.saveLocalData();
+              
+              console.log('🌐 Cloud sync successful - data updated');
+              
+              // Notify listeners of updates
+              for (const collection of Object.keys(this.cloudCache)) {
+                if (Array.isArray(this.cloudCache[collection])) {
+                  this.notifyListeners(collection);
+                }
+              }
+            } else {
+              console.log('🌐 Cloud sync successful - no changes');
+            }
+            
+            return true;
+          }
+        } catch (error) {
+          console.log('📡 Cloud sync failed:', error.message);
+        }
+        return false;
+      }
+      
+      mergeData(localData, cloudData) {
+        const merged = { ...localData };
+        
+        for (const collection in cloudData) {
+          if (Array.isArray(cloudData[collection])) {
+            if (!merged[collection]) merged[collection] = [];
+            
+            // Create a map of existing scores by user
+            const localScoreMap = new Map();
+            merged[collection].forEach(score => {
+              if (score.name) {
+                const existing = localScoreMap.get(score.name.toLowerCase());
+                if (!existing || score.score > existing.score) {
+                  localScoreMap.set(score.name.toLowerCase(), score);
+                }
+              }
+            });
+            
+            // Add cloud scores if they're better or new
+            cloudData[collection].forEach(score => {
+              if (score.name) {
+                const existing = localScoreMap.get(score.name.toLowerCase());
+                if (!existing || score.score > existing.score) {
+                  localScoreMap.set(score.name.toLowerCase(), score);
+                }
+              }
+            });
+            
+            // Convert back to array and sort
+            merged[collection] = Array.from(localScoreMap.values())
+              .sort((a, b) => b.score - a.score);
+          }
+        }
+        
+        return merged;
+      }
+      
+      saveLocalData() {
+        try {
+          localStorage.setItem(this.localKey, JSON.stringify(this.cloudCache));
+        } catch (error) {
+          console.log('Failed to save local data:', error.message);
+        }
       }
       
       async addDoc(collection, data) {
-        const cloudData = this.getCloudData();
-        if (!cloudData[collection]) cloudData[collection] = [];
+        if (!this.cloudCache) this.loadLocalData();
+        if (!this.cloudCache[collection]) this.cloudCache[collection] = [];
         
         const doc = { 
           id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+          timestamp: Date.now(),
           ...data 
         };
         
-        cloudData[collection].push(doc);
-        this.saveCloudData(cloudData);
-        console.log(`✅ Document added to ${collection}:`, doc);
+        // Add to collection
+        this.cloudCache[collection].push(doc);
         
-        // Notify listeners
+        // Keep only top 50 scores per collection to prevent bloat
+        this.cloudCache[collection].sort((a, b) => b.score - a.score);
+        this.cloudCache[collection] = this.cloudCache[collection].slice(0, 50);
+        
+        // Save locally immediately
+        this.saveLocalData();
+        
+        console.log(`✅ Score saved:`, doc.name, doc.score, 'points');
+        
+        // Notify listeners immediately
         this.notifyListeners(collection);
+        
         return { id: doc.id };
       }
       
       async getDocs(collection, orderBy = null, limit = null) {
-        const cloudData = this.getCloudData();
-        let docs = cloudData[collection] || [];
+        if (!this.cloudCache) this.loadLocalData();
+        
+        let docs = this.cloudCache[collection] || [];
         
         if (orderBy && orderBy.field === 'score' && orderBy.direction === 'desc') {
           docs.sort((a, b) => b.score - a.score);
@@ -161,14 +293,15 @@
           docs = docs.slice(0, limit);
         }
         
-        console.log(`📊 Retrieved ${docs.length} documents from ${collection}`);
+        console.log(`📊 Retrieved ${docs.length} scores from ${collection}`);
         return { docs: docs.map(doc => ({ data: () => doc })) };
       }
       
       async deleteCollection(collection) {
-        const cloudData = this.getCloudData();
-        cloudData[collection] = [];
-        this.saveCloudData(cloudData);
+        if (!this.cloudCache) this.loadLocalData();
+        this.cloudCache[collection] = [];
+        this.saveLocalData();
+        
         console.log(`🗑️ Collection ${collection} cleared`);
         this.notifyListeners(collection);
       }
@@ -192,34 +325,16 @@
       notifyListeners(collection) {
         const callbacks = this.listeners.get(collection);
         if (callbacks) {
-          const cloudData = this.getCloudData();
-          const docs = cloudData[collection] || [];
+          const docs = this.cloudCache && this.cloudCache[collection] ? this.cloudCache[collection] : [];
           callbacks.forEach(callback => {
             callback({ docs: docs.map(doc => ({ data: () => doc })) });
           });
         }
       }
-      
-      getCloudData() {
-        try {
-          return JSON.parse(localStorage.getItem(this.storageKey)) || {};
-        } catch {
-          return {};
-        }
-      }
-      
-      saveCloudData(data) {
-        localStorage.setItem(this.storageKey, JSON.stringify(data));
-      }
-      
-      checkForUpdates() {
-        // Simulate checking for updates from other devices
-        // In a real implementation, this would check a remote server
-      }
     }
     
-    // Initialize our cloud storage simulation
-    const cloudStorage = new CloudStorage();
+    // Initialize smart cloud storage
+    const cloudStorage = new SmartCloudStorage();
     
     // Make Firebase-like functions available globally
     window.firebaseDB = true; // Indicate Firebase is "available"
@@ -236,7 +351,7 @@
     window.firebaseDeleteDoc = () => {}; // Placeholder
     window.firebaseOnSnapshot = (query, callback) => cloudStorage.onSnapshot(query.collection, callback);
     
-    console.log('🚀 Cloud Storage Simulation initialized!');
+    console.log('🚀 Smart Cross-Device Storage initialized!');
   </script>
   <script src="living-things-game.js"></script>
 </body>
