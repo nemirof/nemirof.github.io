@@ -2,7 +2,7 @@
 
 ## Step 1: Create Firebase Project
 
-1. **Go to Firebase Console**: https://console.firebase.google.com/
+1. **Go to Firebase Console**: https://console.firebase.googl   e.com/
 2. **Click "Add project"**
 3. **Project name**: `nemiroff-games` (or any name you prefer)
 4. **Disable Google Analytics** (not needed for this project)

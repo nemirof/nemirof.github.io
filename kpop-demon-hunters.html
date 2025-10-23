@@ -121,19 +121,8 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
-    // Firebase Configuration - REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
-    // Get this from: https://console.firebase.google.com/project/YOUR_PROJECT/settings/general
+    // Firebase Configuration - REAL NEMIROFF GAMES PROJECT
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY_HERE",
-      authDomain: "your-project-id.firebaseapp.com", 
-      projectId: "your-project-id",
-      storageBucket: "your-project-id.appspot.com",
-      messagingSenderId: "123456789012",
-      appId: "1:123456789012:web:abcdef123456789"
-    };
-
-    // Demo Firebase Config (REPLACE THIS WITH YOUR REAL CONFIG)
-    const demoConfig = {
       apiKey: "AIzaSyDkpfhhN7UAUTw09aO9ugRKd6Q8xO8XzSo",
       authDomain: "nemiroff-games.firebaseapp.com",
       projectId: "nemiroff-games",
@@ -147,12 +136,12 @@
     let firebaseInitialized = false;
     
     try {
-      // Use demoConfig for now - replace with firebaseConfig when you have a real Firebase project
+      // Use real Firebase config for cross-device sync
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
       firebaseInitialized = true;
-      console.log('🔥 Firebase initialized successfully!');
-      console.log('⚠️ Using DEMO config - replace with real Firebase project for cross-device sync');
+      console.log('🔥 Firebase initialized successfully with REAL config!');
+      console.log('✅ Ready for cross-device synchronization!');
     } catch (error) {
       console.error('❌ Firebase initialization failed:', error);
       console.log('💾 Will use local storage as fallback');

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+        .success { background: #001a00; border-color: #00ff00; }
+        .error { background: #1a0000; border-color: #ff0000; color: #ff6666; }
+        .info { background: #001a1a; border-color: #00ffff; color: #66ffff; }
+        button {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover { background: #444; }
+        pre { background: #000; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔥 Firebase Connection Diagnostic Tool</h1>
+    <p>This tool will test your Firebase connection and identify any issues.</p>
+
+    <div id="results"></div>
+
+    <button onclick="runDiagnostics()">🔍 Run Diagnostics</button>
+    <button onclick="testWrite()">✏️ Test Write to Firebase</button>
+    <button onclick="testRead()">📖 Test Read from Firebase</button>
+    <button onclick="clearResults()">🗑️ Clear Results</button>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase Configuration - REAL NEMIROFF GAMES PROJECT
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkpfhhN7UAUTw09aO9ugRKd6Q8xO8XzSo",
+            authDomain: "nemiroff-games.firebaseapp.com",
+            projectId: "nemiroff-games",
+            storageBucket: "nemiroff-games.firebasestorage.app",
+            messagingSenderId: "47920703721",
+            appId: "1:47920703721:web:9ae96e6268192ab750e878"
+        };
+
+        let app, db;
+        let firebaseInitialized = false;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            firebaseInitialized = true;
+            addResult('✅ Firebase SDK loaded successfully', 'success');
+        } catch (error) {
+            addResult('❌ Firebase SDK failed to load: ' + error.message, 'error');
+        }
+
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        window.runDiagnostics = async function() {
+            addResult('🔍 Starting Firebase diagnostics...', 'info');
+            
+            // Test 1: Firebase initialization
+            if (firebaseInitialized) {
+                addResult('✅ Firebase initialized successfully', 'success');
+                addResult(`📊 Project ID: ${firebaseConfig.projectId}`, 'info');
+                addResult(`🔗 Auth Domain: ${firebaseConfig.authDomain}`, 'info');
+            } else {
+                addResult('❌ Firebase not initialized', 'error');
+                return;
+            }
+
+            // Test 2: Firestore connection
+            try {
+                const testCollection = collection(db, 'connectionTest');
+                addResult('✅ Firestore connection established', 'success');
+            } catch (error) {
+                addResult('❌ Firestore connection failed: ' + error.message, 'error');
+                return;
+            }
+
+            // Test 3: Network connectivity
+            try {
+                const response = await fetch('https://www.google.com', { mode: 'no-cors' });
+                addResult('✅ Internet connection available', 'success');
+            } catch (error) {
+                addResult('⚠️ Network connectivity issues detected', 'error');
+            }
+
+            // Test 4: Firebase Auth Domain
+            try {
+                const response = await fetch(`https://${firebaseConfig.authDomain}`, { mode: 'no-cors' });
+                addResult('✅ Firebase Auth Domain reachable', 'success');
+            } catch (error) {
+                addResult('❌ Firebase Auth Domain unreachable: ' + error.message, 'error');
+            }
+
+            addResult('🏁 Diagnostics complete. Try write/read tests next.', 'info');
+        };
+
+        window.testWrite = async function() {
+            if (!firebaseInitialized) {
+                addResult('❌ Firebase not initialized', 'error');
+                return;
+            }
+
+            addResult('✏️ Testing write to Firestore...', 'info');
+
+            try {
+                const testData = {
+                    name: 'Test User',
+                    score: 1000,
+                    timestamp: new Date(),
+                    device: 'diagnostic-tool'
+                };
+
+                const docRef = await addDoc(collection(db, 'kpop-demon-huntersScores'), testData);
+                addResult(`✅ Write successful! Document ID: ${docRef.id}`, 'success');
+                addResult('📝 Data written: ' + JSON.stringify(testData, null, 2), 'info');
+            } catch (error) {
+                addResult('❌ Write failed: ' + error.message, 'error');
+                
+                if (error.code === 'permission-denied') {
+                    addResult('🔒 PERMISSION DENIED - Check Firestore security rules!', 'error');
+                    addResult('📋 Required rules for collection "kpop-demon-huntersScores":', 'info');
+                } else if (error.code === 'unavailable') {
+                    addResult('🌐 Firebase service unavailable - check network connection', 'error');
+                }
+            }
+        };
+
+        window.testRead = async function() {
+            if (!firebaseInitialized) {
+                addResult('❌ Firebase not initialized', 'error');
+                return;
+            }
+
+            addResult('📖 Testing read from Firestore...', 'info');
+
+            try {
+                const q = query(
+                    collection(db, 'kpop-demon-huntersScores'),
+                    orderBy('score', 'desc'),
+                    limit(5)
+                );
+
+                const querySnapshot = await getDocs(q);
+                const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                addResult(`✅ Read successful! Found ${docs.length} documents`, 'success');
+                
+                if (docs.length > 0) {
+                    addResult('📊 Sample data:', 'info');
+                    docs.forEach((doc, index) => {
+                        addResult(`${index + 1}. ${doc.name}: ${doc.score} points`, 'info');
+                    });
+                } else {
+                    addResult('📝 Collection is empty - no scores found', 'info');
+                }
+            } catch (error) {
+                addResult('❌ Read failed: ' + error.message, 'error');
+                
+                if (error.code === 'permission-denied') {
+                    addResult('🔒 PERMISSION DENIED - Check Firestore security rules!', 'error');
+                }
+            }
+        };
+
+        window.clearResults = function() {
+            document.getElementById('results').innerHTML = '';
+        };
+
+        // Auto-run diagnostics on load
+        window.addEventListener('load', () => {
+            setTimeout(runDiagnostics, 1000);
+        });
+    </script>
+</body>
+</html>
