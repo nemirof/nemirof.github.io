@@ -562,9 +562,15 @@ async function showLeaderboard() {
   // Control admin button visibility when showing leaderboard
   toggleAdminButton();
   
-  // Show leaderboard section and load current game's leaderboard
+  // Show leaderboard section
   showSection('leaderboard-section');
-  loadGameLeaderboard(currentLeaderboardGame);
+  
+  // Load Living Things leaderboard specifically
+  await loadGameLeaderboard('living-things');
+}
+
+function backToGame() {
+  showSection('game-section');
 }
 
 function backToGameSelection() {
@@ -852,13 +858,19 @@ async function confirmResetLeaderboard() {
 
 function showSection(sectionId) {
   // Hide all sections
-  const sections = ['login-section', 'game-selection-section', 'leaderboard-section'];
+  const sections = ['game-section', 'leaderboard-section'];
   sections.forEach(id => {
-    document.getElementById(id).classList.add('hidden');
+    const section = document.getElementById(id);
+    if (section) {
+      section.classList.add('hidden');
+    }
   });
   
   // Show target section
-  document.getElementById(sectionId).classList.remove('hidden');
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) {
+    targetSection.classList.remove('hidden');
+  }
 }
 
 // Current active leaderboard game
