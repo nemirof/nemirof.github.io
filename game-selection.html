@@ -129,19 +129,22 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
-    // Working Firebase Configuration for Game Center
+    // Real Firebase Configuration for Nemiroff Games
     const firebaseConfig = {
-        apiKey: "AIzaSyBw8YvQJF5vF2YhXK0bYlE0fKbVFp5tF8Y",
-        authDomain: "nemiroff-game-center.firebaseapp.com",
-        projectId: "nemiroff-game-center",
-        storageBucket: "nemiroff-game-center.appspot.com",
-        messagingSenderId: "123456789012",
-        appId: "1:123456789012:web:abcdef123456"
+      apiKey: "AIzaSyAiKdxR7xZpA7zKvElHuBaEHlPv0DqMgBc",
+      authDomain: "nemiroff-games.firebaseapp.com",
+      projectId: "nemiroff-games",
+      storageBucket: "nemiroff-games.appspot.com",
+      messagingSenderId: "640163589876",
+      appId: "1:640163589876:web:eb1d2fbaa1b9797c3b5fe9"
     };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    
+    console.log('🔥 Firebase initialized successfully for Game Selection');
+    console.log('🔥 Project ID:', firebaseConfig.projectId);
     
     // Make Firebase functions available globally
     window.firebaseDB = db;
@@ -153,6 +156,8 @@
     window.firebaseLimit = limit;
     window.firebaseDeleteDoc = deleteDoc;
     window.firebaseOnSnapshot = onSnapshot;
+    
+    console.log('✅ Firebase functions attached to window object');
   </script>
   <script src="game-selection.js"></script>
 </body>

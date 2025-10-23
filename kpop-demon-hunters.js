@@ -615,7 +615,12 @@ async function showLeaderboard() {
     }
   });
   
-  scores = uniqueScores;
+  // Ensure scores are properly sorted by score (highest to lowest)
+  scores = uniqueScores.sort((a, b) => {
+    const scoreA = parseInt(a.score) || 0;
+    const scoreB = parseInt(b.score) || 0;
+    return scoreB - scoreA; // Higher scores first
+  });
   
   if (scores.length === 0) {
     leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">No demon hunters yet! Be the first to save the world! 🌟</div>';

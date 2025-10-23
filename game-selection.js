@@ -166,14 +166,19 @@ function showSection(sectionId) {
 let currentLeaderboardGame = 'living-things';
 
 function showGameLeaderboard(gameType) {
+  console.log(`🔍 showGameLeaderboard called with: ${gameType}`);
   currentLeaderboardGame = gameType;
   
   // Update tab appearance
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+  if (event && event.target) {
+    event.target.classList.add('active');
+  }
   
-  // Load leaderboard for specific game
-  loadGameLeaderboard(gameType);
+  // Wait a moment for Firebase to be ready, then load leaderboard
+  setTimeout(() => {
+    loadGameLeaderboard(gameType);
+  }, 200);
 }
 
 async function loadGameLeaderboard(gameType) {
@@ -186,35 +191,99 @@ async function loadGameLeaderboard(gameType) {
   let firebaseAvailable = false;
   let firebaseHasScores = false;
   
+  console.log(`🔍 DEBUG: Loading ${gameType} leaderboard...`);
+  console.log('🔍 DEBUG: Firebase DB available:', !!window.firebaseDB);
+  console.log('🔍 DEBUG: Firebase functions available:', {
+    firebaseCollection: !!window.firebaseCollection,
+    firebaseQuery: !!window.firebaseQuery,
+    firebaseOrderBy: !!window.firebaseOrderBy,
+    firebaseGetDocs: !!window.firebaseGetDocs
+  });
+  
   try {
     // Try to get scores from Firebase first
     if (window.firebaseDB) {
+      console.log(`🔥 Attempting to load ${gameType} scores from Firebase...`);
       firebaseAvailable = true;
-      const collectionName = `${gameType}Scores`;
+      // Convert game type to proper collection name (EXACT match with individual games)
+      let collectionName;
+      switch(gameType) {
+        case 'living-things':
+          collectionName = 'livingThingsScores';
+          break;
+        case 'kpop-demon-hunters':
+          collectionName = 'kpop-demon-huntersScores'; // Keep the hyphen!
+          break;
+        case 'lilo-stitch':
+          collectionName = 'lilo-stitchScores'; // Keep the hyphen!
+          break;
+        default:
+          collectionName = `${gameType}Scores`;
+      }
+      console.log(`🔍 Collection name: ${collectionName}`);
+      
       const q = window.firebaseQuery(
         window.firebaseCollection(window.firebaseDB, collectionName),
         window.firebaseOrderBy('score', 'desc'),
         window.firebaseLimit(20)
       );
+      console.log('🔍 Firebase query created');
+      
       const querySnapshot = await window.firebaseGetDocs(q);
+      console.log('🔍 Firebase query executed, docs:', querySnapshot.docs.length);
+      
       scores = querySnapshot.docs.map(doc => doc.data());
       firebaseHasScores = scores.length > 0;
-      console.log(`Loaded ${gameType} scores from Firebase:`, scores.length);
+      console.log(`✅ Successfully loaded ${scores.length} ${gameType} scores from Firebase`);
+      
+      if (scores.length > 0) {
+        console.log('🔍 Sample score data:', scores[0]);
+      }
+    } else {
+      console.log('⚠️ Firebase DB not available');
     }
   } catch (error) {
-    console.log('Firebase not available, using local scores:', error.message);
+    console.error(`❌ Firebase error for ${gameType}:`, error);
     firebaseAvailable = false;
   }
   
-  // Only use local scores if Firebase is not available at all
-  if (!firebaseAvailable && scores.length === 0) {
-    const localKey = `${gameType}Scores`;
-    scores = JSON.parse(localStorage.getItem(localKey) || '[]');
-    console.log(`Using local ${gameType} scores (Firebase unavailable):`, scores.length);
-  } else if (firebaseAvailable && !firebaseHasScores) {
-    // Firebase is available but empty - show empty leaderboard
-    scores = [];
-    console.log(`Firebase ${gameType} is empty - showing empty leaderboard`);
+  // Use local scores as fallback if Firebase failed or has no scores
+  if (!firebaseAvailable || !firebaseHasScores) {
+    console.log(`💾 Attempting to load ${gameType} scores from localStorage...`);
+    
+    // Try specific game key first (use the same collection name as Firebase)
+    let localKey = collectionName; // Use the same collection name we determined above
+    let localScores = JSON.parse(localStorage.getItem(localKey) || '[]');
+    
+    // Also try the backup storage with proper key mapping
+    if (localScores.length === 0) {
+      const backupData = JSON.parse(localStorage.getItem('nemiroff-games-backup') || '{}');
+      let backupKey;
+      switch(gameType) {
+        case 'living-things':
+          backupKey = 'livingThingsScores';
+          break;
+        case 'kpop-demon-hunters':
+          backupKey = 'kpop-demon-huntersScores'; // Keep the hyphen!
+          break;
+        case 'lilo-stitch':
+          backupKey = 'lilo-stitchScores'; // Keep the hyphen!
+          break;
+        default:
+          backupKey = `${gameType}Scores`;
+      }
+      localScores = backupData[backupKey] || [];
+      console.log(`💾 Checking backup storage for ${backupKey}:`, localScores.length);
+    }
+    
+    if (localScores.length > 0) {
+      scores = localScores;
+      console.log(`💾 Using ${scores.length} local ${gameType} scores`);
+      console.log('💾 Sample local score:', scores[0]);
+    } else {
+      scores = [];
+      console.log(`📭 No ${gameType} scores found anywhere (Firebase: ${firebaseAvailable ? 'available but empty' : 'unavailable'}, Local: empty)`);
+    }
   }
   
   // Remove duplicate users - keep only highest score per user
@@ -228,7 +297,12 @@ async function loadGameLeaderboard(gameType) {
     }
   });
   
-  scores = uniqueScores;
+  // Ensure scores are properly sorted by score (highest to lowest)
+  scores = uniqueScores.sort((a, b) => {
+    const scoreA = parseInt(a.score) || 0;
+    const scoreB = parseInt(b.score) || 0;
+    return scoreB - scoreA; // Higher scores first
+  });
   
   if (scores.length === 0) {
     leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">No scores yet! Be the first to play! 🌟</div>';
@@ -284,7 +358,11 @@ async function showLeaderboard() {
   
   // Show leaderboard section and load current game's leaderboard
   showSection('leaderboard-section');
-  loadGameLeaderboard(currentLeaderboardGame);
+  
+  // Wait a moment for Firebase to be fully initialized
+  setTimeout(() => {
+    loadGameLeaderboard(currentLeaderboardGame);
+  }, 100);
 }
 
 function formatTime(seconds) {
@@ -365,14 +443,28 @@ function checkPasswordAndReset() {
 async function confirmResetLeaderboard() {
   
   try {
+    // Get proper collection name (EXACT match with individual games)
+    let collectionName;
+    switch(currentLeaderboardGame) {
+      case 'living-things':
+        collectionName = 'livingThingsScores';
+        break;
+      case 'kpop-demon-hunters':
+        collectionName = 'kpop-demon-huntersScores'; // Keep the hyphen!
+        break;
+      case 'lilo-stitch':
+        collectionName = 'lilo-stitchScores'; // Keep the hyphen!
+        break;
+      default:
+        collectionName = `${currentLeaderboardGame}Scores`;
+    }
+    
     // Clear local storage for current game
-    const localKey = `${currentLeaderboardGame}Scores`;
-    localStorage.removeItem(localKey);
-    console.log(`Local ${currentLeaderboardGame} scores cleared`);
+    localStorage.removeItem(collectionName);
+    console.log(`Local ${currentLeaderboardGame} scores cleared (key: ${collectionName})`);
     
     // Clear Firebase if available
     if (window.firebaseDB) {
-      const collectionName = `${currentLeaderboardGame}Scores`;
       const q = window.firebaseQuery(
         window.firebaseCollection(window.firebaseDB, collectionName)
       );

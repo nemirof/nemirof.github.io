@@ -986,7 +986,23 @@ async function loadGameLeaderboard(gameType) {
       console.log(`🔥 Attempting to load ${gameType} scores from Firebase...`);
       firebaseAvailable = true;
       
-      const collectionName = `${gameType}Scores`;
+      // Convert game type to proper collection name (EXACT match with Firebase collections)
+      let collectionName;
+      switch(gameType) {
+        case 'living-things':
+          collectionName = 'livingThingsScores';
+          break;
+        case 'kpop-demon-hunters':
+          collectionName = 'kpop-demon-huntersScores';
+          break;
+        case 'lilo-stitch':
+          collectionName = 'lilo-stitchScores';
+          break;
+        default:
+          collectionName = `${gameType}Scores`;
+      }
+      console.log(`🔍 Using collection name: ${collectionName}`);
+      
       const q = window.firebaseQuery(
         window.firebaseCollection(window.firebaseDB, collectionName),
         window.firebaseOrderBy('score', 'desc'),
@@ -1002,7 +1018,7 @@ async function loadGameLeaderboard(gameType) {
       if (firebaseHasScores) {
         dataSource = 'firebase';
         // Clear local scores when we get Firebase data to avoid confusion
-        const localKey = `${gameType}Scores`;
+        const localKey = collectionName; // Use the same collection name we determined above
         const localScores = JSON.parse(localStorage.getItem(localKey) || '[]');
         if (localScores.length > 0) {
           console.log(`🧹 Clearing local ${gameType} scores - using Firebase data`);
@@ -1019,12 +1035,27 @@ async function loadGameLeaderboard(gameType) {
   
   // Use local scores only as absolute fallback
   if (!firebaseAvailable || !firebaseHasScores) {
-    const localKey = `${gameType}Scores`;
+    // Use the same collection name mapping as above
+    let localKey;
+    switch(gameType) {
+      case 'living-things':
+        localKey = 'livingThingsScores';
+        break;
+      case 'kpop-demon-hunters':
+        localKey = 'kpop-demon-huntersScores';
+        break;
+      case 'lilo-stitch':
+        localKey = 'lilo-stitchScores';
+        break;
+      default:
+        localKey = `${gameType}Scores`;
+    }
+    
     const localScores = JSON.parse(localStorage.getItem(localKey) || '[]');
     if (localScores.length > 0) {
       scores = localScores;
       dataSource = 'local';
-      console.log(`💾 Using ${scores.length} local ${gameType} scores as fallback`);
+      console.log(`💾 Using ${scores.length} local ${gameType} scores as fallback (key: ${localKey})`);
     } else {
       scores = [];
       dataSource = 'empty';
@@ -1043,7 +1074,12 @@ async function loadGameLeaderboard(gameType) {
     }
   });
   
-  scores = uniqueScores;
+  // Ensure scores are properly sorted by score (highest to lowest)
+  scores = uniqueScores.sort((a, b) => {
+    const scoreA = parseInt(a.score) || 0;
+    const scoreB = parseInt(b.score) || 0;
+    return scoreB - scoreA; // Higher scores first
+  });
   
   if (scores.length === 0) {
     leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">No scores yet! Be the first to play! 🌟</div>';
