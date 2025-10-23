@@ -121,10 +121,8 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
-    // TODO: Replace with your Firebase config
+    // Shared Firebase Configuration (same as other games for easier management)
     const firebaseConfig = {
-      // You'll need to add your Firebase configuration here
-      // Get this from Firebase Console -> Project Settings -> General -> Your apps
         apiKey: "AIzaSyAInw4Pp6AH4uOYA0DGXfdTv0mwATlkmlk",
         authDomain: "living-things-memory.firebaseapp.com",
         projectId: "living-things-memory",

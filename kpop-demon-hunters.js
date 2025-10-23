@@ -120,8 +120,77 @@ function initializeGame() {
     window.location.href = 'homegames.html';
   }
   
+  // Check Firebase connection status
+  checkFirebaseStatus();
+  
   // Set up Firebase real-time listener for leaderboard changes
   setupFirebaseListener();
+  
+  // Try to migrate local scores to Firebase
+  migrateLocalScoresToFirebase();
+}
+
+async function migrateLocalScoresToFirebase() {
+  console.log('🔄 Checking for local K-pop scores to migrate...');
+  
+  const localScores = JSON.parse(localStorage.getItem('kpop-demon-huntersScores') || '[]');
+  
+  if (localScores.length === 0) {
+    console.log('No local K-pop scores to migrate');
+    return;
+  }
+  
+  if (!window.firebaseDB) {
+    console.log('Firebase not available - keeping local scores');
+    return;
+  }
+  
+  try {
+    console.log(`🚀 Migrating ${localScores.length} local K-pop scores to Firebase...`);
+    
+    for (const score of localScores) {
+      await window.firebaseAddDoc(
+        window.firebaseCollection(window.firebaseDB, 'kpop-demon-huntersScores'), 
+        score
+      );
+    }
+    
+    console.log('✅ Successfully migrated all K-pop scores to Firebase!');
+    
+    // Clear local scores after successful migration
+    localStorage.removeItem('kpop-demon-huntersScores');
+    console.log('🧹 Local K-pop scores cleared after migration');
+    
+  } catch (error) {
+    console.log('❌ Migration failed:', error.message);
+    console.log('Keeping local scores as backup');
+  }
+}
+
+async function checkFirebaseStatus() {
+  console.log('🔍 Checking K-pop Firebase connection...');
+  
+  try {
+    if (window.firebaseDB) {
+      // Try to read from Firebase to test connection
+      const testQuery = window.firebaseQuery(
+        window.firebaseCollection(window.firebaseDB, 'kpop-demon-huntersScores'),
+        window.firebaseLimit(1)
+      );
+      
+      const snapshot = await window.firebaseGetDocs(testQuery);
+      console.log('✅ K-pop Firebase connection successful!');
+      console.log(`📊 Current K-pop scores in Firebase: ${snapshot.docs.length > 0 ? 'Found data' : 'Empty collection'}`);
+      
+      return true;
+    } else {
+      console.log('❌ Firebase not initialized for K-pop game');
+      return false;
+    }
+  } catch (error) {
+    console.log('❌ K-pop Firebase connection failed:', error.message);
+    return false;
+  }
 }
 
 function setupFirebaseListener() {
@@ -441,22 +510,35 @@ async function saveScore() {
     timestamp: Date.now()
   };
   
+  let firebaseSaved = false;
+  
   try {
-    // Save to Firebase if available
+    // Save to Firebase first (priority)
     if (window.firebaseDB) {
       await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'kpop-demon-huntersScores'), newScore);
-      console.log('K-pop score saved to Firebase successfully!');
+      console.log('✅ K-pop score saved to Firebase successfully!');
+      firebaseSaved = true;
+      
+      // Clear local scores if Firebase save was successful to prevent duplicates
+      localStorage.removeItem('kpop-demon-huntersScores');
+      console.log('Local scores cleared after successful Firebase save');
+    } else {
+      console.log('⚠️ Firebase not initialized');
     }
   } catch (error) {
-    console.log('Firebase not available, saving locally:', error.message);
+    console.log('❌ Firebase save failed:', error.message);
+    firebaseSaved = false;
   }
   
-  // Always save locally as backup
-  const localScores = JSON.parse(localStorage.getItem('kpop-demon-huntersScores') || '[]');
-  localScores.push(newScore);
-  localScores.sort((a, b) => b.score - a.score);
-  localScores.splice(20);
-  localStorage.setItem('kpop-demon-huntersScores', JSON.stringify(localScores));
+  // Only save locally if Firebase failed
+  if (!firebaseSaved) {
+    console.log('💾 Saving score locally as fallback');
+    const localScores = JSON.parse(localStorage.getItem('kpop-demon-huntersScores') || '[]');
+    localScores.push(newScore);
+    localScores.sort((a, b) => b.score - a.score);
+    localScores.splice(20);
+    localStorage.setItem('kpop-demon-huntersScores', JSON.stringify(localScores));
+  }
 }
 
 async function showLeaderboard() {
@@ -466,38 +548,60 @@ async function showLeaderboard() {
   const leaderboardList = document.getElementById('leaderboard-list');
   
   // Show loading message
-  leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">🔄 Loading leaderboard...</div>';
+  leaderboardList.innerHTML = '<div style="text-align: center; color: #666;">🔄 Loading K-pop leaderboard...</div>';
   
   let scores = [];
   let firebaseAvailable = false;
   let firebaseHasScores = false;
+  let dataSource = '';
   
   try {
-    // Try to get scores from Firebase first
+    // Always try Firebase first (global scores)
     if (window.firebaseDB) {
+      console.log('🔥 Attempting to load K-pop scores from Firebase...');
       firebaseAvailable = true;
+      
       const q = window.firebaseQuery(
         window.firebaseCollection(window.firebaseDB, 'kpop-demon-huntersScores'),
         window.firebaseOrderBy('score', 'desc'),
         window.firebaseLimit(20)
       );
+      
       const querySnapshot = await window.firebaseGetDocs(q);
       scores = querySnapshot.docs.map(doc => doc.data());
       firebaseHasScores = scores.length > 0;
-      console.log('Loaded K-pop scores from Firebase:', scores.length);
+      
+      console.log(`✅ Successfully loaded ${scores.length} K-pop scores from Firebase`);
+      
+      if (firebaseHasScores) {
+        dataSource = 'firebase';
+        // Clear local scores when we get Firebase data to avoid confusion
+        const localScores = JSON.parse(localStorage.getItem('kpop-demon-huntersScores') || '[]');
+        if (localScores.length > 0) {
+          console.log('🧹 Clearing local K-pop scores - using Firebase data');
+          localStorage.removeItem('kpop-demon-huntersScores');
+        }
+      }
+    } else {
+      console.log('⚠️ Firebase not initialized');
     }
   } catch (error) {
-    console.log('Firebase not available, using local scores:', error.message);
+    console.log('❌ Firebase error:', error.message);
     firebaseAvailable = false;
   }
   
-  // Only use local scores if Firebase is not available at all
-  if (!firebaseAvailable && scores.length === 0) {
-    scores = JSON.parse(localStorage.getItem('kpop-demon-huntersScores') || '[]');
-    console.log('Using local K-pop scores (Firebase unavailable):', scores.length);
-  } else if (firebaseAvailable && !firebaseHasScores) {
-    scores = [];
-    console.log('Firebase K-pop scores empty - showing empty leaderboard');
+  // Use local scores only as absolute fallback
+  if (!firebaseAvailable || !firebaseHasScores) {
+    const localScores = JSON.parse(localStorage.getItem('kpop-demon-huntersScores') || '[]');
+    if (localScores.length > 0) {
+      scores = localScores;
+      dataSource = 'local';
+      console.log(`💾 Using ${scores.length} local K-pop scores as fallback`);
+    } else {
+      scores = [];
+      dataSource = 'empty';
+      console.log('📭 No K-pop scores found anywhere');
+    }
   }
   
   // Remove duplicate users - keep only highest score per user
@@ -525,10 +629,12 @@ async function showLeaderboard() {
     sourceInfo.style.color = '#888';
     sourceInfo.style.marginBottom = '1rem';
     
-    if (firebaseAvailable) {
-      sourceInfo.innerHTML = '☁️ Global Demon Hunters Leaderboard';
-    } else {
-      sourceInfo.innerHTML = '💾 Local Demon Hunters (This Device Only)';
+    if (dataSource === 'firebase') {
+      sourceInfo.innerHTML = '☁️ Global K-pop Demon Hunters Leaderboard (Synced across all devices)';
+      sourceInfo.style.color = '#4ECDC4';
+    } else if (dataSource === 'local') {
+      sourceInfo.innerHTML = '💾 Local K-pop Scores (This Device Only - Firebase connection failed)';
+      sourceInfo.style.color = '#FF6B6B';
     }
     
     leaderboardList.appendChild(sourceInfo);
