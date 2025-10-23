@@ -122,7 +122,6 @@
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
     // Firebase Configuration - REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
-    // Get this from: https://console.firebase.google.com/project/YOUR_PROJECT/settings/general
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY_HERE",
       authDomain: "your-project-id.firebaseapp.com", 
@@ -134,12 +133,12 @@
 
     // Demo Firebase Config (REPLACE THIS WITH YOUR REAL CONFIG)
     const demoConfig = {
-      apiKey: "AIzaSyDkpfhhN7UAUTw09aO9ugRKd6Q8xO8XzSo",
-      authDomain: "nemiroff-games.firebaseapp.com",
-      projectId: "nemiroff-games",
-      storageBucket: "nemiroff-games.firebasestorage.app",
-      messagingSenderId: "47920703721",
-      appId: "1:47920703721:web:9ae96e6268192ab750e878"
+      apiKey: "demo-key-not-real",
+      authDomain: "demo-project.firebaseapp.com",
+      projectId: "demo-nemiroff-games", 
+      storageBucket: "demo-project.appspot.com",
+      messagingSenderId: "000000000000",
+      appId: "1:000000000000:web:demo123456789"
     };
 
     // Initialize Firebase
@@ -147,7 +146,6 @@
     let firebaseInitialized = false;
     
     try {
-      // Use demoConfig for now - replace with firebaseConfig when you have a real Firebase project
       //app = initializeApp(demoConfig);
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
@@ -174,176 +172,7 @@
         }
       }
       
-      async addDoc(collectionName, data) {
-        if (!this.isInitialized) {
-          console.log('💾 Firebase unavailable - saving locally');
-          return this.saveLocally(collectionName, data);
-        }
-
-        try {
-          const docRef = await addDoc(collection(db, collectionName), {
-            ...data,
-            timestamp: new Date(),
-            device: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop'
-          });
-          
-          console.log('🔥 Score saved to Firebase:', data.name, data.score, 'points');
-          return { id: docRef.id };
-        } catch (error) {
-          console.error('❌ Firebase save failed:', error);
-          console.log('💾 Falling back to local storage');
-          return this.saveLocally(collectionName, data);
-        }
-      }
-      
-      async getDocs(collectionName, orderByField = null, limitCount = null) {
-        if (!this.isInitialized) {
-          console.log('💾 Firebase unavailable - loading locally');
-          return this.loadLocally(collectionName, orderByField, limitCount);
-        }
-
-        try {
-          let q = collection(db, collectionName);
-          
-          if (orderByField) {
-            q = query(q, orderBy(orderByField, 'desc'));
-          }
-          
-          if (limitCount) {
-            q = query(q, limit(limitCount));
-          }
-
-          const querySnapshot = await getDocs(q);
-          const docs = querySnapshot.docs.map(doc => ({
-            data: () => ({ id: doc.id, ...doc.data() })
-          }));
-
-          console.log(`🔥 Loaded ${docs.length} scores from Firebase`);
-          return { docs };
-        } catch (error) {
-          console.error('❌ Firebase load failed:', error);
-          console.log('💾 Falling back to local storage');
-          return this.loadLocally(collectionName, orderByField, limitCount);
-        }
-      }
-      
-      onSnapshot(collectionName, callback) {
-        if (!this.isInitialized) {
-          console.log('💾 Firebase unavailable - no real-time updates');
-          return () => {}; // Return empty unsubscribe function
-        }
-
-        try {
-          const q = query(
-            collection(db, collectionName),
-            orderBy('score', 'desc'),
-            limit(20)
-          );
-
-          const unsubscribe = onSnapshot(q, (snapshot) => {
-            const docs = snapshot.docs.map(doc => ({
-              data: () => ({ id: doc.id, ...doc.data() })
-            }));
-            
-            console.log(`🔥 Firebase real-time update: ${docs.length} scores`);
-            callback({ docs });
-          });
-
-          return unsubscribe;
-        } catch (error) {
-          console.error('❌ Firebase listener failed:', error);
-          return () => {};
-        }
-      }
-      
-      saveLocally(collectionName, data) {
-        try {
-          const localData = JSON.parse(localStorage.getItem(this.localKey) || '{}');
-          if (!localData[collectionName]) localData[collectionName] = [];
-          
-          const doc = {
-            id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-            timestamp: new Date().toISOString(),
-            ...data
-          };
-          
-          localData[collectionName].push(doc);
-          localData[collectionName].sort((a, b) => b.score - a.score);
-          localData[collectionName] = localData[collectionName].slice(0, 20);
-          
-          localStorage.setItem(this.localKey, JSON.stringify(localData));
-          console.log('💾 Score saved locally:', data.name, data.score);
-          
-          return { id: doc.id };
-        } catch (error) {
-          console.error('❌ Local save failed:', error);
-          return { id: 'error' };
-        }
-      }
-      
-      loadLocally(collectionName, orderByField = null, limitCount = null) {
-        try {
-          const localData = JSON.parse(localStorage.getItem(this.localKey) || '{}');
-          let docs = localData[collectionName] || [];
-          
-          if (orderByField === 'score') {
-            docs.sort((a, b) => b.score - a.score);
-          }
-          
-          if (limitCount) {
-            docs = docs.slice(0, limitCount);
-          }
-          
-          console.log(`💾 Loaded ${docs.length} scores locally`);
-          return { docs: docs.map(doc => ({ data: () => doc })) };
-        } catch (error) {
-          console.error('❌ Local load failed:', error);
-          return { docs: [] };
-        }
-      }
-      
-      async deleteCollection(collectionName) {
-        if (!this.isInitialized) {
-          console.log('💾 Firebase unavailable - clearing locally');
-          const localData = JSON.parse(localStorage.getItem(this.localKey) || '{}');
-          localData[collectionName] = [];
-          localStorage.setItem(this.localKey, JSON.stringify(localData));
-          return;
-        }
-
-        try {
-          // Note: In a real app, you'd need to delete all documents in the collection
-          // Firebase doesn't have a direct "delete collection" method
-          console.log(`🔥 Collection ${collectionName} cleared in Firebase`);
-        } catch (error) {
-          console.error('❌ Firebase delete failed:', error);
-        }
-      }
-    }
-    
-    // Initialize Firebase storage
-    const firebaseStorage = new FirebaseStorage();
-
-    // Make Firebase functions available globally
-    window.firebaseDB = firebaseInitialized ? db : null;
-    window.firebaseCollection = (database, name) => name;
-    window.firebaseAddDoc = (collectionName, data) => firebaseStorage.addDoc(collectionName, data);
-    window.firebaseGetDocs = (query) => firebaseStorage.getDocs(query.collection, query.orderBy, query.limit);
-    window.firebaseQuery = (collectionName, ...params) => ({ 
-      collection: collectionName, 
-      orderBy: params.find(p => p && p.field) ? params.find(p => p.field) : null,
-      limit: params.find(p => typeof p === 'number') || null
-    });
-    window.firebaseOrderBy = (field, direction) => field;
-    window.firebaseLimit = (num) => num;
-    window.firebaseDeleteDoc = () => {}; // Placeholder
-    window.firebaseOnSnapshot = (query, callback) => firebaseStorage.onSnapshot(query.collection, callback);
-    
-    console.log('🔥 Firebase Cross-Device Storage initialized!', firebaseInitialized ? 'ONLINE' : 'OFFLINE');
-  </script>
-  <script src="living-things-game.js"></script>
-</body>
-</html>
+      loadLocalData() {
         try {
           const localData = localStorage.getItem(this.localKey);
           if (localData) {

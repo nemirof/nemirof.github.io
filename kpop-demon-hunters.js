@@ -630,10 +630,10 @@ async function showLeaderboard() {
     sourceInfo.style.marginBottom = '1rem';
     
     if (dataSource === 'firebase') {
-      sourceInfo.innerHTML = '☁️ Global K-pop Demon Hunters Leaderboard (Synced across all devices)';
+      sourceInfo.innerHTML = '🔥 Global K-pop Demon Hunters Leaderboard (Real-time sync across all devices)';
       sourceInfo.style.color = '#4ECDC4';
     } else if (dataSource === 'local') {
-      sourceInfo.innerHTML = '💾 Local K-pop Scores (This Device Only - Firebase connection failed)';
+      sourceInfo.innerHTML = '💾 Local K-pop Scores (This Device Only - Firebase offline)';
       sourceInfo.style.color = '#FF6B6B';
     }
     
