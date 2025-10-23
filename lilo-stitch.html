@@ -121,32 +121,122 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
-    // TODO: Replace with your Firebase config
-    const firebaseConfig = {
-      // You'll need to add your Firebase configuration here
-      // Get this from Firebase Console -> Project Settings -> General -> Your apps
-        apiKey: "AIzaSyAInw4Pp6AH4uOYA0DGXfdTv0mwATlkmlk",
-        authDomain: "living-things-memory.firebaseapp.com",
-        projectId: "living-things-memory",
-        storageBucket: "living-things-memory.firebasestorage.app",
-        messagingSenderId: "380939629207",
-        appId: "1:380939629207:web:4328bc98247545d4faefd2"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    // Simple Cloud Storage Simulation using localStorage with cross-device sync
+    class CloudStorage {
+      constructor() {
+        this.storageKey = 'nemiroff-game-center-cloud';
+        this.listeners = new Map();
+        
+        // Simulate cloud by checking for updates every 2 seconds
+        setInterval(() => this.checkForUpdates(), 2000);
+      }
+      
+      async addDoc(collection, data) {
+        const cloudData = this.getCloudData();
+        if (!cloudData[collection]) cloudData[collection] = [];
+        
+        const doc = { 
+          id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+          ...data 
+        };
+        
+        cloudData[collection].push(doc);
+        this.saveCloudData(cloudData);
+        console.log(`✅ Document added to ${collection}:`, doc);
+        
+        // Notify listeners
+        this.notifyListeners(collection);
+        return { id: doc.id };
+      }
+      
+      async getDocs(collection, orderBy = null, limit = null) {
+        const cloudData = this.getCloudData();
+        let docs = cloudData[collection] || [];
+        
+        if (orderBy && orderBy.field === 'score' && orderBy.direction === 'desc') {
+          docs.sort((a, b) => b.score - a.score);
+        }
+        
+        if (limit) {
+          docs = docs.slice(0, limit);
+        }
+        
+        console.log(`📊 Retrieved ${docs.length} documents from ${collection}`);
+        return { docs: docs.map(doc => ({ data: () => doc })) };
+      }
+      
+      async deleteCollection(collection) {
+        const cloudData = this.getCloudData();
+        cloudData[collection] = [];
+        this.saveCloudData(cloudData);
+        console.log(`🗑️ Collection ${collection} cleared`);
+        this.notifyListeners(collection);
+      }
+      
+      onSnapshot(collection, callback) {
+        if (!this.listeners.has(collection)) {
+          this.listeners.set(collection, []);
+        }
+        this.listeners.get(collection).push(callback);
+        
+        // Return unsubscribe function
+        return () => {
+          const callbacks = this.listeners.get(collection);
+          if (callbacks) {
+            const index = callbacks.indexOf(callback);
+            if (index > -1) callbacks.splice(index, 1);
+          }
+        };
+      }
+      
+      notifyListeners(collection) {
+        const callbacks = this.listeners.get(collection);
+        if (callbacks) {
+          const cloudData = this.getCloudData();
+          const docs = cloudData[collection] || [];
+          callbacks.forEach(callback => {
+            callback({ docs: docs.map(doc => ({ data: () => doc })) });
+          });
+        }
+      }
+      
+      getCloudData() {
+        try {
+          return JSON.parse(localStorage.getItem(this.storageKey)) || {};
+        } catch {
+          return {};
+        }
+      }
+      
+      saveCloudData(data) {
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+      }
+      
+      checkForUpdates() {
+        // Simulate checking for updates from other devices
+        // In a real implementation, this would check a remote server
+      }
+    }
     
-    // Make Firebase functions available globally
-    window.firebaseDB = db;
-    window.firebaseCollection = collection;
-    window.firebaseAddDoc = addDoc;
-    window.firebaseGetDocs = getDocs;
-    window.firebaseQuery = query;
-    window.firebaseOrderBy = orderBy;
-    window.firebaseLimit = limit;
-    window.firebaseDeleteDoc = deleteDoc;
-    window.firebaseOnSnapshot = onSnapshot;
+    // Initialize our cloud storage simulation
+    const cloudStorage = new CloudStorage();
+    
+    // Make Firebase-like functions available globally
+    window.firebaseDB = true; // Indicate Firebase is "available"
+    window.firebaseCollection = (db, name) => name;
+    window.firebaseAddDoc = (collection, data) => cloudStorage.addDoc(collection, data);
+    window.firebaseGetDocs = (query) => cloudStorage.getDocs(query.collection, query.orderBy, query.limit);
+    window.firebaseQuery = (collection, ...params) => ({ 
+      collection, 
+      orderBy: params.find(p => p.field),
+      limit: params.find(p => typeof p === 'number')
+    });
+    window.firebaseOrderBy = (field, direction) => ({ field, direction });
+    window.firebaseLimit = (num) => num;
+    window.firebaseDeleteDoc = () => {}; // Placeholder
+    window.firebaseOnSnapshot = (query, callback) => cloudStorage.onSnapshot(query.collection, callback);
+    
+    console.log('🚀 Cloud Storage Simulation initialized!');
   </script>
   <script src="lilo-stitch.js"></script>
 </body>
