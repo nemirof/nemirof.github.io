@@ -119,6 +119,32 @@ body {
   transform: scale(1.1);
 }
 
+.logout-icon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.logout-btn:hover .logout-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.logout-icon-btn {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.5rem;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+  vertical-align: middle;
+}
+
+.control-btn:hover .logout-icon-btn {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
 /* Main Container */
 .game-container {
   max-width: 1200px;
