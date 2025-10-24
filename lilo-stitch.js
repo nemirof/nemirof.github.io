@@ -512,18 +512,52 @@ async function saveScore() {
     device: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop'
   };
   
+  console.log(`🎯 Attempting to save score for ${newScore.name}: ${newScore.score} points`);
+  
   let cloudSaved = false;
   
   try {
-    // Save to Smart Cloud Storage first (priority)
+    // Save to Smart Cloud Storage with duplicate checking
     if (window.firebaseDB) {
-      await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'), newScore);
-      console.log('✅ Lilo & Stitch score saved to Smart Cloud Storage successfully!');
+      // First, check if player already has a score
+      const q = window.firebaseQuery(
+        window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'),
+        window.firebaseOrderBy('score', 'desc')
+      );
+      const querySnapshot = await window.firebaseGetDocs(q);
+      
+      let existingDocId = null;
+      let existingScore = null;
+      let shouldUpdate = false;
+      
+      // Look for existing player record
+      querySnapshot.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.name && data.name.toLowerCase() === newScore.name.toLowerCase()) {
+          existingDocId = doc.id;
+          existingScore = data.score || 0;
+          shouldUpdate = newScore.score > existingScore;
+          console.log(`🔍 Found existing score for ${newScore.name}: ${existingScore} vs new: ${newScore.score}`);
+        }
+      });
+      
+      if (shouldUpdate && existingDocId) {
+        // Update existing document
+        await window.firebaseUpdateDoc(window.firebaseDoc(window.firebaseDB, 'lilo-stitchScores', existingDocId), newScore);
+        console.log(`🔄 Updated ${newScore.name}'s score from ${existingScore} to ${newScore.score}`);
+      } else if (!existingDocId) {
+        // Add new document (first time player)
+        await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, 'lilo-stitchScores'), newScore);
+        console.log(`✨ Added new score for ${newScore.name}: ${newScore.score}`);
+      } else {
+        console.log(`⚠️ Score ${newScore.score} is not better than existing ${existingScore} for ${newScore.name}`);
+      }
+      
       cloudSaved = true;
       
       // Clear old local scores to prevent duplicates
       localStorage.removeItem('lilo-stitchScores');
-      console.log('Old local scores cleared after successful cloud save');
+      console.log('Old local scores cleared after successful cloud operation');
     } else {
       console.log('⚠️ Smart Cloud Storage not initialized');
     }
@@ -541,6 +575,15 @@ async function saveScore() {
     localScores.splice(20);
     localStorage.setItem('lilo-stitchScores', JSON.stringify(localScores));
   }
+  
+  // Refresh leaderboard if it's currently visible to show updated scores
+  setTimeout(() => {
+    const leaderboardSection = document.getElementById('leaderboard-section');
+    if (leaderboardSection && !leaderboardSection.classList.contains('hidden')) {
+      console.log('🔄 Refreshing leaderboard after score save...');
+      showLeaderboard();
+    }
+  }, 500);
 }
 
 async function showLeaderboard() {
@@ -607,15 +650,20 @@ async function showLeaderboard() {
   }
   
   // Remove duplicate users - keep only highest score per user
-  const uniqueScores = [];
-  const seenUsers = new Set();
+  const userBestScores = new Map();
   
+  // First pass: find the highest score for each user
   scores.forEach(score => {
-    if (!seenUsers.has(score.name.toLowerCase())) {
-      seenUsers.add(score.name.toLowerCase());
-      uniqueScores.push(score);
+    const userName = score.name.toLowerCase();
+    const userScore = parseInt(score.score) || 0;
+    
+    if (!userBestScores.has(userName) || userScore > parseInt(userBestScores.get(userName).score)) {
+      userBestScores.set(userName, score);
     }
   });
+  
+  // Convert map values back to array
+  const uniqueScores = Array.from(userBestScores.values());
   
   // Ensure scores are properly sorted by score (highest to lowest)
   scores = uniqueScores.sort((a, b) => {

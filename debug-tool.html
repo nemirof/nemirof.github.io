@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Debug Tool - Nemiroff Games</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .debug-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .debug-section h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .debug-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .debug-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .debug-output {
+            background: rgba(0, 0, 0, 0.3);
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        .status.warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <a href="game-selection.html" class="back-btn">← Volver</a>
+    
+    <div class="container">
+        <h1>🔧 Herramienta de Diagnóstico</h1>
+        
+        <div id="firebase-status" class="status warning">
+            🔄 Verificando conexión a Firebase...
+        </div>
+        
+        <div class="debug-section">
+            <h3>🕵️ Investigar Datos de Eva</h3>
+            <p style="color: white; opacity: 0.8;">
+                Investiga por qué Eva muestra diferentes puntuaciones en diferentes leaderboards.
+            </p>
+            <button class="debug-btn" onclick="runEvaInvestigation()">
+                🔍 Investigar Datos de Eva en Firebase
+            </button>
+            <button class="debug-btn" onclick="checkEvaLocalStorage()">
+                💾 Verificar localStorage de Eva
+            </button>
+            <div id="eva-output" class="debug-output" style="display: none;"></div>
+        </div>
+        
+        <div class="debug-section">
+            <h3>🧹 Limpieza de Duplicados</h3>
+            <p style="color: white; opacity: 0.8;">
+                Busca y reporta duplicados en todas las colecciones de Firebase.
+            </p>
+            <button class="debug-btn" onclick="runDuplicateCheck()">
+                🔍 Buscar Duplicados en Lilo & Stitch
+            </button>
+            <button class="debug-btn" onclick="runAllDuplicateCheck()">
+                🧹 Verificar Todos los Juegos
+            </button>
+            <div id="duplicate-output" class="debug-output" style="display: none;"></div>
+        </div>
+        
+        <div class="debug-section">
+            <h3>📊 Comparar Leaderboards</h3>
+            <p style="color: white; opacity: 0.8;">
+                Compara los datos entre View All Leaderboards y juegos individuales.
+            </p>
+            <button class="debug-btn" onclick="runLeaderboardComparison()">
+                🔄 Ejecutar Comparación Completa
+            </button>
+            <div id="comparison-output" class="debug-output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Firebase Configuration -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            orderBy, 
+            limit, 
+            getDocs,
+            doc,
+            updateDoc,
+            onSnapshot
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkCKzKhcOJavHQdB29TS87lPEJPnNhT6s",
+            authDomain: "nemiroff-games.firebaseapp.com",
+            projectId: "nemiroff-games",
+            storageBucket: "nemiroff-games.appspot.com",
+            messagingSenderId: "533001667409",
+            appId: "1:533001667409:web:45a5e2c0dc0e3a3c0c5e0c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Make Firebase functions available globally for debugging
+        window.firebaseDB = db;
+        window.firebaseCollection = collection;
+        window.firebaseQuery = query;
+        window.firebaseOrderBy = orderBy;
+        window.firebaseLimit = limit;
+        window.firebaseGetDocs = getDocs;
+        window.firebaseDoc = doc;
+        window.firebaseUpdateDoc = updateDoc;
+        window.firebaseOnSnapshot = onSnapshot;
+
+        // Update status
+        const statusDiv = document.getElementById('firebase-status');
+        statusDiv.className = 'status success';
+        statusDiv.innerHTML = '✅ Firebase conectado correctamente';
+        
+        console.log('🔥 Firebase debugging tools initialized');
+    </script>
+
+    <!-- Debug Scripts -->
+    <script src="debug-eva-investigation.js"></script>
+    <script src="debug-clean-duplicates.js"></script>
+    <script src="debug-lilo-discrepancy.js"></script>
+
+    <script>
+        function showOutput(elementId, content) {
+            const outputDiv = document.getElementById(elementId);
+            outputDiv.style.display = 'block';
+            outputDiv.textContent = content;
+        }
+        
+        function appendOutput(elementId, content) {
+            const outputDiv = document.getElementById(elementId);
+            outputDiv.style.display = 'block';
+            outputDiv.textContent += content + '\n';
+        }
+        
+        async function runEvaInvestigation() {
+            const outputDiv = document.getElementById('eva-output');
+            outputDiv.style.display = 'block';
+            outputDiv.textContent = '🕵️ Iniciando investigación de Eva...\n';
+            
+            // Redirect console output to our div
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                appendOutput('eva-output', args.join(' '));
+            };
+            
+            try {
+                await window.investigateEvaData();
+            } catch (error) {
+                appendOutput('eva-output', '❌ Error: ' + error.message);
+            }
+            
+            // Restore console.log
+            console.log = originalLog;
+        }
+        
+        function checkEvaLocalStorage() {
+            const outputDiv = document.getElementById('eva-output');
+            outputDiv.style.display = 'block';
+            outputDiv.textContent += '\n💾 Verificando localStorage...\n';
+            
+            // Redirect console output to our div
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                appendOutput('eva-output', args.join(' '));
+            };
+            
+            try {
+                window.checkEvaLocalStorage();
+            } catch (error) {
+                appendOutput('eva-output', '❌ Error: ' + error.message);
+            }
+            
+            // Restore console.log
+            console.log = originalLog;
+        }
+        
+        async function runDuplicateCheck() {
+            const outputDiv = document.getElementById('duplicate-output');
+            outputDiv.style.display = 'block';
+            outputDiv.textContent = '🧹 Buscando duplicados en Lilo & Stitch...\n';
+            
+            // Redirect console output to our div
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                appendOutput('duplicate-output', args.join(' '));
+            };
+            
+            try {
+                await window.cleanDuplicatesInFirebase('lilo-stitchScores');
+            } catch (error) {
+                appendOutput('duplicate-output', '❌ Error: ' + error.message);
+            }
+            
+            // Restore console.log
+            console.log = originalLog;
+        }
+        
+        async function runAllDuplicateCheck() {
+            const outputDiv = document.getElementById('duplicate-output');
+            outputDiv.style.display = 'block';
+            outputDiv.textContent = '🧹 Verificando duplicados en todos los juegos...\n';
+            
+            // Redirect console output to our div
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                appendOutput('duplicate-output', args.join(' '));
+            };
+            
+            try {
+                await window.cleanAllGameCollections();
+            } catch (error) {
+                appendOutput('duplicate-output', '❌ Error: ' + error.message);
+            }
+            
+            // Restore console.log
+            console.log = originalLog;
+        }
+        
+        async function runLeaderboardComparison() {
+            const outputDiv = document.getElementById('comparison-output');
+            outputDiv.style.display = 'block';
+            outputDiv.textContent = '📊 Iniciando comparación de leaderboards...\n';
+            
+            // Redirect console output to our div
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                appendOutput('comparison-output', args.join(' '));
+            };
+            
+            try {
+                await window.runFullLeaderboardComparison();
+            } catch (error) {
+                appendOutput('comparison-output', '❌ Error: ' + error.message);
+            }
+            
+            // Restore console.log
+            console.log = originalLog;
+        }
+    </script>
+</body>
+</html>

@@ -119,7 +119,7 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, onSnapshot, updateDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
     
     // Firebase Configuration - REAL NEMIROFF GAMES PROJECT
     const firebaseConfig = {
@@ -181,6 +181,53 @@
           console.error('❌ Firebase save failed:', error);
           console.log('💾 Falling back to local storage');
           return this.saveLocally(collectionName, data);
+        }
+      }
+      
+      async updateDoc(docRef, data) {
+        if (!this.isInitialized) {
+          console.log('💾 Firebase unavailable - cannot update document');
+          return this.updateLocally(docRef, data);
+        }
+
+        try {
+          const firebaseDocRef = doc(db, docRef.collection, docRef.id);
+          await updateDoc(firebaseDocRef, {
+            ...data,
+            timestamp: new Date(),
+            device: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop'
+          });
+          
+          console.log('🔥 Score updated in Firebase:', data.name, data.score, 'points');
+          return { success: true };
+        } catch (error) {
+          console.error('❌ Firebase update failed:', error);
+          console.log('💾 Falling back to local update');
+          return this.updateLocally(docRef, data);
+        }
+      }
+      
+      updateLocally(docRef, data) {
+        try {
+          const localData = JSON.parse(localStorage.getItem(this.localKey) || '{}');
+          const collectionData = localData[docRef.collection] || [];
+          
+          // Find and update the document
+          const index = collectionData.findIndex(item => 
+            item.name && item.name.toLowerCase() === data.name.toLowerCase()
+          );
+          
+          if (index !== -1) {
+            collectionData[index] = { ...collectionData[index], ...data, timestamp: new Date().toISOString() };
+            localData[docRef.collection] = collectionData;
+            localStorage.setItem(this.localKey, JSON.stringify(localData));
+            console.log('💾 Score updated locally:', data.name, data.score, 'points');
+          }
+          
+          return { success: true };
+        } catch (error) {
+          console.error('❌ Local update failed:', error);
+          return { success: false };
         }
       }
       
@@ -326,6 +373,8 @@
     window.firebaseLimit = (num) => num;
     window.firebaseDeleteDoc = () => {}; // Placeholder
     window.firebaseOnSnapshot = (query, callback) => firebaseStorage.onSnapshot(query.collection, callback);
+    window.firebaseUpdateDoc = (docRef, data) => firebaseStorage.updateDoc(docRef, data);
+    window.firebaseDoc = (database, collection, id) => ({ collection, id });
     
     console.log('� Firebase Cross-Device Storage initialized!', firebaseInitialized ? 'ONLINE' : 'OFFLINE');
   </script>

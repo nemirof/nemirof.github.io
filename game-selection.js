@@ -287,15 +287,20 @@ async function loadGameLeaderboard(gameType) {
   }
   
   // Remove duplicate users - keep only highest score per user
-  const uniqueScores = [];
-  const seenUsers = new Set();
+  const userBestScores = new Map();
   
+  // First pass: find the highest score for each user
   scores.forEach(score => {
-    if (!seenUsers.has(score.name.toLowerCase())) {
-      seenUsers.add(score.name.toLowerCase());
-      uniqueScores.push(score);
+    const userName = score.name.toLowerCase();
+    const userScore = parseInt(score.score) || 0;
+    
+    if (!userBestScores.has(userName) || userScore > parseInt(userBestScores.get(userName).score)) {
+      userBestScores.set(userName, score);
     }
   });
+  
+  // Convert map values back to array
+  const uniqueScores = Array.from(userBestScores.values());
   
   // Ensure scores are properly sorted by score (highest to lowest)
   scores = uniqueScores.sort((a, b) => {
