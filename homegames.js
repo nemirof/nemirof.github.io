@@ -31,6 +31,7 @@ const classRoster = [
   { name: 'alicia', photo: 'alicia.jpg' },
   { name: 'alisson', photo: 'alisson.png' },
   { name: 'alma', photo: 'alma.png' },
+  { name: 'alma comin', photo: 'almabb.png' },
   { name: 'amalia', photo: 'amalia.png' },
   { name: 'anais', photo: 'anais.jpg' },
   { name: 'antonio', photo: 'antonio.png' },
@@ -68,8 +69,15 @@ const classRoster = [
   { name: 'marco', photo: 'marco.png' },
   { name: 'marcos', photo: 'marcos.jpg' },
   { name: 'mariam', photo: 'mariam.png' },
+  { name: 'mencia', photo: 'mencia.png' },
   { name: 'markel', photo: 'markel.png' },
   { name: 'raquel', photo: 'raquelB.jpg' },
+  { name: 'violeta', photo: 'violeta2.png' },
+  { name: 'sol', photo: 'sol.png' },
+  { name: 'nahia', photo: 'nahia.jpg' },
+  { name: 'luna', photo: 'luna.jpg' },
+  { name: 'sara', photo: 'sara.png' },
+  { name: 'wallner', photo: 'wallner.png' },
   { name: 'mateo', photo: 'mateo.png' }
 ];
 

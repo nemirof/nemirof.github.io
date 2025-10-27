@@ -9,62 +9,6 @@ let gameState = {
 // Firebase real-time listener
 let leaderboardListener = null;
 
-// Class roster - Add students from your class here
-const classRoster = [
-  { name: 'abiel', photo: 'abiel.jpg' },
-  { name: 'adrian', photo: 'adrian.jpg' },
-  { name: 'aitana', photo: 'aitana.png' },
-  { name: 'aizan', photo: 'aizan.jpg' },
-  { name: 'alan', photo: 'alan.jpg' },
-  { name: 'alba', photo: 'alba.jpg' },
-  { name: 'alejandro', photo: 'alejandro.jpg' },
-  { name: 'alex', photo: 'alex.jpg' },
-  { name: 'alexandra', photo: 'alexandra.png' },
-  { name: 'alicia', photo: 'alicia.jpg' },
-  { name: 'alisson', photo: 'alisson.png' },
-  { name: 'alma', photo: 'alma.png' },
-  { name: 'amalia', photo: 'amalia.png' },
-  { name: 'anais', photo: 'anais.jpg' },
-  { name: 'antonio', photo: 'antonio.png' },
-  { name: 'arabia', photo: 'arabia.jpg' },
-  { name: 'ariadna', photo: 'ariadna.png' },
-  { name: 'ashley', photo: 'ashley.jpg' },
-  { name: 'aslan', photo: 'aslan.png' },
-  { name: 'benjamin', photo: 'benjamin.jpg' },
-  { name: 'carlos', photo: 'carlos.jpg' },
-  { name: 'carolina', photo: 'carolina.png' },
-  { name: 'cathaleya', photo: 'cathaleya.jpg' },
-  { name: 'chloe', photo: 'chloe.jpg' },
-  { name: 'dani', photo: 'dani.jpg' },
-  { name: 'daniel', photo: 'danielB.jpg' },
-  { name: 'danna', photo: 'danna.jpg' },
-  { name: 'david', photo: 'david.png' },
-  { name: 'elisa', photo: 'elisa.jpg' },
-  { name: 'eva', photo: 'eva.jpg' },
-  { name: 'gabriel', photo: 'gabriel.png' },
-  { name: 'guadalupe', photo: 'guadalupe.png' },
-  { name: 'ian', photo: 'ian.png' },
-  { name: 'nemiroff', photo: 'logo11.png' },
-  { name: 'ines', photo: 'ines.png' },
-  { name: 'isabella', photo: 'isabella.png' },
-  { name: 'jaime', photo: 'jaime.png' },
-  { name: 'jimena', photo: 'jimena.png' },
-  { name: 'jon', photo: 'jon.jpg' },
-  { name: 'julia', photo: 'julia.png' },
-  { name: 'junior', photo: 'junior.png' },
-  { name: 'kadidia', photo: 'kadidia.png' },
-  { name: 'laura', photo: 'laura.jpg' },
-  { name: 'leo', photo: 'leo.jpg' },
-  { name: 'luca', photo: 'luca.jpg' },
-  { name: 'luna', photo: 'luna.png' },
-  { name: 'marco', photo: 'marco.png' },
-  { name: 'marcos', photo: 'marcos.jpg' },
-  { name: 'mariam', photo: 'mariam.png' },
-  { name: 'markel', photo: 'markel.png' },
-  { name: 'raquel', photo: 'raquelB.jpg' },
-  { name: 'mateo', photo: 'mateo.png' }
-];
-
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
   initializeGameSelection();

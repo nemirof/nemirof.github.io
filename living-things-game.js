@@ -18,69 +18,6 @@ let gameState = {
 // Firebase real-time listener
 let leaderboardListener = null;
 
-// Class roster - Add students from your class here
-const classRoster = [
-  { name: 'abiel', photo: 'abiel.jpg' },
-  { name: 'adrian', photo: 'adrian.jpg' },
-  { name: 'aitana', photo: 'aitana.png' },
-  { name: 'aizan', photo: 'aizan.jpg' },
-  { name: 'alan', photo: 'alan.jpg' },
-  { name: 'alba', photo: 'alba.jpg' },
-  { name: 'alejandro', photo: 'alejandro.jpg' },
-  { name: 'alex', photo: 'alex.jpg' },
-  { name: 'alexandra', photo: 'alexandra.png' },
-  { name: 'alicia', photo: 'alicia.jpg' },
-  { name: 'alisson', photo: 'alisson.png' },
-  { name: 'alma', photo: 'alma.png' },
-  { name: 'amalia', photo: 'amalia.png' },
-  { name: 'anais', photo: 'anais.jpg' },
-  { name: 'antonio', photo: 'antonio.png' },
-  { name: 'arabia', photo: 'arabia.jpg' },
-  { name: 'ariadna', photo: 'ariadna.png' },
-  { name: 'ashley', photo: 'ashley.jpg' },
-  { name: 'aslan', photo: 'aslan.png' },
-  { name: 'benjamin', photo: 'benjamin.jpg' },
-  { name: 'carlos', photo: 'carlos.jpg' },
-  { name: 'carolina', photo: 'carolina.png' },
-  { name: 'cathaleya', photo: 'cathaleya.jpg' },
-  { name: 'chloe', photo: 'chloe.jpg' },
-  { name: 'dani', photo: 'dani.jpg' },
-  { name: 'daniel', photo: 'danielB.jpg' },
-  { name: 'danna', photo: 'danna.jpg' },
-  { name: 'david', photo: 'david.png' },
-  { name: 'elisa', photo: 'elisa.jpg' },
-  { name: 'eva', photo: 'eva.jpg' },
-  { name: 'gabriel', photo: 'gabriel.png' },
-  { name: 'guadalupe', photo: 'guadalupe.png' },
-  { name: 'ian', photo: 'ian.png' },
-  { name: 'nemiroff', photo: 'logo11.png' },
-  { name: 'ines', photo: 'ines.png' },
-  { name: 'isabella', photo: 'isabella.png' },
-  { name: 'jaime', photo: 'jaime.png' },
-  { name: 'jimena', photo: 'jimena.png' },
-  { name: 'jon', photo: 'jon.jpg' },
-  { name: 'julia', photo: 'julia.png' },
-  { name: 'junior', photo: 'junior.png' },
-  { name: 'kadidia', photo: 'kadidia.png' },
-  { name: 'laura', photo: 'laura.jpg' },
-  { name: 'leo', photo: 'leo.jpg' },
-  { name: 'luca', photo: 'luca.jpg' },
-  { name: 'luna', photo: 'luna.png' },
-  { name: 'marco', photo: 'marco.png' },
-  { name: 'marcos', photo: 'marcos.jpg' },
-  { name: 'mariam', photo: 'mariam.png' },
-  { name: 'mencia', photo: 'mencia.png' },
-  { name: 'markel', photo: 'markel.png' },
-  { name: 'raquel', photo: 'raquelB.jpg' },
-  { name: 'violeta', photo: 'violeta2.png' },
-  { name: 'sol', photo: 'sol.png' },
-  { name: 'nahia', photo: 'nahia.jpg' },
-  { name: 'luna', photo: 'luna.jpg' },
-  { name: 'sara', photo: 'sara.png' },
-  { name: 'wallner', photo: 'wallner.png' },
-  { name: 'mateo', photo: 'mateo.png' }
-];
-
 // Living things data with fun facts
 const livingThings = [
   {
@@ -324,41 +261,7 @@ function setupFirebaseListener() {
   }
 }
 
-function checkStudent() {
-  const nameInput = document.getElementById('name-input');
-  const name = nameInput.value.trim().toLowerCase();
-  const messageDiv = document.getElementById('login-message');
-  
-  if (!name) {
-    showMessage(messageDiv, 'Please enter your name! 📝', 'error');
-    return;
-  }
-  
-  // Find student in roster
-  const student = classRoster.find(s => s.name.toLowerCase() === name);
-  
-  if (student) {
-    // Student found - set up player
-    gameState.currentPlayer = {
-      name: student.name,
-      photo: student.photo,
-      displayName: capitalizeFirst(student.name)
-    };
-    
-    showWelcomeMessage(messageDiv, gameState.currentPlayer);
-    
-    setTimeout(() => {
-      // Store player data and redirect to game selection
-      sessionStorage.setItem('gameCenter_currentPlayer', JSON.stringify(gameState.currentPlayer));
-      window.location.href = 'game-selection.html';
-    }, 1500);
-    
-  } else {
-    showMessage(messageDiv, 'Hmm, I don\'t see that name in our class. Please check your spelling! 🤔', 'error');
-    nameInput.value = '';
-    nameInput.focus();
-  }
-}
+
 
 function setupPlayerInfo() {
   const playerInfo = document.querySelector('.player-info');
@@ -1205,28 +1108,7 @@ async function loadGameLeaderboard(gameType) {
   }
 }
 
-function showMessage(element, message, type) {
-  element.textContent = message;
-  element.className = `login-message ${type}`;
-}
 
-function showWelcomeMessage(element, player) {
-  element.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 0.5rem 0;">
-      <img src="images/${player.photo}" alt="${player.displayName}" 
-           style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 3px solid #4ECDC4;"
-           onerror="this.src='images/icono.png'">
-      <span style="font-size: 1.2rem; font-weight: bold; color: #4ECDC4;">
-        Welcome ${player.displayName}! 🌟
-      </span>
-    </div>
-  `;
-  element.className = 'login-message success';
-}
-
-function capitalizeFirst(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 
 function showLeaderboardResetNotification() {
   // Create a temporary notification
