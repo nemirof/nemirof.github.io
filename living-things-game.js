@@ -1086,7 +1086,10 @@ async function loadGameLeaderboard(gameType) {
     
     leaderboardList.appendChild(sourceInfo);
     
-    scores.forEach((score, index) => {
+    // Only show top 10 scores
+    const topScores = scores.slice(0, 10);
+    
+    topScores.forEach((score, index) => {
       const item = document.createElement('div');
       item.className = 'leaderboard-item';
       
