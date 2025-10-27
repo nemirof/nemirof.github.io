@@ -26,7 +26,7 @@ const kpopDemonHunters = [
     category: 'idol',
     fact: {
       en: 'Rumi is the lead vocalist with an amazing voice! She can hit the highest notes and inspire her team with powerful ballads.',
-      es: 'Rumi es la vocalista principal con una voz increíble! Puede alcanzar las notas más altas e inspirar a su equipo con baladas poderosas.'
+      es: 'Rumi es la vocalista principal y tiene una voz increíble. Puede alcanzar las notas más altas e inspirar a su equipo con baladas poderosas.'
     }
   },
   {
@@ -44,7 +44,7 @@ const kpopDemonHunters = [
     category: 'idol',
     fact: {
       en: 'Mira is the main dancer of the group! Her incredible choreography and moves can mesmerize any audience.',
-      es: 'Mira es la bailarina principal del grupo! Su increíble coreografía y movimientos pueden hipnotizar a cualquier audiencia.'
+      es: 'Mira es la bailarina principal del grupo! Sus increíbles coreografías y movimientos pueden hipnotizar a cualquier audiencia.'
     }
   },
   {
@@ -52,8 +52,8 @@ const kpopDemonHunters = [
     image: 'baby-saja.jpg',
     category: 'idol',
     fact: {
-      en: 'Baby Saja is the youngest member and visual of the group! Her cute charm and innocent smile wins everyone\'s heart.',
-      es: 'Baby Saja es la miembro más joven y visual del grupo! Su encanto tierno y sonrisa inocente conquista el corazón de todos.'
+      en: 'Baby Saja is the youngest member and visual of the group! His cute charm and innocent smile wins everyone\'s heart.',
+      es: 'Baby Saja es el miembro más joven y visual del grupo. Su encanto tierno y sonrisa inocente conquista el corazón de todos.'
     }
   },
   {
@@ -70,8 +70,8 @@ const kpopDemonHunters = [
     image: 'abby.jpg',
     category: 'idol',
     fact: {
-      en: 'Abby is the sub-vocalist and face of the group! Her sweet voice and beautiful visuals make her a perfect idol.',
-      es: 'Abby es la sub-vocalista y cara del grupo! Su voz dulce y hermosos visuales la convierten en la ídol perfecta.'
+      en: 'Abby is the sub-vocalist and face of the group! His sweet voice and beautiful visuals make him a perfect idol.',
+      es: 'Abby es el segundo vocalista y cara del grupo! Su voz dulce y gran belleza le convierten en el idol perfecto.'
     }
   },
   {
@@ -79,8 +79,8 @@ const kpopDemonHunters = [
     image: 'mistery.jpg',
     category: 'idol',
     fact: {
-      en: 'Mistery is the mysterious member who adds intrigue to the group! She has hidden talents that surprise everyone.',
-      es: 'Mistery es la miembro misteriosa que añade intriga al grupo! Tiene talentos ocultos que sorprenden a todos.'
+      en: 'Mistery is the mysterious member who adds intrigue to the group! He has hidden talents that surprise everyone.',
+      es: 'Mistery es el miembro misterioso que añade intriga al grupo! Tiene talentos ocultos que sorprenden a todos.'
     }
   },
   {
@@ -88,8 +88,8 @@ const kpopDemonHunters = [
     image: 'romance.jpg',
     category: 'idol',
     fact: {
-      en: 'Romance is the romantic ballad specialist! Her emotional performances can make anyone fall in love with K-pop music.',
-      es: 'Romance es la especialista en baladas románticas! Sus actuaciones emocionales pueden hacer que cualquiera se enamore de la música K-pop.'
+      en: 'Romance is the romantic ballad specialist! His emotional performances can make anyone fall in love with K-pop music.',
+      es: 'Romance es el especialista en baladas románticas! Sus actuaciones emocionales pueden hacer que cualquiera se enamore de la música K-pop.'
     }
   }
 ];
@@ -435,6 +435,9 @@ function checkMatch() {
 }
 
 function showFact(card) {
+  // Pause the timer when showing fact
+  pauseTimer();
+  
   const factDisplay = document.getElementById('fact-display');
   const factTitle = document.getElementById('fact-title');
   const factText = document.getElementById('fact-text');
@@ -467,6 +470,9 @@ function toggleLanguage(cardName) {
 
 function closeFact() {
   document.getElementById('fact-display').classList.add('hidden');
+  
+  // Resume the timer when closing fact
+  resumeTimer();
 }
 
 function completeGame() {
@@ -732,6 +738,19 @@ function startTimer() {
     gameState.timer++;
     updateTimer();
   }, 1000);
+}
+
+function pauseTimer() {
+  if (gameState.timerInterval) {
+    clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+  }
+}
+
+function resumeTimer() {
+  if (!gameState.timerInterval) {
+    startTimer();
+  }
 }
 
 function updateScore() {

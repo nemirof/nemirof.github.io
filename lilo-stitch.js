@@ -26,7 +26,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'Stitch is Experiment 626! He\'s super strong, can lift objects 3,000 times his weight, and loves Elvis Presley music!',
-      es: 'Stitch es el Experimento 626! Es súper fuerte, puede levantar objetos 3,000 veces su peso, ¡y le encanta la música de Elvis Presley!'
+      es: 'Stitch es el Experimento 626! Es súper fuerte, puede levantar objetos 3,000 veces más pesados que él, ¡y le encanta la música de Elvis Presley!'
     }
   },
   {
@@ -35,7 +35,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'Lilo loves hula dancing and taking care of endangered animals! She teaches Stitch about ohana - family.',
-      es: 'A Lilo le encanta bailar hula y cuidar animales en peligro de extinción! Le enseña a Stitch sobre ohana - familia.'
+      es: 'A Lilo le encanta bailar hula hula y cuidar animales en peligro de extinción! Le enseña a Stitch sobre ohana - familia.'
     }
   },
   {
@@ -44,7 +44,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'Angel is Experiment 624! She can turn good experiments bad with her beautiful singing voice.',
-      es: 'Angel es el Experimento 624! Puede volver malvados a los experimentos buenos con su hermosa voz cantante.'
+      es: 'Angel es el Experimento 624. Puede volver malvados a los experimentos buenos con su hermosa voz cantante.'
     }
   },
   {
@@ -53,7 +53,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'Dr. Jumba created Stitch and 628 other experiments! He\'s a genius scientist from outer space.',
-      es: 'El Dr. Jumba creó a Stitch y otros 628 experimentos! Es un científico genio del espacio exterior.'
+      es: 'El Dr. Jumba creó a Stitch y otros 628 experimentos. Es un genial científico del espacio exterior.'
     }
   },
   {
@@ -62,7 +62,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'Pleakley is a one-eyed alien who loves Earth culture, especially mosquitoes and Earth fashion!',
-      es: 'Pleakley es un alienígena de un ojo que ama la cultura terrestre, ¡especialmente los mosquitos y la moda terrestre!'
+      es: 'Pleakley es un alienígena con un sólo ojo que ama la cultura terrestre, ¡especialmente los mosquitos y la moda terrestre!'
     }
   },
   {
@@ -71,7 +71,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'Nani is Lilo\'s big sister who works hard to take care of her family. She\'s brave and loves surfing!',
-      es: 'Nani es la hermana mayor de Lilo que trabaja duro para cuidar de su familia. ¡Es valiente y le encanta surfear!'
+      es: 'Nani es la hermana mayor de Lilo y trabaja duro para cuidar de su familia. ¡Es valiente y le encanta surfear!'
     }
   },
   {
@@ -80,7 +80,7 @@ const liloStitchCharacters = [
     category: 'character',
     fact: {
       en: 'David is Nani\'s boyfriend and a great surfer! He\'s always there to help the ohana when they need him.',
-      es: 'David es el novio de Nani y un gran surfista! Siempre está ahí para ayudar a la ohana cuando lo necesitan.'
+      es: 'David es el novio de Nani y un gran surfista! Siempre está ahí para ayudar a la ohana-familia cuando lo necesitan.'
     }
   },
   {
@@ -435,6 +435,9 @@ function checkMatch() {
 }
 
 function showFact(card) {
+  // Pause the timer when showing fact
+  pauseTimer();
+  
   const factDisplay = document.getElementById('fact-display');
   const factTitle = document.getElementById('fact-title');
   const factText = document.getElementById('fact-text');
@@ -467,6 +470,9 @@ function toggleLanguage(cardName) {
 
 function closeFact() {
   document.getElementById('fact-display').classList.add('hidden');
+  
+  // Resume the timer when closing fact
+  resumeTimer();
 }
 
 function completeGame() {
@@ -734,6 +740,19 @@ function startTimer() {
     gameState.timer++;
     updateTimer();
   }, 1000);
+}
+
+function pauseTimer() {
+  if (gameState.timerInterval) {
+    clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+  }
+}
+
+function resumeTimer() {
+  if (!gameState.timerInterval) {
+    startTimer();
+  }
 }
 
 function updateScore() {

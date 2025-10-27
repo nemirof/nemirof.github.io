@@ -107,7 +107,7 @@ const livingThings = [
     category: 'animal',
     fact: {
       en: 'Butterflies start as caterpillars and transform completely! They taste with their feet and can only see red, green, and yellow colors.',
-      es: 'Las mariposas comienzan como orugas y se transforman completamente! Prueban con sus patas y solo pueden ver colores rojos, verdes y amarillos.'
+      es: 'Las mariposas comienzan como orugas y se transforman completamente! Saborean con sus patas y solo pueden ver colores rojos, verdes y amarillos.'
     }
   },
   {
@@ -116,7 +116,7 @@ const livingThings = [
     category: 'animal',
     fact: {
       en: 'Fish breathe underwater using gills! Some fish can live for over 100 years, and they never stop growing throughout their lives.',
-      es: 'Los peces respiran bajo el agua usando branquias! Algunos peces pueden vivir más de 100 años, y nunca dejan de crecer durante sus vidas.'
+      es: 'Los peces respiran bajo el agua usando branquias. Algunos peces pueden vivir más de 100 años, y nunca dejan de crecer durante sus vidas.'
     }
   },
   {
@@ -134,7 +134,7 @@ const livingThings = [
     category: 'plant',
     fact: {
       en: 'Trees can live for thousands of years! They make oxygen that we breathe and are home to many animals.',
-      es: 'Los árboles pueden vivir miles de años! Hacen el oxígeno que respiramos y son hogar de muchos animales.'
+      es: 'Los árboles pueden vivir miles de años! Generan el oxígeno que respiramos y son hogar de muchos animales.'
     }
   },
   {
@@ -539,6 +539,9 @@ function checkMatch() {
 }
 
 function showFact(card) {
+  // Pause the timer when showing fact
+  pauseTimer();
+  
   const factDisplay = document.getElementById('fact-display');
   const factTitle = document.getElementById('fact-title');
   const factText = document.getElementById('fact-text');
@@ -571,6 +574,9 @@ function toggleLanguage(cardName) {
 
 function closeFact() {
   document.getElementById('fact-display').classList.add('hidden');
+  
+  // Resume the timer when closing fact
+  resumeTimer();
 }
 
 function completeGame() {
@@ -747,6 +753,19 @@ function startTimer() {
     gameState.timer++;
     updateTimer();
   }, 1000);
+}
+
+function pauseTimer() {
+  if (gameState.timerInterval) {
+    clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+  }
+}
+
+function resumeTimer() {
+  if (!gameState.timerInterval) {
+    startTimer();
+  }
 }
 
 function updateScore() {
