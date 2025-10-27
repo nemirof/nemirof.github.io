@@ -89,7 +89,7 @@ const kpopDemonHunters = [
     category: 'idol',
     fact: {
       en: 'Romance is the romantic ballad specialist! His emotional performances can make anyone fall in love with K-pop music.',
-      es: 'Romance es el especialista en baladas románticas! Sus actuaciones emocionales pueden hacer que cualquiera se enamore de la música K-pop.'
+      es: 'Romance es el especialista en baladas románticas. Sus actuaciones emocionales pueden hacer que cualquiera se enamore de la música K-pop.'
     }
   }
 ];
