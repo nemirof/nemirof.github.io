@@ -31,7 +31,7 @@ const classRoster = [
   { name: 'alicia', photo: 'alicia.jpg' },
   { name: 'alisson', photo: 'alisson.png' },
   { name: 'alma', photo: 'alma.png' },
-  { name: 'alma comin', photo: 'almabb.png' },
+  { name: 'alma miranda', photo: 'almabb.png' },
   { name: 'amalia', photo: 'amalia.png' },
   { name: 'anais', photo: 'anais.jpg' },
   { name: 'antonio', photo: 'antonio.png' },
