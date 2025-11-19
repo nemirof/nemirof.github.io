@@ -5,7 +5,7 @@ sessionStorage.setItem('profesionAleatoria', null);
 
 const profesiones = [
   "Frutera", "Panadero", "Carnicero", "Pescadera", "Cocinero", 
-  "Camarera", "Policía", "Bombero", "Obrero", "Fontanero", 
+  "Camarero", "Policía", "Bombero", "Obrero", "Fontanero", 
   "Veterinario", "Veterinaria", "Peluquero", "Peluquero", "Músico", 
   "Cantante", "Actriz", "Actor", "Cartera", "Cartera"
 ];
@@ -16,7 +16,7 @@ const imagenes = [
   "images/carnicero.jpg",
   "images/pescadera.jpg",
   "images/cocinero.jpg",
-  "images/camarera.jpg",
+  "images/camarero.jpg",
   "images/policiaa.jpg",
   "images/bombero.jpg",
   "images/obrero.jpg",

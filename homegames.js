@@ -743,7 +743,7 @@ function checkPasswordAndReset() {
   const passwordInput = document.getElementById('reset-password');
   const errorDiv = document.getElementById('password-error');
   const enteredPassword = passwordInput.value;
-  const correctPassword = 'pirata';
+  const correctPassword = 'Simeone2';
   
   if (enteredPassword === correctPassword) {
     // Password correct, proceed with reset
