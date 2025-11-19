@@ -58,6 +58,76 @@
       font-size: 1.3rem !important;
       font-weight: 600 !important;
     }
+    
+    /* RESPONSIVE - Tablets */
+    @media (max-width: 768px) {
+      .frontal p, .trasera p {
+        font-size: 1.1rem !important;
+        padding: 8px !important;
+        line-height: 1.2;
+      }
+      
+      .trasera-exito img, .trasera-error img {
+        width: 70px !important;
+        height: 70px !important;
+      }
+      
+      .trasera-exito p, .trasera-error p {
+        font-size: 1.1rem !important;
+      }
+    }
+    
+    /* RESPONSIVE - Móviles */
+    @media (max-width: 480px) {
+      .frontal p, .trasera p {
+        font-size: 1rem !important;
+        padding: 6px !important;
+        line-height: 1.2;
+        word-break: break-word;
+        hyphens: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .trasera-exito, .trasera-error {
+        padding: 8px !important;
+        gap: 8px !important;
+      }
+      
+      .trasera-exito img, .trasera-error img {
+        width: 70px !important;
+        height: 70px !important;
+        min-width: 70px !important;
+        flex-shrink: 0;
+      }
+      
+      .trasera-exito p, .trasera-error p {
+        font-size: 0.95rem !important;
+        line-height: 1.2;
+        margin: 0;
+        padding: 0 4px;
+        text-align: center;
+        word-break: break-word;
+      }
+    }
+    
+    /* RESPONSIVE - Móviles muy pequeños */
+    @media (max-width: 360px) {
+      .frontal p, .trasera p {
+        font-size: 0.9rem !important;
+        padding: 5px !important;
+      }
+      
+      .trasera-exito img, .trasera-error img {
+        width: 60px !important;
+        height: 60px !important;
+        min-width: 60px !important;
+      }
+      
+      .trasera-exito p, .trasera-error p {
+        font-size: 0.85rem !important;
+      }
+    }
   </style>
   
   <script>
