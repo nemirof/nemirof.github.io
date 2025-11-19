@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Encuentra a tu Amigo</title>
+  <link rel="icon" href="images/icono.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Fuente amigable para niños de 4 años */
+    body, .carta, .frontal p, .trasera p, .trasera-exito p, .trasera-error p, 
+    #mensajeProfesion, #mensajeAcierto, #mensajeFallo, h1, button {
+      font-family: 'Fredoka', 'Bubblegum Sans', 'Comic Sans MS', cursive, sans-serif !important;
+    }
+    
+    /* Tamaños de letra más grandes y legibles */
+    .frontal p, .trasera p {
+      font-size: 1.4rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.5px;
+    }
+    
+    .trasera-exito p, .trasera-error p {
+      font-size: 1.5rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Mensajes más pequeños para que quepan en los divs */
+    #mensajeProfesion, #mensajeAcierto, #mensajeFallo {
+      font-size: 1.1rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.3px;
+      line-height: 1.4;
+      padding: 8px 12px;
+    }
+    
+    /* Solo aplicar flex cuando están visibles */
+    #mensajeProfesion:not([style*="display: none"]),
+    #mensajeAcierto:not([style*="display: none"]),
+    #mensajeFallo:not([style*="display: none"]) {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    h1 {
+      font-size: 2.2rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 1px;
+    }
+    
+    button {
+      font-size: 1.3rem !important;
+      font-weight: 600 !important;
+    }
+  </style>
+  
+  <script>
+    // Sistema de seguridad - Verificar acceso autorizado
+    (function() {
+      const accesoAutorizado = sessionStorage.getItem('accesoAutorizado');
+      const tiempoAcceso = sessionStorage.getItem('tiempoAcceso');
+      const tiempoActual = Date.now();
+      const tiempoLimite = 3600000; // 1 hora en milisegundos
+      
+      // Verificar si tiene acceso autorizado y no ha expirado
+      if (!accesoAutorizado || 
+          accesoAutorizado !== 'true' || 
+          !tiempoAcceso || 
+          (tiempoActual - parseInt(tiempoAcceso)) > tiempoLimite) {
+        
+        // Limpiar cualquier acceso expirado
+        sessionStorage.removeItem('accesoAutorizado');
+        sessionStorage.removeItem('tiempoAcceso');
+        
+        // Redirigir al index con mensaje de error
+        alert('🔒 Acceso restringido\n\nEsta página requiere autorización.\nSerás redirigido a la página principal.');
+        window.location.href = 'index.html';
+      } else {
+        // Renovar el tiempo de acceso para mantener la sesión activa
+        sessionStorage.setItem('tiempoAcceso', tiempoActual.toString());
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <header>
+    <button class="boton-mute" onclick="toggleMute()" title="Activar/Desactivar sonido">
+      <span id="icono-mute">🔊</span>
+    </button>
+    <h1 id="titulo">Encuentra a tu Amigo</h1>
+    <div class="botones-header">
+      <button id="volverBtn" onclick="window.location.href='homeamigos.html'">🏠 Volver</button>
+      <button id="preguntaBtn" onclick="hacerPregunta()">¡Juega!</button>
+    </div>
+  </header>
+  
+  <div id="mensajeProfesion" class="mensaje" style="display: block;">¡Vamos a jugar!</div>
+  <img id="imagenProfesion" alt="imagen pregunta" src="images/icono.png" style="display: block;width: 120px;height: 120px;" onclick="hacerPregunta()">
+  <div id="mensajeAcierto" class="mensaje" style="display: none;"></div>
+  <div id="mensajeFallo" class="mensaje" style="display: block;">Pulsa en el pirata para empezar</div>
+  <audio id="audioExito" src="audio/ok.mp3"></audio>
+  <main>
+    <section id="profesiones">
+      <!-- Carta 1-->
+      <div class="carta" data-nombre="Samuel">
+        <div class="frontal">
+          <img src="images/samuel.jpg" alt="Avatar 1">
+          <p>Samuel</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+
+      <!-- Carta 2 -->
+      <div class="carta" data-nombre="Sofía">
+        <div class="frontal">
+          <img src="images/sofia.jpg" alt="Avatar 2">
+          <p>Sofía</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 3 -->
+      <div class="carta" data-nombre="Elisa">
+        <div class="frontal">
+          <img src="images/elisa.jpg" alt="Avatar 3">
+          <p>Elisa</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 4-->
+      <div class="carta" data-nombre="Benjamín">
+        <div class="frontal">
+          <img src="images/benjamin.jpg" alt="Avatar 4">
+          <p>Benjamín</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 5-->
+      <div class="carta" data-nombre="Alba">
+        <div class="frontal">
+          <img src="images/alba.jpg" alt="Avatar 5">
+          <p>Alba</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 6-->
+      <div class="carta" data-nombre="Laura">
+        <div class="frontal">
+          <img src="images/laura.jpg" alt="Avatar 6">
+          <p>Laura</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 7-->
+      <div class="carta" data-nombre="Jon">
+        <div class="frontal">
+          <img src="images/jon.jpg" alt="Avatar 7">
+          <p>Jon</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 8-->
+      <div class="carta" data-nombre="Daniel">
+        <div class="frontal">
+          <img src="images/dani.jpg" alt="Avatar 8">
+          <p>Daniel</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 9-->
+      <div class="carta" data-nombre="Marcos">
+        <div class="frontal">
+          <img src="images/marcos.jpg" alt="Avatar Marcos">
+          <p>Marcos</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+
+	  <!-- Carta 10-->
+      <div class="carta" data-nombre="Alan">
+        <div class="frontal">
+          <img src="images/alan.jpg" alt="Avatar 10">
+          <p>Alan</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 11-->
+      <div class="carta" data-nombre="Chloe">
+        <div class="frontal">
+          <img src="images/chloe.jpg" alt="Avatar 11">
+          <p>Chloe</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 12-->
+      <div class="carta" data-nombre="Danna">
+        <div class="frontal">
+          <img src="images/danna.jpg" alt="Avatar 12">
+          <p>Danna</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 13-->
+      <div class="carta" data-nombre="Aizan">
+        <div class="frontal">
+          <img src="images/aizan.jpg" alt="Avatar 13">
+          <p>Aizan</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 14-->
+      <div class="carta" data-nombre="Samara">
+        <div class="frontal">
+          <img src="images/samara.jpg" alt="Avatar 14">
+          <p>Samara</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 15-->
+      <div class="carta" data-nombre="Alicia">
+        <div class="frontal">
+          <img src="images/alicia.jpg" alt="Avatar 15">
+          <p>Alicia</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 16-->
+      <div class="carta" data-nombre="Eva">
+        <div class="frontal">
+          <img src="images/eva.jpg" alt="Avatar 16">
+          <p>Eva</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 17-->
+      <div class="carta" data-nombre="Leo">
+        <div class="frontal">
+          <img src="images/leo.jpg" alt="Avatar 17">
+          <p>Leo</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 18-->
+      <div class="carta" data-nombre="Carlos">
+        <div class="frontal">
+          <img src="images/carlos.jpg" alt="Avatar 18">
+          <p>Carlos</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 19-->
+      <div class="carta" data-nombre="Arabia">
+        <div class="frontal">
+          <img src="images/arabia.jpg" alt="Avatar 19">
+          <p>Arabia</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+	  <!-- Carta 20-->
+      <div class="carta" data-nombre="Noa">
+        <div class="frontal">
+          <img src="images/noa.jpg" alt="Avatar 20">
+          <p>Noa</p>
+        </div>
+        <div class="trasera trasera-exito">
+          <img src="images/icono.png" alt="¡Excelente!">
+          <p>¡Excelente!</p>
+        </div>
+        <div class="trasera trasera-error">
+          <img src="images/icono.png" alt="Oh no">
+          <p>Oh no, inténtalo otra vez</p>
+        </div>
+      </div>
+	  
+    </section>
+  </main>
+  <script src="amigos4a.js"></script>
+</body>
+</html>

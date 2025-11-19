@@ -3,10 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Las profesiones de mis amigos</title>
+  <title>Mis amigos del cole</title>
   <link rel="icon" href="images/icono.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <style>
+    /* Fondo personalizado para homeamigos */
+    body {
+      background: linear-gradient(135deg, #FFE5E5 0%, #FFF0F5 50%, #E6F3FF 100%);
+      background-attachment: fixed;
+    }
+    
+    header {
+      background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    }
+    
     /* Estilos para las imágenes de equipos */
     .imagen-equipo {
       width: 300px;
@@ -143,32 +153,7 @@
         text-align: center;
       }
       
-      /* Mostrar iconos pequeños en responsive */
-      .iconos-profesiones {
-        display: flex !important;
-        gap: var(--spacing-sm);
-        position: absolute;
-        top: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 5;
-      }
-      
-      .icono-profesion {
-        width: 24px;
-        height: 24px;
-        border-radius: var(--border-radius-full);
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        box-shadow: var(--shadow-md);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-      
-      .icono-profesion:hover {
-        transform: scale(1.1);
-        box-shadow: var(--shadow-lg);
-      }
-      
-      /* Ajustar header para dar espacio a los iconos */
+      /* Ajustar header para dar espacio */
       header {
         padding-top: 35px;
       }
@@ -388,104 +373,58 @@
       }
     }
     
-    /* Estilos para la sección de Otros Juegos */
-    .seccion-otros-juegos {
-      margin-top: var(--spacing-2xl);
-      padding: var(--spacing-xl) var(--spacing-md);
-      background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
-      border-radius: var(--border-radius-xl);
-      border: 2px solid var(--primary-color);
-    }
-    
-    .seccion-otros-juegos h3 {
-      font-family: var(--font-playful);
-      font-size: var(--font-size-2xl);
-      color: var(--primary-color);
-      text-align: center;
-      margin: 0 0 var(--spacing-lg) 0;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .contenedor-botones-juegos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--spacing-xl);
-      flex-wrap: wrap;
-    }
-    
-    .btn-juego {
-      padding: var(--spacing-lg) var(--spacing-xl);
-      font-size: var(--font-size-lg);
-      font-weight: 700;
+    /* Estilos para el botón volver al inicio */
+    .btn-volver-inicio {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, var(--primary-color) 0%, #2980B9 100%);
+      color: white;
       border: none;
-      border-radius: var(--border-radius-xl);
+      border-radius: var(--border-radius-lg);
+      font-size: var(--font-size-base);
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-family: var(--font-playful);
-      box-shadow: var(--shadow-md);
-      text-decoration: none;
-      display: inline-block;
-      min-width: 200px;
-      text-align: center;
+      font-family: var(--font-primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 100;
     }
     
-    .btn-juego.amigos {
-      background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-      color: white;
+    .btn-volver-inicio:hover {
+      background: linear-gradient(135deg, #2980B9 0%, var(--primary-color) 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
     
-    .btn-juego.games {
-      background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
-      color: white;
-    }
-    
-    .btn-juego:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .btn-juego:active {
-      transform: translateY(-1px) scale(1.02);
+    .btn-volver-inicio:active {
+      transform: translateY(-1px);
     }
     
     @media screen and (max-width: 768px) {
-      .seccion-otros-juegos {
-        margin-top: var(--spacing-xl);
-        padding: var(--spacing-lg) var(--spacing-sm);
-      }
-      
-      .contenedor-botones-juegos {
-        flex-direction: column;
-        gap: var(--spacing-md);
-      }
-      
-      .btn-juego {
-        width: 100%;
-        max-width: 280px;
+      .btn-volver-inicio {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.5rem 0.9rem;
+        font-size: var(--font-size-sm);
       }
     }
   </style>
 </head>
 <body>
   <header>
+    <button class="btn-volver-inicio" onclick="window.location.href='index.html'" title="Volver al inicio">
+      ← Inicio
+    </button>
     <button class="boton-mute" onclick="toggleMute()" title="Activar/Desactivar sonido">
       <span id="icono-mute">🔊</span>
     </button>
-    <h1>Las profesiones de mis amigos</h1>
-    <div class="iconos-profesiones">
-      <img class="icono-profesion" src="images/enfermera.png" alt="Doctor">
-      <img class="icono-profesion" src="images/poli.png" alt="Poli">
-      <img class="icono-profesion" src="images/bomberoicon.png" alt="Bomber">
-    </div>
-    <!-- Agrega más imágenes de profesiones -->
+    <h1>Mis amigos del cole</h1>
   </header>
   <main>
     <section id="home" style="margin-block-end: auto;">
-      <h2>¡Descubre las profesiones!</h2>
+      <h2>¡Encuentra a tus amigos!</h2>
       <p style="text-align: center; padding: var(--spacing-md);">
         Elige tu equipo para comenzar a jugar.<br>
         <b>Pollitos</b> o <b>Leones</b>, ¡la diversión te espera!
@@ -493,29 +432,16 @@
       
       <div class="contenedor-equipos">
         <!-- Pollitos - Izquierda -->
-        <a href="#" class="equipo" onclick="solicitarAcceso('profesiones4A.html')">
+        <a href="#" class="equipo" onclick="solicitarAcceso('amigos4a.html')">
           <img class="imagen-equipo" src="images/pollito.png" alt="Pollitos">
           <div class="nombre-equipo">Pollitos</div>
         </a>
         
         <!-- Leones - Derecha -->
-        <a href="#" class="equipo" onclick="solicitarAcceso('profesiones4B.html')">
+        <a href="#" class="equipo" onclick="solicitarAcceso('amigos4b.html')">
           <img class="imagen-equipo" src="images/leon.png" alt="Leones">
           <div class="nombre-equipo">Leones</div>
         </a>
-      </div>
-      
-      <!-- Sección Otros Juegos -->
-      <div class="seccion-otros-juegos">
-        <h3>🎮 Otros Juegos</h3>
-        <div class="contenedor-botones-juegos">
-          <a href="homeamigos.html" class="btn-juego amigos">
-            👫 Encuentra a tus Amigos
-          </a>
-          <a href="homegames.html" class="btn-juego games">
-            🎯 Juegos Interactivos
-          </a>
-        </div>
       </div>
     </section>
   </main>

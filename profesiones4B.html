@@ -6,6 +6,59 @@
   <title>Profesiones</title>
   <link rel="icon" href="images/icono.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Fuente amigable para niños de 4 años */
+    body, .carta, .frontal p, .trasera p, .trasera-exito p, .trasera-error p, 
+    #mensajeProfesion, #mensajeAcierto, #mensajeFallo, h1, button {
+      font-family: 'Fredoka', 'Bubblegum Sans', 'Comic Sans MS', cursive, sans-serif !important;
+    }
+    
+    /* Tamaños de letra más grandes y legibles */
+    .frontal p, .trasera p {
+      font-size: 1.4rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.5px;
+    }
+    
+    .trasera-exito p, .trasera-error p {
+      font-size: 1.5rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Mensajes más pequeños para que quepan en los divs */
+    #mensajeProfesion, #mensajeAcierto, #mensajeFallo {
+      font-size: 1.1rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.3px;
+      line-height: 1.4;
+      padding: 8px 12px;
+    }
+    
+    /* Solo aplicar flex cuando están visibles */
+    #mensajeProfesion:not([style*="display: none"]),
+    #mensajeAcierto:not([style*="display: none"]),
+    #mensajeFallo:not([style*="display: none"]) {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    h1 {
+      font-size: 2.2rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 1px;
+    }
+    
+    button {
+      font-size: 1.3rem !important;
+      font-weight: 600 !important;
+    }
+  </style>
   
   <script>
     // Sistema de seguridad - Verificar acceso autorizado

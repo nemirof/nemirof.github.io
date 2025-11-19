@@ -60,6 +60,7 @@ const classRoster = [
   { name: 'jimena', photo: 'jimena.png' },
   { name: 'jon', photo: 'jon.jpg' },
   { name: 'julia', photo: 'julia.png' },
+  { name: 'julia de caso', photo: 'juliaB.jpg' },
   { name: 'junior', photo: 'junior.png' },
   { name: 'kadidia', photo: 'kadidia.png' },
   { name: 'laura', photo: 'laura.jpg' },
@@ -72,9 +73,19 @@ const classRoster = [
   { name: 'mencia', photo: 'mencia.png' },
   { name: 'markel', photo: 'markel.png' },
   { name: 'raquel', photo: 'raquelB.jpg' },
+  { name: 'blanca', photo: 'raquelB.jpg' },
   { name: 'violeta', photo: 'violeta2.png' },
   { name: 'sol', photo: 'sol.png' },
+  { name: 'paula', photo: 'paula.jpg' },
+  { name: 'mihnea', photo: 'mihnea.jpg' },
+  { name: 'noa', photo: 'noa.jpg' },
+  { name: 'noah', photo: 'noah.png' },
+  { name: 'sofia', photo: 'sofia.jpg' },
+  { name: 'samuel', photo: 'samuel.jpg' },
+  { name: 'roi', photo: 'roi.jpg' },
+  { name: 'pepa', photo: 'pepa.jpg' },
   { name: 'nahia', photo: 'nahia.jpg' },
+  { name: 'seren', photo: 'seren.jpg' },
   { name: 'luna', photo: 'luna.jpg' },
   { name: 'sara', photo: 'sara.png' },
   { name: 'wallner', photo: 'wallner.png' },
@@ -732,7 +743,7 @@ function checkPasswordAndReset() {
   const passwordInput = document.getElementById('reset-password');
   const errorDiv = document.getElementById('password-error');
   const enteredPassword = passwordInput.value;
-  const correctPassword = 'Simeone2';
+  const correctPassword = 'pirata';
   
   if (enteredPassword === correctPassword) {
     // Password correct, proceed with reset

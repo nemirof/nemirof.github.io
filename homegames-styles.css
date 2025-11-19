@@ -40,6 +40,34 @@ body {
   position: relative;
 }
 
+/* Botón volver al inicio */
+.btn-volver-inicio {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #2980B9 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.btn-volver-inicio:hover {
+  background: linear-gradient(135deg, #2980B9 0%, var(--primary-color) 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-volver-inicio:active {
+  transform: translateY(-1px);
+}
+
 /* When player info is hidden, create space to center title properly */
 .player-info:not(.logged-in) {
   width: 50px; /* Same width as mute button for balance */
@@ -920,6 +948,13 @@ body {
   
   .game-header {
     padding: 0.75rem;
+  }
+  
+  .btn-volver-inicio {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
   }
   
   .mute-btn {

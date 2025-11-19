@@ -473,7 +473,7 @@ async function verificarPasswordOLD(pagina, conAnimacion) {
   const hashedPassword = await hashPassword(password);
   
   // Hash SHA-256 de la contraseña correcta (sin revelar la contraseña original)
-  const passwordCorrecta = 'f55121c29d0ca6ef7af7d7b03bc4670d559fd04325ede332f152619b57899c95';
+  const passwordCorrecta = '0cd6207782bd0ac56b14d31c78614d2968bf04ff8a087e999bba56a515383844';
   
   if (hashedPassword === passwordCorrecta) {
     // Contraseña correcta - guardar en sessionStorage para esta sesión
