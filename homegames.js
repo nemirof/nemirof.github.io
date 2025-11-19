@@ -91,7 +91,7 @@ const classRoster = [
   { name: 'seren', photo: 'seren.jpg' },
   { name: 'luna', photo: 'luna.jpg' },
   { name: 'sara', photo: 'sara.png' },
-  { name: 'walner', photo: 'wallner.png' },
+  { name: 'walner', photo: 'walner.png' },
   { name: 'triana', photo: 'triana.png' },
   { name: 'victoria', photo: 'victoria.png' },
   { name: 'nicolas', photo: 'nicolas.png' },
@@ -248,6 +248,76 @@ function setupFirebaseListener() {
   }
 }
 
+// Calculate Levenshtein distance between two strings (similarity measure)
+function levenshteinDistance(str1, str2) {
+  const len1 = str1.length;
+  const len2 = str2.length;
+  const matrix = [];
+
+  // Create matrix
+  for (let i = 0; i <= len1; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= len2; j++) {
+    matrix[0][j] = j;
+  }
+
+  // Fill matrix
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,      // deletion
+        matrix[i][j - 1] + 1,      // insertion
+        matrix[i - 1][j - 1] + cost // substitution
+      );
+    }
+  }
+
+  return matrix[len1][len2];
+}
+
+// Find similar names in the class roster
+function findSimilarNames(inputName, maxSuggestions = 3) {
+  const input = inputName.toLowerCase().trim();
+  
+  // Calculate distance for each name in roster
+  const similarities = classRoster.map(student => {
+    const studentName = student.name.toLowerCase();
+    
+    // Extract first word from student name for comparison
+    const firstWord = studentName.split(' ')[0];
+    
+    // Compare input with the first word of the student name
+    const distance = levenshteinDistance(input, firstWord);
+    
+    // Calculate similarity score (lower distance = higher similarity)
+    const maxLength = Math.max(input.length, firstWord.length);
+    const similarity = 1 - (distance / maxLength);
+    
+    return {
+      name: student.name,
+      firstWord: firstWord,
+      distance: distance,
+      similarity: similarity
+    };
+  });
+  
+  // Filter names that are reasonably similar (similarity > 0.5 or distance <= 3)
+  const similar = similarities.filter(s => s.similarity > 0.5 || s.distance <= 3);
+  
+  // Sort by distance (closest first), then alphabetically
+  similar.sort((a, b) => {
+    if (a.distance !== b.distance) {
+      return a.distance - b.distance;
+    }
+    return a.firstWord.localeCompare(b.firstWord);
+  });
+  
+  // Return top suggestions
+  return similar.slice(0, maxSuggestions).map(s => capitalizeFirst(s.name));
+}
+
 function checkStudent() {
   const nameInput = document.getElementById('name-input');
   const name = nameInput.value.trim().toLowerCase();
@@ -258,11 +328,49 @@ function checkStudent() {
     return;
   }
   
-  // Find student in roster
-  const student = classRoster.find(s => s.name.toLowerCase() === name);
+  // FIRST: Check if there are multiple students with the same first name
+  const matchingFirstNames = classRoster.filter(s => {
+    const firstName = s.name.toLowerCase().split(' ')[0];
+    return firstName === name;
+  });
   
-  if (student) {
-    // Student found - set up player
+  if (matchingFirstNames.length > 1) {
+    // Multiple students with same first name - show options to choose
+    let errorMessage = '¡Hay más de un estudiante con ese nombre! 😊<br><br><strong>¿Cuál eres tú?</strong><br>';
+    errorMessage += '<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">';
+    matchingFirstNames.forEach(student => {
+      errorMessage += `<button class="suggestion-btn" onclick="selectSuggestion('${student.name.toLowerCase()}')" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px) scale(1.05)'; this.style.boxShadow='0 6px 12px rgba(102, 126, 234, 0.4)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 6px rgba(102, 126, 234, 0.3)';">${capitalizeFirst(student.name)}</button>`;
+    });
+    errorMessage += '</div>';
+    showMessage(messageDiv, errorMessage, 'error', true);
+    return;
+  }
+  
+  // SECOND: Find exact match in roster (full name match)
+  const exactMatch = classRoster.find(s => s.name.toLowerCase() === name);
+  
+  if (exactMatch) {
+    // Exact full name match found - log in directly
+    gameState.currentPlayer = {
+      name: exactMatch.name,
+      photo: exactMatch.photo,
+      displayName: capitalizeFirst(exactMatch.name)
+    };
+    
+    showWelcomeMessage(messageDiv, gameState.currentPlayer);
+    
+    setTimeout(() => {
+      // Store player data and redirect to game selection
+      sessionStorage.setItem('gameCenter_currentPlayer', JSON.stringify(gameState.currentPlayer));
+      window.location.href = 'game-selection.html';
+    }, 1500);
+    return;
+  }
+  
+  // THIRD: Check if there's only one student with this first name
+  if (matchingFirstNames.length === 1) {
+    // Only one student with this first name - log in directly
+    const student = matchingFirstNames[0];
     gameState.currentPlayer = {
       name: student.name,
       photo: student.photo,
@@ -276,11 +384,58 @@ function checkStudent() {
       sessionStorage.setItem('gameCenter_currentPlayer', JSON.stringify(gameState.currentPlayer));
       window.location.href = 'game-selection.html';
     }, 1500);
+    return;
+  }
+  
+  // FOURTH: Name not found - suggest similar names
+  const suggestions = findSimilarNames(name);
+  
+  let errorMessage = 'No encuentro ese nombre en nuestra clase. 🤔';
+  
+  if (suggestions.length > 0) {
+    errorMessage += '<br><br><strong>¿Quizás quisiste decir?</strong><br>';
+    errorMessage += '<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">';
+    suggestions.forEach(suggestion => {
+      errorMessage += `<button class="suggestion-btn" onclick="selectSuggestion('${suggestion.toLowerCase()}')" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px) scale(1.05)'; this.style.boxShadow='0 6px 12px rgba(102, 126, 234, 0.4)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 6px rgba(102, 126, 234, 0.3)';">${suggestion}</button>`;
+    });
+    errorMessage += '</div>';
+  }
+  
+  showMessage(messageDiv, errorMessage, 'error', true);
+  nameInput.value = '';
+  nameInput.focus();
+}
+
+// Function to select a suggested name - logs in directly without re-checking
+function selectSuggestion(name) {
+  const nameInput = document.getElementById('name-input');
+  const messageDiv = document.getElementById('login-message');
+  const nameLower = name.toLowerCase();
+  
+  // Find the exact student in roster
+  const student = classRoster.find(s => s.name.toLowerCase() === nameLower);
+  
+  if (student) {
+    // Set the input value
+    nameInput.value = name;
     
+    // Log in directly
+    gameState.currentPlayer = {
+      name: student.name,
+      photo: student.photo,
+      displayName: capitalizeFirst(student.name)
+    };
+    
+    showWelcomeMessage(messageDiv, gameState.currentPlayer);
+    
+    setTimeout(() => {
+      // Store player data and redirect to game selection
+      sessionStorage.setItem('gameCenter_currentPlayer', JSON.stringify(gameState.currentPlayer));
+      window.location.href = 'game-selection.html';
+    }, 1500);
   } else {
-    showMessage(messageDiv, 'Hmm, I don\'t see that name in our class. Please check your spelling! 🤔', 'error');
-    nameInput.value = '';
-    nameInput.focus();
+    // This shouldn't happen, but just in case
+    showMessage(messageDiv, 'Error al seleccionar el nombre. Por favor intenta de nuevo.', 'error');
   }
 }
 
@@ -942,8 +1097,12 @@ async function loadGameLeaderboard(gameType) {
   }
 }
 
-function showMessage(element, message, type) {
-  element.textContent = message;
+function showMessage(element, message, type, allowHTML = false) {
+  if (allowHTML) {
+    element.innerHTML = message;
+  } else {
+    element.textContent = message;
+  }
   element.className = `login-message ${type}`;
 }
 
