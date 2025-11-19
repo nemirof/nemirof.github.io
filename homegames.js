@@ -68,6 +68,7 @@ const classRoster = [
   { name: 'luca', photo: 'luca.jpg' },
   { name: 'luna', photo: 'luna.png' },
   { name: 'marco', photo: 'marco.png' },
+  { name: 'ruben', photo: 'ruben.png' },
   { name: 'marcos', photo: 'marcos.jpg' },
   { name: 'mariam', photo: 'mariam.png' },
   { name: 'mencia', photo: 'mencia.png' },
