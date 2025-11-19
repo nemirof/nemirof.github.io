@@ -91,12 +91,13 @@ const classRoster = [
   { name: 'seren', photo: 'seren.jpg' },
   { name: 'luna', photo: 'luna.jpg' },
   { name: 'sara', photo: 'sara.png' },
-  { name: 'walner', photo: 'walner.png' },
+  { name: 'walner', photo: 'walner.png' },  
   { name: 'triana', photo: 'triana.png' },
   { name: 'victoria', photo: 'victoria.png' },
   { name: 'nicolas', photo: 'nicolas.png' },
   { name: 'sebastian', photo: 'sebastian.png' },
   { name: 'micaela', photo: 'micaela.png' },
+  { name: 'guille', photo: 'guille.png' },
   { name: 'mateo', photo: 'mateo.png' }
 ];
 
