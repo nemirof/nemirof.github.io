@@ -8,12 +8,24 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Bubblegum+Sans&family=Caveat:wght@700&family=Patrick+Hand&family=Schoolbell&display=swap" rel="stylesheet">
   
   <style>
-    /* Fuente amigable para niños de 4 años */
-    body, .carta, .frontal p, .trasera p, .trasera-exito p, .trasera-error p, 
-    #mensajeProfesion, #mensajeAcierto, #mensajeFallo, h1, button {
+    /* Cargar fuente MeMima desde archivo local */
+    @font-face {
+      font-family: 'MeMima';
+      src: url('fonts/MeMima Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    /* Aplicar MeMima a las cartas y al cuadro de nombre */
+    .frontal p, .trasera p, .trasera-exito p, .trasera-error p, .caja-nombre {
+      font-family: 'MeMima', 'Schoolbell', 'Patrick Hand', cursive, sans-serif !important;
+    }
+    
+    /* Fuente amigable para el resto de elementos */
+    body, .carta, #mensajeProfesion, #mensajeAcierto, #mensajeFallo, h1, button {
       font-family: 'Fredoka', 'Bubblegum Sans', 'Comic Sans MS', cursive, sans-serif !important;
     }
     
@@ -59,6 +71,34 @@
       font-weight: 600 !important;
     }
     
+    /* Estilo para la caja del nombre - sin animaciones ni efectos */
+    .caja-nombre {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 130px;
+      width: 70%;
+      max-width: 500px;
+      margin: 15px auto;
+      padding: 25px 35px;
+      font-family: 'MeMima', 'Schoolbell', 'Patrick Hand', cursive, sans-serif !important;
+      font-size: 5.5rem;
+      font-weight: 700;
+      color: #FF6B6B;
+      text-align: center;
+      background: linear-gradient(135deg, #FFE5E5 0%, #FFF0F5 100%);
+      border-radius: 20px;
+      border: 4px solid #FF6B6B;
+      box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+      cursor: pointer;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      word-break: break-word;
+      transform: none !important;
+      transition: none !important;
+      box-sizing: border-box;
+    }
+    
     /* RESPONSIVE - Tablets */
     @media (max-width: 768px) {
       .frontal p, .trasera p {
@@ -74,6 +114,14 @@
       
       .trasera-exito p, .trasera-error p {
         font-size: 1.1rem !important;
+      }
+      
+      .caja-nombre {
+        font-size: 4.2rem;
+        min-height: 110px;
+        width: 85%;
+        padding: 20px 25px;
+        border-radius: 18px;
       }
     }
     
@@ -109,6 +157,15 @@
         text-align: center;
         word-break: break-word;
       }
+      
+      .caja-nombre {
+        font-size: 3.3rem;
+        min-height: 90px;
+        width: 88%;
+        padding: 15px 18px;
+        border-radius: 15px;
+        margin: 10px auto;
+      }
     }
     
     /* RESPONSIVE - Móviles muy pequeños */
@@ -126,6 +183,15 @@
       
       .trasera-exito p, .trasera-error p {
         font-size: 0.85rem !important;
+      }
+      
+      .caja-nombre {
+        font-size: 2.6rem;
+        min-height: 75px;
+        width: 90%;
+        padding: 12px 15px;
+        border-radius: 12px;
+        margin: 8px auto;
       }
     }
   </style>
@@ -172,9 +238,11 @@
   </header>
   
   <div id="mensajeProfesion" class="mensaje" style="display: block;">¡Vamos a jugar!</div>
-  <img id="imagenProfesion" alt="imagen pregunta" src="images/icono.png" style="display: block;width: 120px;height: 120px;" onclick="hacerPregunta()">
+  <div id="nombreAmigo" class="caja-nombre" onclick="hacerPregunta()">
+    ¡Pulsa!
+  </div>
   <div id="mensajeAcierto" class="mensaje" style="display: none;"></div>
-  <div id="mensajeFallo" class="mensaje" style="display: block;">Pulsa en el pirata para empezar</div>
+  <div id="mensajeFallo" class="mensaje" style="display: block;">Pulsa en el botón ¡Juega! para empezar</div>
   <audio id="audioExito" src="audio/ok.mp3"></audio>
   <main>
     <section id="profesiones">

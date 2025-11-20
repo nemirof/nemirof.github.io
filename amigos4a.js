@@ -36,15 +36,16 @@ function hacerPregunta() {
   // Generar un índice aleatorio basado en la longitud del array de amigos
   mostrarAmigos();
   const indiceAleatorio = Math.floor(Math.random() * amigos.length);
-  sessionStorage.setItem('amigoAleatorio', amigos[indiceAleatorio]);
+  const nombreAmigo = amigos[indiceAleatorio];
+  sessionStorage.setItem('amigoAleatorio', nombreAmigo);
   sessionStorage.setItem('imagenAleatoria', imagenes[indiceAleatorio]);
-  const mensaje = `Busca a: ${amigos[indiceAleatorio]}`;
+  const mensaje = `Busca a:`;
   document.getElementById('mensajeAcierto').style.background = "none";
   document.getElementById('mensajeFallo').innerText = "";
   document.getElementById('mensajeAcierto').innerText = "";
 
   mostrarPregunta('mensajeProfesion', mensaje);
-  mostrarImagen(imagenes[indiceAleatorio]);
+  mostrarNombreGrande(nombreAmigo);
   amigoMostrado = true; // Se muestra el amigo
 }
 
@@ -56,10 +57,10 @@ function ocultarMensajes() {
   amigoMostrado = false; // Reinicia el estado
 }
 
-function mostrarImagen(imagenSrc) {
-  const imagenProfesion = document.getElementById("imagenProfesion");
-  imagenProfesion.src = imagenSrc;
-  imagenProfesion.style.display = 'block';
+function mostrarNombreGrande(nombre) {
+  const nombreDiv = document.getElementById("nombreAmigo");
+  nombreDiv.innerHTML = nombre;
+  nombreDiv.style.display = 'flex';
 }
 
 function mostrarPregunta(elementoId, mensaje) {
