@@ -244,28 +244,53 @@ function crearConfeti() {
 
 // Mejoras para dispositivos touch
 document.addEventListener('DOMContentLoaded', function() {
-  // Prevenir comportamiento por defecto en touch
-  document.addEventListener('touchstart', function(e) {
-    if (e.target.closest('.carta')) {
-      e.preventDefault();
-    }
-  }, { passive: false });
+  // Variables para detectar si es un tap o un scroll
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
+  const maxMoveDistance = 10; // píxeles máximos de movimiento para considerar un tap
+  const maxTapDuration = 500; // milisegundos máximos para considerar un tap
   
   // Mejorar los clicks en las cartas
   const cartas = document.querySelectorAll('.carta');
   cartas.forEach(carta => {
-    // Añadir event listener optimizado para touch
+    // Capturar posición inicial del touch
+    carta.addEventListener('touchstart', function(e) {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+    
+    // Al soltar, verificar si fue un tap o un scroll
     carta.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      mostrarAmigo(this);
+      const touch = e.changedTouches[0];
+      const touchEndX = touch.clientX;
+      const touchEndY = touch.clientY;
+      const touchEndTime = Date.now();
+      
+      // Calcular distancia movida
+      const moveX = Math.abs(touchEndX - touchStartX);
+      const moveY = Math.abs(touchEndY - touchStartY);
+      const duration = touchEndTime - touchStartTime;
+      
+      // Si el movimiento fue pequeño y rápido, es un tap
+      if (moveX < maxMoveDistance && moveY < maxMoveDistance && duration < maxTapDuration) {
+        e.preventDefault();
+        e.stopPropagation();
+        mostrarAmigo(this);
+      }
+      // Si hubo mucho movimiento, es un scroll - no hacer nada
     }, { passive: false });
     
-    // Mantener compatibilidad con mouse
+    // Mantener compatibilidad con mouse (desktop)
     carta.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      mostrarAmigo(this);
+      // Solo activar si no es un dispositivo táctil
+      if (!('ontouchstart' in window)) {
+        e.preventDefault();
+        e.stopPropagation();
+        mostrarAmigo(this);
+      }
     });
   });
 });
