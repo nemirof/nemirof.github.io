@@ -54,14 +54,14 @@ const preguntas = [
     explicacion: "¡Así es! Los caballitos de mar nadan muy despacito, son los peces más lentos del océano."
   },
   {
-    texto: "¿Con qué se agarran los caballitos de mar?",
+    texto: "¿Cómo respiran los caballitos de mar?",
     opciones: [
-      { imagen: `<svg viewBox="0 0 60 60" width="56" height="56"><path d="M45 10 Q55 15 50 25 Q45 35 35 35 Q25 35 25 28 Q25 20 32 20 Q38 20 38 25 Q38 30 33 30" fill="none" stroke="#FF9F43" stroke-width="8" stroke-linecap="round"/><path d="M45 10 Q55 15 50 25 Q45 35 35 35 Q25 35 25 28 Q25 20 32 20 Q38 20 38 25 Q38 30 33 30" fill="none" stroke="#E67E22" stroke-width="2" stroke-linecap="round" stroke-dasharray="4,8"/></svg>`, texto: "Con su colita", correcta: true },
-      { imagen: "🦷", texto: "Con los dientes", correcta: false },
+      { imagen: "🫁", texto: "Con branquias", correcta: true },
       { imagen: "👃", texto: "Con la nariz", correcta: false },
-      { imagen: "👂", texto: "Con las orejas", correcta: false }
+      { imagen: "🌬️", texto: "Con la boca", correcta: false },
+      { imagen: "🐚", texto: "Con su caparazón", correcta: false }
     ],
-    explicacion: "¡Genial! Los caballitos usan su colita enrollada para agarrarse a las plantas del mar."
+    explicacion: "¡Muy bien! Los caballitos de mar respiran con branquias, como todos los peces."
   }
 ];
 
